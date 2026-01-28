@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog with Dynamic Filters</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .filter-tab.active {
+      background-color: #4f46e5;
+      color: white;
+      border-color: #4f46e5;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .filter-tab:not(.active) {
+      background-color: #ffffff;
+      color: #4b5563;
+    }
+
+    #pageNumbers button.active {
+      background-color: #4f46e5;
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+<main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <section class="container mx-auto px-4 py-12 md:px-6">
+    <div class="container mx-auto px-4 py-12">
+      <div class=" flex flex-col md:flex-row items-center justify-between gap-4 w-full mb-4">
+        <!-- Left: Category -->
+        <div class="relative w-full md:w-1/2">
+          <h1 class="text-lg font-semibold">CATEGORY</h1>
+          <!-- You can replace with actual category buttons later -->
+        </div>
+
+        <!-- Right: Search -->
+        <div class="relative w-full md:w-1/2">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search blogs by title or description..."
+            class=" w-full pl-10 pr-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 transition duration-300 shadow-sm"
+          >
+          <svg
+            class="h-5 w-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Search and filters section -->
+      <div class="flex flex-col md:flex-row items-center justify-between mb-8 space-y-4 md:space-y-0 md:space-x-6">
+        <!-- Search field -->
+
+
+        <!-- Filter tabs -->
+        <div class="flex flex-wrap justify-center space-x-2 sm:space-x-4" id="filterTabs">
+          <button class="filter-tab px-6 py-2 rounded-full font-medium text-sm transition duration-300 ease-in-out border border-transparent active" data-category="all">
+            All
+          </button>
+          <button class="filter-tab px-6 py-2 rounded-full font-medium text-sm transition duration-300 ease-in-out border border-gray-300 hover:bg-gray-200" data-category="steam">
+            Steam
+          </button>
+          <button class="filter-tab px-6 py-2 rounded-full font-medium text-sm transition duration-300 ease-in-out border border-gray-300 hover:bg-gray-200" data-category="education">
+            Education
+          </button>
+          <button class="filter-tab px-6 py-2 rounded-full font-medium text-sm transition duration-300 ease-in-out border border-gray-300 hover:bg-gray-200" data-category="events">
+            Events
+          </button>
+          <button class="filter-tab px-6 py-2 rounded-full font-medium text-sm transition duration-300 ease-in-out border border-gray-300 hover:bg-gray-200" data-category="lego-education">
+            LEGO education
+          </button>
+          <button class="filter-tab px-6 py-2 rounded-full font-medium text-sm transition duration-300 ease-in-out border border-gray-300 hover:bg-gray-200" data-category="popular">
+            Popular
+          </button>
+          <button class="filter-tab px-6 py-2 rounded-full font-medium text-sm transition duration-300 ease-in-out border border-gray-300 hover:bg-gray-200" data-category="science">
+            Science
+          </button>
+        </div>
+
+        <!-- Dropdown for time filter -->
+        <div class="relative">
+          <select id="dateFilter" class="w-48 pl-4 pr-10 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-300 shadow-sm appearance-none">
+            <option value="all">Last day</option>
+            <option value="last7days">Last 7 days</option>
+            <option value="last30days">Last 30 days</option>
+            <option value="lastquarter">Last quarter</option>
+            <option value="lastyear">Last year</option>
+          </select>
+          <svg class="h-5 w-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
+      <div id="blogCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Blog cards will be dynamically inserted here by JavaScript -->
+      </div>
+
+      <!-- Paginator -->
+      <div id="paginator" class="flex justify-center items-center space-x-2 mt-8">
+        <button id="prevBtn" class="bg-white px-4 py-2 rounded-lg border border-gray-300 shadow-sm text-gray-600 hover:bg-gray-100 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
+          Previous
+        </button>
+        <div id="pageNumbers" class="flex space-x-2">
+          <!-- Page numbers will be added here dynamically -->
+        </div>
+        <button id="nextBtn" class="bg-white px-4 py-2 rounded-lg border border-gray-300 shadow-sm text-gray-600 hover:bg-gray-100 transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed">
+          Next
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  // Global state variables
+  let blogCardsData = [];
+  let cardsPerPage = 6;
+  let currentPage = 1;
+  let filteredCards = [];
+  let activeCategory = 'all';
+  let activeDateFilter = 'all';
+
+  // References to DOM elements
+  const blogCardsContainer = document.getElementById('blogCardsContainer');
+  const searchInput = document.getElementById('searchInput');
+  const filterTabs = document.getElementById('filterTabs');
+  const dateFilter = document.getElementById('dateFilter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const pageNumbers = document.getElementById('pageNumbers');
+
+  // --- Asynchronous data fetching ---
+  async function fetchBlogs() {
+    try {
+      // Call your NestJS endpoint
+      const response = await fetch("http://localhost:3000/blogs");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      blogCardsData = data;
+      // Initial rendering after data is fetched
+      filterAndSearch();
+    } catch (error) {
+      console.error("Error loading blogs:", error);
+      blogCardsContainer.innerHTML = '<p class="col-span-full text-center text-red-500">Failed to load blogs. Please check your network connection and server.</p>';
+    }
+  }
+
+  // --- Rendering and event handling functions ---
+
+  // Helper function for date formatting
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { month: 'short', day: 'numeric', year: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  // Function to render blog cards to the DOM using direct string manipulation
+  const renderBlogCards = (cards, page) => {
+    const start = (page - 1) * cardsPerPage;
+    const end = start + cardsPerPage;
+    const cardsToRender = cards.slice(start, end);
+    let html = '';
+
+    if (cardsToRender.length === 0) {
+      blogCardsContainer.innerHTML = '<p class="col-span-full text-center text-gray-500">No blogs found matching your criteria.</p>';
+      return;
+    }
+
+    cardsToRender.forEach(card => {
+      // Add the loading="lazy" attribute to the image for performance
+      html += `
+                    <div class="blog-card bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
+                        <img src="${card.image}" alt="${card.title}" class="w-full h-48 object-cover" loading="lazy">
+                        <div class="p-6">
+                            <span class="inline-block text-white  ${card.categoryColor}  text-xs font-semibold px-2.5 py-0.5 rounded-full mb-2">
+                                ${card.categoryLabel}
+                            </span>
+                            <h2 class="text-xl font-bold text-gray-900 mb-2">${card.title}</h2>
+                            <p class="text-gray-600 text-sm mb-4">${card.description}</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-400 text-xs">${formatDate(card.date)}</span>
+                                <button class="read-more-btn bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-full transition-colors duration-300 shadow-lg" data-id="${card.id}">Read more</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+    });
+    blogCardsContainer.innerHTML = html;
+  };
+
+  // Function to render pagination buttons
+  const renderPaginator = (totalCards) => {
+    pageNumbers.innerHTML = '';
+    const totalPages = Math.ceil(totalCards / cardsPerPage);
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+
+    for (let i = 1; i <= totalPages; i++) {
+      const pageButton = document.createElement('button');
+      pageButton.textContent = i;
+      pageButton.dataset.page = i;
+      pageButton.className = `px-4 py-2 rounded-lg font-medium text-sm transition duration-300 ease-in-out border border-gray-300 shadow-sm ${i === currentPage ? 'active' : ''}`;
+      pageNumbers.appendChild(pageButton);
+    }
+  };
+
+  // Main function to filter and render content
+  const filterAndSearch = () => {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    currentPage = 1;
+    let tempCards = [...blogCardsData];
+
+    if (activeCategory !== 'all') {
+      tempCards = tempCards.filter(card => card.category === activeCategory);
+    }
+
+    const now = new Date();
+    let startDate;
+
+    switch (dateFilter.value) {
+      case 'last7days':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7);
+        tempCards = tempCards.filter(card => new Date(card.date) >= startDate);
+        break;
+      case 'last30days':
+        startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30);
+        tempCards = tempCards.filter(card => new Date(card.date) >= startDate);
+        break;
+      case 'lastquarter':
+        startDate = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+        tempCards = tempCards.filter(card => new Date(card.date) >= startDate);
+        break;
+      case 'lastyear':
+        startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+        tempCards = tempCards.filter(card => new Date(card.date) >= startDate);
+        break;
+      case 'all':
+      default:
+        break;
+    }
+
+    filteredCards = tempCards.filter(card =>
+      card.title.toLowerCase().includes(searchTerm) ||
+      card.description.toLowerCase().includes(searchTerm)
+    );
+
+    renderBlogCards(filteredCards, currentPage);
+    renderPaginator(filteredCards.length);
+  };
+
+  // --- Event listeners ---
+  searchInput.addEventListener('input', filterAndSearch);
+  dateFilter.addEventListener('change', filterAndSearch);
+
+  filterTabs.addEventListener('click', (event) => {
+    const newCategory = event.target.dataset.category;
+    if (newCategory) {
+      document.querySelectorAll('.filter-tab').forEach(button => {
+        button.classList.remove('active');
+        button.classList.add('hover:bg-gray-200', 'border-gray-300');
+        button.classList.remove('border-transparent');
+      });
+      event.target.classList.add('active');
+      event.target.classList.remove('hover:bg-gray-200', 'border-gray-300');
+      event.target.classList.add('border-transparent');
+
+      activeCategory = newCategory;
+      filterAndSearch();
+    }
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderBlogCards(filteredCards, currentPage);
+      renderPaginator(filteredCards.length);
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderBlogCards(filteredCards, currentPage);
+      renderPaginator(filteredCards.length);
+    }
+  });
+
+  pageNumbers.addEventListener('click', (event) => {
+    const page = parseInt(event.target.dataset.page, 10);
+    if (!isNaN(page) && page !== currentPage) {
+      currentPage = page;
+      renderBlogCards(filteredCards, currentPage);
+      renderPaginator(filteredCards.length);
+    }
+  });
+
+  // Initial data fetch and rendering on page load
+  document.addEventListener("DOMContentLoaded", fetchBlogs);
+</script>
+</body>
+</html>

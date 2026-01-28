@@ -1,0 +1,71 @@
+<section id="courses-content" class="hidden">
+  <header class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-bold text-gray-900">Students Management</h2>
+  </header>
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Courses</h2>
+      <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+        <table class="min-w-full rounded-xl overflow-hidden">
+          <thead class="text-gray-700">
+          <tr>
+            <th class="px-4 py-2 rounded-tl-xl text-left">Image</th>
+            <th class="px-4 py-2 text-left">Title</th>
+            <th class="px-4 py-2 text-left">Duration</th>
+            <th class="px-4 py-2 text-left">Price</th>
+            <th class="px-4 py-2 rounded-tr-xl text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+          {{#each courses}}
+            <tr>
+              <td class="px-4 py-2">
+                <img src="{{image}}" alt="{{title}}" class="h-12 w-12 rounded-lg object-cover">
+              </td>
+              <td class="px-4 py-2 font-semibold">{{title}}</td>
+              <td class="px-4 py-2">{{duration}}</td>
+              <td class="px-4 py-2">{{price}}</td>
+              <td class="px-4 py-2">
+                <button data-id="{{id}}" data-type="courses"
+                        class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"><i class="fas fa-edit"></i>
+                </button>
+                <button data-id="{{id}}" data-type="courses"
+                        class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"><i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 p-6 rounded-xl shadow-md">
+      <h3 class="text-xl font-bold mb-4 text-gray-800">Add / Edit Course</h3>
+      <form id="courseForm" action="/courses" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-1">
+          <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Course Title</label>
+          <input type="text" id="title" name="title" placeholder="Course Title" required class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+        <div class="md:col-span-1">
+          <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+          <input type="text" id="duration" name="duration" placeholder="Duration" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+        <div class="md:col-span-1">
+          <label for="price" class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+          <input type="number" id="price" name="price" placeholder="Price" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+        <div class="md:col-span-1">
+          <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+          <input type="url" id="image" name="image" placeholder="Image URL" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+
+        <button type="submit"
+                class="col-span-2 py-3 px-4 rounded-full font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 shadow-md">
+          Save Course
+        </button>
+      </form>
+    </div>
+
+
+  </div>
+</section>

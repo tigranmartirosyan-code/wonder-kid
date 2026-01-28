@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Lato:wght@400;700&display=swap');
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #f0f2f5;
+}
+
+.h1, .h2, .btn-text {
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-input {
+    @apply block w-full px-4 py-3 rounded-lg border-2 border-gray-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-green-500;
+}
+
+.form-input-error {
+    @apply border-red-500 focus:ring-red-500;
+}

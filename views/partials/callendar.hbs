@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monthly Schedule Board</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background-color:  rgb(234 179 8 / var(--tw-bg-opacity, 1));
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+    .day-cell {
+      min-height: 120px;
+      background-color: #ffffff;
+      padding: 0.5rem;
+      position: relative;
+    }
+    .event-card {
+      color: black;
+      background-color:  rgb(234 179 8 / var(--tw-bg-opacity, 1));
+      font-size: 0.875rem;
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      margin-bottom: 0.25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border-left-width: 4px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.1s ease-in-out;
+    }
+    .event-card:hover {
+      transform: translateY(-2px);
+    }
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background-color: #fefefe;
+      padding: 2rem;
+      border-radius: 1rem;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+
+<div class="calendar-container">
+  <div class=" mb-6">
+    <h3 class="text-3xl font-bold text-red-800">Monthly Schedule Board</h3>
+  </div>
+
+  <!-- Calendar Header -->
+  <div class="flex justify-between items-center mb-4">
+    <button id="prev-month" class="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
+      <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+    <h4 id="month-title" class="text-xl font-semibold text-gray-700"></h4>
+    <button id="next-month" class="p-2 rounded-full hover:bg-gray-200 transition-colors duration-200">
+      <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+    </button>
+  </div>
+
+  <!-- Days of the Week Header -->
+  <div class="calendar-grid text-center font-bold text-gray-600 mb-1 rounded-none">
+    <div class="p-2">Sun</div>
+    <div class="p-2">Mon</div>
+    <div class="p-2">Tue</div>
+    <div class="p-2">Wed</div>
+    <div class="p-2">Thu</div>
+    <div class="p-2">Fri</div>
+    <div class="p-2">Sat</div>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div id="month-grid" class="calendar-grid">
+    <!-- Day cells and events will be rendered here -->
+  </div>
+</div>
+
+<!-- Modal for displaying event details -->
+<div id="event-modal" class="modal">
+  <div class="modal-content text-gray-800">
+    <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors duration-200">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+
+    <h3 id="modal-title" class="text-2xl font-bold mb-4 text-center"></h3>
+    <p id="modal-time" class="text-md text-gray-500 text-center mb-4"></p>
+
+    <div class="space-y-6">
+      <!-- Trainer Details Section -->
+      <div id="trainer-details-container" class="space-y-4">
+        <h4 class="text-lg font-semibold text-blue-600">Trainer Details</h4>
+        <!-- Trainers will be injected here -->
+      </div>
+
+      <!-- Student Details Section -->
+      <div id="student-details-container" class="space-y-4">
+        <h4 class="text-lg font-semibold text-green-600">Student Details</h4>
+        <!-- Students will be injected here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const monthGrid = document.getElementById('month-grid');
+    const monthTitle = document.getElementById('month-title');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+    const eventModal = document.getElementById('event-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const trainerDetailsContainer = document.getElementById('trainer-details-container');
+    const studentDetailsContainer = document.getElementById('student-details-container');
+    const modalTime = document.getElementById('modal-time');
+
+    let currentMonth = new Date();
+
+    // Mock data for events, now with start and end dates
+    // let schedules = [
+    //   {
+    //     "id": "1",
+    //     "title": "Zumba with Sarah",
+    //     "startDate": "2025-09-02T10:00:00Z",
+    //     "endDate": "2025-09-09T11:00:00Z",
+    //     "color": "#10B981",
+    //     "trainers": [
+    //       {
+    //         "fullName": "Sarah Johnson",
+    //         "role": "Certified Fitness Instructor",
+    //         "image": "https://placehold.co/100x100/A7F3D0/065F46?text=SJ",
+    //         "description": "Sarah has over 10 years of experience in Zumba and cardio training."
+    //       }
+    //     ],
+    //     "students": [
+    //       {
+    //         "fullName": "Emily Davis",
+    //         "email": "emily.davis@example.com",
+    //         "age": 28,
+    //         "groupName": "Morning Fitness",
+    //         "phones": "+1-555-0101"
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     "id": "2",
+    //     "title": "Yoga Class",
+    //     "startDate": "2025-09-09T18:00:00Z",
+    //     "endDate": "2025-09-15T19:30:00Z",
+    //     "color": "#3B82F6",
+    //     "trainers": [
+    //       {
+    //         "fullName": "Mark Wilson",
+    //         "role": "Yoga Master",
+    //         "image": "https://placehold.co/100x100/BFDBFE/1E40AF?text=MW",
+    //         "description": "Mark specializes in Vinyasa and Hatha yoga."
+    //       },
+    //       {
+    //         "fullName": "Jane Doe",
+    //         "role": "Assistant Trainer",
+    //         "image": "https://placehold.co/100x100/BFDBFE/1E40AF?text=JD",
+    //         "description": "Jane is an expert in meditation and breathing techniques."
+    //       }
+    //     ],
+    //     "students": [
+    //       {
+    //         "fullName": "John Smith",
+    //         "email": "john.smith@example.com",
+    //         "age": 35,
+    //         "groupName": "Evening Serenity",
+    //         "phones": "+1-555-0102"
+    //       },
+    //       {
+    //         "fullName": "Alice Johnson",
+    //         "email": "alice.johnson@example.com",
+    //         "age": 45,
+    //         "groupName": "Evening Serenity",
+    //         "phones": "+1-555-0105"
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     "id": "3",
+    //     "title": "Pilates Session",
+    //     "startDate": "2025-09-20T09:30:00Z",
+    //     "endDate": "2025-09-20T10:30:00Z",
+    //     "color": "#EF4444",
+    //     "trainers": [
+    //       {
+    //         "fullName": "Laura Chen",
+    //         "role": "Pilates Expert",
+    //         "image": "https://placehold.co/100x100/FEE2E2/991B1B?text=LC",
+    //         "description": "Laura focuses on core strength and flexibility."
+    //       }
+    //     ],
+    //     "students": [
+    //       {
+    //         "fullName": "Olivia Brown",
+    //         "email": "olivia.brown@example.com",
+    //         "age": 42,
+    //         "groupName": "Core Crew",
+    //         "phones": "+1-555-0103"
+    //       }
+    //     ]
+    //   },
+    //   {
+    //     "id": "4",
+    //     "title": "Weekend Workout",
+    //     "startDate": "2025-09-13T10:00:00Z",
+    //     "endDate": "2025-09-14T12:00:00Z",
+    //     "color": "#F59E0B",
+    //     "trainers": [
+    //       {
+    //         "fullName": "David Lee",
+    //         "role": "Strength Coach",
+    //         "image": "https://placehold.co/100x100/FDE68A/B45309?text=DL",
+    //         "description": "David specializes in weight training and circuit exercises."
+    //       }
+    //     ],
+    //     "students": []
+    //   }
+    // ];
+    let schedules;
+
+    async function fetchSchedules() {
+      try {
+        const response = await fetch('http://localhost:3000/schedules');
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        schedules = await response.json();
+        renderCalendar()
+      } catch (error) {
+        console.error('Error fetching schedules:', error);
+      }
+    }
+
+    (async function loadSchedules() {
+      await fetchSchedules();
+    })()
+
+    function renderCalendar() {
+      monthGrid.innerHTML = '';
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+
+      const firstDayOfMonth = new Date(year, month, 1);
+      const lastDayOfMonth = new Date(year, month + 1, 0);
+      const daysInMonth = lastDayOfMonth.getDate();
+      const startDayOfWeek = firstDayOfMonth.getDay(); // 0 = Sunday, 1 = Monday, etc.
+
+      // Update month title
+      monthTitle.textContent = `${currentMonth.toLocaleString('default', { month: 'long' })} ${year}`;
+
+      // Add empty cells for the days before the 1st
+      for (let i = 0; i < startDayOfWeek; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'day-cell bg-gray-100';
+        monthGrid.appendChild(emptyCell);
+      }
+
+      // Render days of the month
+      for (let i = 1; i <= daysInMonth; i++) {
+        const dayCell = document.createElement('div');
+        dayCell.className = 'day-cell';
+
+        const dayNumber = document.createElement('div');
+        dayNumber.className = 'font-bold text-lg text-gray-800';
+        dayNumber.textContent = i;
+        dayCell.appendChild(dayNumber);
+
+        // Check if the current day is Sunday (getDay() returns 0 for Sunday)
+        const currentDay = new Date(year, month, i);
+        if (currentDay.getDay() === 0) {
+          // If it's Sunday, skip adding event slots
+          monthGrid.appendChild(dayCell);
+          continue;
+        }
+
+        // Add events for this day
+        schedules.forEach(event => {
+          const eventStart = new Date(event.startDate);
+          const eventEnd = new Date(event.endDate);
+
+          // Normalize dates to midnight for accurate comparison, regardless of timezones
+          const dayToCheck = new Date(currentDay.getFullYear(), currentDay.getMonth(), currentDay.getDate());
+          const eventStartDay = new Date(eventStart.getFullYear(), eventStart.getMonth(), eventStart.getDate());
+          const eventEndDay = new Date(eventEnd.getFullYear(), eventEnd.getMonth(), eventEnd.getDate());
+
+          if (dayToCheck.getTime() >= eventStartDay.getTime() && dayToCheck.getTime() <= eventEndDay.getTime()) {
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event-card';
+            eventDiv.textContent = event.title;
+            eventDiv.style.backgroundColor = `${event.color}20`;
+            eventDiv.style.color = event.color;
+            eventDiv.style.borderColor = event.color;
+            eventDiv.style.borderLeftColor = event.color;
+            eventDiv.setAttribute('data-event-id', event.id); // Add a data attribute to link the div to its data
+            dayCell.appendChild(eventDiv);
+          }
+        });
+
+        monthGrid.appendChild(dayCell);
+      }
+    }
+
+    // Show the modal with specific event data
+    function showModal(eventData) {
+      document.getElementById('modal-title').textContent = eventData.title;
+
+      const eventStart = new Date(eventData.startDate);
+      const eventEnd = new Date(eventData.endDate);
+      const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      const startString = eventStart.toLocaleDateString('en-US', options);
+      const endString = eventEnd.toLocaleDateString('en-US', options);
+      modalTime.textContent = `${startString} - ${endString}`;
+
+      // Clear previous content
+      trainerDetailsContainer.innerHTML = '<h4 class="text-lg font-semibold text-blue-600">Trainer Details</h4>';
+      studentDetailsContainer.innerHTML = '<h4 class="text-lg font-semibold text-green-600">Student Details</h4>';
+
+      // Dynamically create and append trainer details
+      eventData.trainers.forEach(trainer => {
+        const trainerHtml = `
+          <div class="flex items-center space-x-4 bg-gray-50 p-4 rounded-lg shadow-inner">
+            <img src="${trainer.image}" alt="Trainer Profile" class="w-16 h-16 rounded-full object-cover border-2 border-gray-300">
+            <div>
+              <h4 class="text-lg font-semibold text-blue-600">${trainer.fullName}</h4>
+              <p class="text-sm text-gray-500">${trainer.role}</p>
+              <p class="text-xs text-gray-400">${trainer.description}</p>
+            </div>
+          </div>
+        `;
+        trainerDetailsContainer.insertAdjacentHTML('beforeend', trainerHtml);
+      });
+
+      // Dynamically create and append student details
+      eventData.students.forEach(student => {
+        const studentHtml = `
+          <div class="bg-gray-50 p-4 rounded-lg shadow-inner">
+            <div class="space-y-1 text-sm text-gray-700">
+              <p><span class="font-medium">Name:</span> <span>${student.fullName}</span></p>
+              <p><span class="font-medium">Email:</span> <span>${student.email}</span></p>
+              <p><span class="font-medium">Age:</span> <span>${student.age}</span></p>
+              <p><span class="font-medium">Group:</span> <span>${student.groupName}</span></p>
+              <p><span class="font-medium">Phone:</span> <span>${student.phones}</span></p>
+            </div>
+          </div>
+        `;
+        studentDetailsContainer.insertAdjacentHTML('beforeend', studentHtml);
+      });
+
+      eventModal.style.display = 'flex';
+    }
+
+    // Hide the modal
+    function hideModal() {
+      eventModal.style.display = 'none';
+    }
+
+    // Event listener for calendar grid clicks
+    monthGrid.addEventListener('click', (event) => {
+      const eventCard = event.target.closest('.event-card');
+      if (eventCard) {
+        const eventId = eventCard.getAttribute('data-event-id');
+        const eventData = schedules.find(s => s.id === eventId);
+        if (eventData) {
+          showModal(eventData);
+        }
+      }
+    });
+
+    // Event listener to close the modal
+    closeModalBtn.addEventListener('click', hideModal);
+
+    // Close modal if user clicks outside of the content
+    window.addEventListener('click', (event) => {
+      if (event.target === eventModal) {
+        hideModal();
+      }
+    });
+
+    prevMonthBtn.addEventListener('click', () => {
+      currentMonth.setMonth(currentMonth.getMonth() - 1);
+      renderCalendar();
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+      currentMonth.setMonth(currentMonth.getMonth() + 1);
+      renderCalendar();
+    });
+
+    // Initial render of the calendar with the provided data
+    renderCalendar();
+  });
+</script>
+
+</html>

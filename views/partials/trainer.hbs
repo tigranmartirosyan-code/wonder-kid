@@ -1,0 +1,75 @@
+<section id="trainers-content" class="hidden">
+  <header class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-bold text-gray-900">Trainers Management</h2>
+  </header>
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Trainers (Admin)</h2>
+      <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+        <table class="min-w-full rounded-xl overflow-hidden">
+          <thead class="text-gray-700">
+          <tr>
+            <th class="px-4 py-2 rounded-tl-xl text-left">Image</th>
+            <th class="px-4 py-2 text-left">Name</th>
+            <th class="px-4 py-2 text-left">Role</th>
+            <th class="px-4 py-2 text-left">Description</th>
+            <th class="px-4 py-2 text-left">Course</th>
+            <th class="px-4 py-2 rounded-tr-xl text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+          {{#each trainers}}
+            <tr>
+              <td class="px-4 py-2">
+                <img src="{{image}}" alt="{{fullName}}" class="h-12 w-12 rounded-lg object-cover">
+              </td>
+              <td class="px-4 py-2 font-semibold">{{fullName}}</td>
+              <td class="px-4 py-2">{{role}}</td>
+              <td class="px-4 py-5 truncate max-w-xs">{{description}}</td>
+              <td class="px-4 py-2">
+                {{#each schedules}}
+                  {{title}}{{#unless @last}}, {{/unless}}
+                {{/each}}
+              </td>
+              <td class="px-4 py-2">
+                <button data-id="{{id}}" data-type="trainers"
+                        class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"><i class="fas fa-edit"></i>
+                </button>
+                <button data-id="{{id}}" data-type="trainers"
+                        class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"><i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 p-6 rounded-xl shadow-md">
+      <h3 class="text-xl font-bold mb-4 text-gray-800">Add / Edit Trainer</h3>
+      <form id="trainerForm" action="/trainers" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="md:col-span-1">
+          <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+          <input type="text" id="fullName" name="fullName" placeholder="Full Name" required class="form-input w-full w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+        <div class="md:col-span-1">
+          <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+          <input type="text" id="role" name="role" placeholder="Role" class="form-input w-full w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+        <div class="md:col-span-2">
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea id="description" name="description" placeholder="Description" rows="4" class="form-input w-full w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"></textarea>
+        </div>
+        <div class="md:col-span-2">
+          <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+          <input type="url" id="image" name="image" placeholder="Image URL" class="form-input w-full  w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+
+        <button type="submit"
+                class="col-span-2 py-3 px-4 rounded-full font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 shadow-md">
+          Save Trainer
+        </button>
+      </form>
+    </div>
+  </div>
+</section>

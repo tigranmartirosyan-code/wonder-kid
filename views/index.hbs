@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body class="antialiased text-gray-800">
+
+{{> header }}
+
+<main class="pt-24 py-12">
+  {{> hero }}
+  {{> limitLess }}
+  {{> status }}
+  {{> about2 }}
+  {{> about }}
+  {{> about1 }}
+  {{> legoWedo }}
+  {{> status2 }}
+  {{> productImg}}
+  {{> product courses=courses }}
+  {{> candidatesForm }}
+  {{> about3}}
+  {{> coachCard }}
+  {{> legoEducation }}
+  {{> partniorCard}}
+  {{> contactUs }}
+  {{> projectBlueCard }}
+  {{> trainerCard  trainers=trainers}}
+  {{> yellowBoard }}
+  {{> legoBgImage}}
+  {{> blogBg }}
+  {{> blogsIndex  blogs=blogs}}
+</main>
+
+
+{{> footer}}
+</body>
+</html>

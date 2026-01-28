@@ -1,0 +1,106 @@
+<section id="blogs-content" class="hidden">
+  <header class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-bold text-gray-900">Blogs Management</h2>
+  </header>
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Blogs (Admin)</h2>
+      <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+        <table class="min-w-full rounded-xl overflow-hidden">
+          <thead class="text-gray-700">
+          <tr>
+            <th class="px-4 py-2 rounded-tl-xl text-left">Image</th>
+            <th class="px-4 py-2 text-left">Title</th>
+            <th class="px-4 py-2 text-left">Description</th>
+            <th class="px-4 py-2 text-left">Category</th>
+            <th class="px-4 py-2 rounded-tr-xl text-left">Actions</th>
+          </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+          {{#each blogs}}
+            <tr>
+              <td class="px-4 py-2">
+                <img src="{{image}}" alt="{{title}}" class="h-12 w-20 object-cover rounded-lg">
+              </td>
+              <td class="px-4 py-2 font-semibold">{{title}}</td>
+              <td class="px-4 py-2 truncate max-w-sm">{{description}}</td>
+              <td class="px-4 py-2">{{category}}</td>
+              <td class="px-4 py-2">
+                <button data-id="{{id}}" data-type="blogs"
+                        class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"><i class="fas fa-edit"></i>
+                </button>
+                <button data-id="{{id}}" data-type="blogs"
+                        class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"><i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="mt-8 bg-gray-50 p-6 rounded-xl shadow-md">
+      <h3 class="text-xl font-bold mb-4 text-gray-800">Add / Edit Blog</h3>
+      <form id="blogForm" action="/blogs" method="post" class="space-y-6">
+        <!-- Title -->
+        <div>
+          <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+          <input type="text" id="title" name="title" placeholder="Blog Title" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea id="description" name="description" placeholder="Description" rows="4" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300"></textarea>
+        </div>
+
+        <!-- Image URL -->
+        <div>
+          <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+          <input type="url" id="image" name="image" placeholder="Image URL" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Category -->
+          <div>
+            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select id="category" name="category" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+              <option value="">Select a category</option>
+              <option value="steam">Steam</option>
+              <option value="education">Education</option>
+              <option value="events">Events</option>
+              <option value="lego-education">LEGO Education</option>
+              <option value="popular">Popular</option>
+              <option value="science">Science</option>
+            </select>
+          </div>
+
+          <!-- Date -->
+          <div>
+            <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+            <input type="date" id="date" name="date" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+          </div>
+
+          <!-- Category Color -->
+          <div>
+            <label for="categoryColor" class="block text-sm font-medium text-gray-700 mb-1">Category Color (Tailwind class)</label>
+            <input type="text" id="categoryColor" name="categoryColor" required placeholder="e.g., bg-green-100 text-green-800" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+          </div>
+
+          <!-- Category Label -->
+          <div>
+            <label for="categoryLabel" class="block text-sm font-medium text-gray-700 mb-1">Category Label</label>
+            <input type="text" id="categoryLabel" name="categoryLabel" required placeholder="e.g., Steam" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="w-full py-3 px-4 rounded-full font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 shadow-md">
+          Create Post
+        </button>
+      </form>
+    </div>
+
+
+  </div>
+</section>

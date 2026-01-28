@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{{subject}}</title>
+  <style type="text/css">
+    body {
+      font-family: Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .wrapper {
+      width: 100%;
+      table-layout: fixed;
+      background-color: #f4f4f4;
+    }
+    .main {
+      background-color: #ffffff;
+      margin: 0 auto;
+      width: 100%;
+      max-width: 600px;
+      border: 1px solid #e0e0e0;
+    }
+    .header {
+      background-color: yellow;
+      padding: 20px;
+      text-align: center;
+    }
+    .header h1 {
+      color: #333;
+      margin: 0;
+      font-size: 24px;
+    }
+    .content-area {
+      padding: 30px;
+    }
+    .content-area p {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 0 15px 0;
+    }
+    .info-section {
+      padding-top: 10px;
+      border-top: 1px solid #e0e0e0;
+      margin-top: 20px;
+    }
+    .info-section p {
+      margin: 0 0 5px 0;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .info-section span {
+      color: #2196F3;
+    }
+    .footer {
+      background-color: white;
+      color: black;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .footer p {
+      margin: 0;
+    }
+  </style>
+</head>
+<body class="wrapper">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="wrapper">
+  <tr>
+    <td>
+      <table class="main" align="center" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="header">
+            <h1>{{subject}}</h1>
+          </td>
+        </tr>
+        <tr>
+          <td class="content-area">
+            <p>{{message}}</p>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" class="info-section">
+              <tr>
+                <td>
+                  <p><span>USERNAME:</span> {{username}}</p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p><span>PHONE:</span> {{phone}}</p>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <p><span>FROM:</span> {{email}}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+
+          <td class="footer">
+            <img style="width: 60px; height: 60px; border-radius: 50%" src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-1/482360102_1009743364545495_5572804419992441822_n.jpg?stp=c159.159.1730.1730a_dst-jpg_s200x200_tt6&_nc_cat=101&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=3pQARu-aNhYQ7kNvwE7Fyvt&_nc_oc=Adkr-AIT8C2bFa5lKnK0NkrnQgrdKZjCCvw5_9lF4Mk4uYW_UC0yWR7HzfWmbk0JSDk&_nc_zt=24&_nc_ht=scontent.fevn1-1.fna&_nc_gid=PaiYmfiQLO0weE85igevzw&oh=00_AfbLEs50rUKk3TuZMAgRQNTFVKg0H9ZUWjSzurjv8_G3xw&oe=68E0544C" alt=""/>
+
+            <p>&copy; [Your Company Name] {{year}}. All Rights Reserved.</p>
+            <p>123 Main Street, City, State, ZIP</p>
+          </td>
+
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<section id="schedules-content">
+  <header class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-bold text-gray-900">Schedules Management</h2>
+  </header>
+
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+    <table class="min-w-full border border-gray-200 rounded-xl overflow-hidden">
+      <!-- Table Head -->
+      <thead class="bg-gray-100 text-gray-700 text-sm uppercase tracking-wider">
+      <tr>
+        <th class="px-4 py-3 text-left">ScheduleID</th>
+        <th class="px-4 py-3 text-left">Students</th>
+        <th class="px-4 py-3 text-left">Trainers</th>
+        <th class="px-4 py-3 text-left">Title</th>
+        <th class="px-4 py-3 text-left">Dates</th>
+        <th class="px-4 py-3 text-left">Color</th>
+        <th class="px-4 py-3 text-left">Actions</th>
+      </tr>
+      </thead>
+
+      <!-- Table Body -->
+      <tbody class="divide-y divide-gray-200 bg-white">
+      {{#each schedules}}
+        <tr class="hover:bg-gray-50 transition">
+          <td class="px-4 py-3 align-top">
+            {{this.id}}
+          </td>
+
+          <!-- Students -->
+          <td class="px-4 py-3 align-top">
+            <ul class="space-y-2 max-h-32 overflow-y-auto pr-1">
+              {{#each students}}
+                <li class="flex items-center space-x-2">
+                  <img src="{{image}}" alt="{{fullName}}" class="h-8 w-8 rounded-full object-cover border">
+                  <span class="text-sm font-medium text-gray-800">{{fullName}}</span>
+                </li>
+              {{/each}}
+            </ul>
+          </td>
+
+          <!-- Trainers -->
+          <td class="px-4 py-3 align-top">
+            <ul class="space-y-2 max-h-32 overflow-y-auto pr-1">
+              {{#each trainers}}
+                <li class="flex items-center space-x-2">
+                  <img src="{{image}}" alt="{{fullName}}" class="h-8 w-8 rounded-full object-cover border">
+                  <span class="text-sm font-medium text-gray-800">{{fullName}}</span>
+                  <span class="text-xs text-gray-500">({{role}})</span>
+                </li>
+              {{/each}}
+            </ul>
+          </td>
+
+          <!-- Title -->
+          <td class="px-4 py-3 font-semibold text-gray-900">{{title}}</td>
+
+          <!-- Dates -->
+          <td class="px-4 py-3 text-gray-700 text-sm whitespace-nowrap">
+            {{formatDate startDate "MMM D, YYYY"}} → {{formatDate endDate "MMM D, YYYY"}}
+          </td>
+
+          <!-- Color -->
+          <td class="px-4 py-3">
+            <span class="px-3 py-1 rounded-lg text-white text-xs font-semibold shadow-sm"
+                  style="background-color: {{color}};">
+              {{color}}
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td class="px-4 py-3 space-x-2">
+            <button data-id="{{id}}" data-type="schedules"
+                    class="edit-btn px-3 py-1 bg-blue-500 text-white text-sm rounded-lg shadow hover:bg-blue-600 transition">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button data-id="{{id}}" data-type="schedules"
+                    class="delete-btn px-3 py-1 bg-red-500 text-white text-sm rounded-lg shadow hover:bg-red-600 transition">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-10 bg-gray-50 p-6 rounded-xl shadow-md">
+    <h3 class="text-xl font-bold mb-6 text-gray-800">Add / Edit Schedule</h3>
+
+    <form id="scheduleForm" action="/schedules" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Title -->
+      <div class="col-span-2">
+        <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+        <input type="text" id="title" name="title" placeholder="Schedule Title" required
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+      </div>
+
+      <!-- Start Date -->
+      <div>
+        <label for="startDate" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+        <input type="date" id="startDate" name="startDate" required
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+      </div>
+
+      <!-- End Date -->
+      <div>
+        <label for="endDate" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+        <input type="date" id="endDate" name="endDate" required
+               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+      </div>
+
+
+      <!-- Students -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Students</label>
+        <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+          {{#each students}}
+            <label class="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded p-1">
+              <input type="checkbox" name="studentIds" value="{{id}}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded">
+              <img src="{{image}}" alt="{{fullName}}" class="h-8 w-8 rounded-full object-cover border">
+              <span class="text-sm text-gray-800">{{fullName}}</span>
+            </label>
+          {{/each}}
+        </div>
+      </div>
+
+      <!-- Trainers -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Trainers</label>
+        <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-3">
+          {{#each trainers}}
+            <label class="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded p-1">
+              <input type="checkbox" name="trainerIds" value="{{id}}" class="h-4 w-4 text-indigo-600 border-gray-300 rounded">
+              <img src="{{image}}" alt="{{fullName}}" class="h-8 w-8 rounded-full object-cover border">
+              <span class="text-sm text-gray-800">{{fullName}}</span>
+            </label>
+          {{/each}}
+        </div>
+      </div>
+
+      <!-- Color -->
+      <div>
+        <label for="color" class="block text-sm font-medium text-gray-700 mb-1">Color</label>
+        <input type="color" id="color" name="color"
+               class="w-full h-12 px-4 py-3 border border-gray-300 rounded-lg cursor-pointer focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
+      </div>
+
+
+      <!-- Submit -->
+      <div class="col-span-2">
+        <button type="submit"
+                class="w-full py-3 px-4 rounded-full font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 shadow-md">
+          Save Schedule
+        </button>
+      </div>
+    </form>
+  </div>
+
+</section>
