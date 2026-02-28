@@ -4,6 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ title }}</title>
+  {{#if metaDescription}}<meta name="description" content="{{ metaDescription }}">{{/if}}
+  {{#if metaKeywords}}<meta name="keywords" content="{{ metaKeywords }}">{{/if}}
+  {{#if canonicalUrl}}<link rel="canonical" href="{{ canonicalUrl }}">{{/if}}
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ title }}">
+  {{#if metaDescription}}<meta property="og:description" content="{{ metaDescription }}">{{/if}}
+  <meta property="og:type" content="website">
+  {{#if canonicalUrl}}<meta property="og:url" content="{{ canonicalUrl }}">{{/if}}
+  {{#if ogImage}}<meta property="og:image" content="{{ ogImage }}">{{/if}}
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ title }}">
+  {{#if metaDescription}}<meta name="twitter:description" content="{{ metaDescription }}">{{/if}}
+  {{#if ogImage}}<meta name="twitter:image" content="{{ ogImage }}">{{/if}}
+
+  <meta name="robots" content="index, follow">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/index.css">
 </head>

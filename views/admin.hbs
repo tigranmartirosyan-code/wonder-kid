@@ -14,7 +14,9 @@
 
 <main class="flex-1 p-6 md:p-10 overflow-auto">
   {{> dashboard}}
+  {{#if isAdmin}}
   {{> user users=users}}
+  {{/if}}
   {{> student students=students}}
   {{> candidate candidates=candidates}}
   {{> course courses=courses }}
@@ -22,10 +24,21 @@
   {{> blog blogs=blogs }}
   {{> schedule schedules=schedules }}
   {{> analistic}}
+  {{#if isAdmin}}
+  {{> seo seoEntries=seoEntries}}
+  {{> faq faqEntries=faqEntries}}
+  {{> pages pageEntries=pageEntries}}
   {{> setting}}
+  {{/if}}
 </main>
 
 {{> modal}}
+<script>
+  history.pushState(null, '', location.href);
+  window.addEventListener('popstate', function () {
+    history.pushState(null, '', location.href);
+  });
+</script>
 <script src="/javascript/admin.js"></script>
 </body>
 </html>

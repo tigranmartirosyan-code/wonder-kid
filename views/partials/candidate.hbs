@@ -1,72 +1,44 @@
 <section id="candidates-content" class="hidden">
   <header class="flex items-center justify-between mb-8">
     <h2 class="text-3xl font-bold text-gray-900">Candidates Management</h2>
+    {{#if isAdmin}}
+    <button class="add-btn flex items-center px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+            data-type="candidates">
+      <i class="fas fa-plus mr-2"></i> Add Candidate
+    </button>
+    {{/if}}
   </header>
-  <div class="bg-white rounded-xl shadow-md p-6">
-    <div class="mb-12">
-      <h2 class="text-2xl font-bold text-gray-800 mb-4">Candidates</h2>
-      <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
-        <table class="min-w-full rounded-xl overflow-hidden">
-          <thead class="text-gray-700">
-          <tr>
-            <th class="px-4 py-2 rounded-tl-xl text-left">Full Name</th>
-            <th class="px-4 py-2 text-left">Age</th>
-            <th class="px-4 py-2 text-left">Gender</th>
-            <th class="px-4 py-2 text-left">Phones</th>
-            <th class="px-4 py-2 rounded-tr-xl text-left">Actions</th>
-          </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-          {{#each candidates}}
-            <tr>
-              <td class="px-4 py-2">{{fullName}}</td>
-              <td class="px-4 py-2">{{age}}</td>
-              <td class="px-4 py-2">{{gender}}</td>
-              <td class="px-4 py-2">{{phones}}</td>
-              <td class="px-4 py-2">
-                <button data-id="{{id}}" data-type="candidates"
-                        class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"><i class="fas fa-edit"></i>
-                </button>
-                <button data-id="{{id}}" data-type="candidates"
-                        class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"><i class="fas fa-trash"></i>
-                </button>
-              </td>
-            </tr>
-          {{/each}}
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="mt-8 bg-gray-50 p-6 rounded-xl shadow-md">
-      <h3 class="text-xl font-bold mb-4 text-gray-800">Add / Edit Candidate</h3>
-      <form id="candidateForm" action="/candidates" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="md:col-span-1">
-          <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-          <input type="text" id="fullName" name="fullName" placeholder="Full Name" required class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
-        </div>
-        <div class="md:col-span-1">
-          <label for="age" class="block text-sm font-medium text-gray-700 mb-1">Age</label>
-          <input type="number" id="age" name="age" placeholder="Age" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
-        </div>
-        <div class="md:col-span-1">
-          <label for="gender" class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
-          <select id="gender" name="gender" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="md:col-span-1">
-          <label for="phones" class="block text-sm font-medium text-gray-700 mb-1">Phones (comma separated)</label>
-          <input type="text" id="phones" name="phones" placeholder="Phones (comma separated)" class="form-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition duration-300">
-        </div>
-
-        <button type="submit"
-                class="col-span-2 py-3 px-4 rounded-full font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 shadow-md">
-          Save Candidate
-        </button>
-      </form>
-    </div>
-
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+    <table class="min-w-full rounded-xl overflow-hidden">
+      <thead class="text-gray-700">
+      <tr>
+        <th class="px-4 py-2 rounded-tl-xl text-left">Full Name</th>
+        <th class="px-4 py-2 text-left">Age</th>
+        <th class="px-4 py-2 text-left">Gender</th>
+        <th class="px-4 py-2 text-left">Phones</th>
+        {{#if isAdmin}}<th class="px-4 py-2 rounded-tr-xl text-left">Actions</th>{{/if}}
+      </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+      {{#each candidates}}
+        <tr>
+          <td class="px-4 py-2">{{fullName}}</td>
+          <td class="px-4 py-2">{{age}}</td>
+          <td class="px-4 py-2">{{gender}}</td>
+          <td class="px-4 py-2">{{phones}}</td>
+          {{#if ../isAdmin}}
+          <td class="px-4 py-2">
+            <button data-id="{{id}}" data-type="candidates"
+                    class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"><i class="fas fa-edit"></i>
+            </button>
+            <button data-id="{{id}}" data-type="candidates"
+                    class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"><i class="fas fa-trash"></i>
+            </button>
+          </td>
+          {{/if}}
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
   </div>
 </section>

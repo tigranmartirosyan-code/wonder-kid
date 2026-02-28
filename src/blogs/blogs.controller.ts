@@ -8,6 +8,6 @@ import { BaseController } from '../base.controller';
 @Controller('blogs')
 export class BlogsController extends BaseController<CreateBlogDto, UpdateBlogDto, BlogsService> {
   constructor(blogsService: BlogsService) {
-    super(blogsService, '/admin'); // redirect after create/update
+    super(blogsService);
   }
 }

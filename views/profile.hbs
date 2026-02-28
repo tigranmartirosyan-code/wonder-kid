@@ -168,6 +168,15 @@
       </li>
     </ul>
 
+    <div class="w-full mt-auto pt-6">
+      <button id="logout-btn"
+              class="w-full flex items-center justify-center space-x-2 px-4 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition-colors duration-200 shadow-md">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        <span>Logout</span>
+      </button>
+    </div>
 
   </div>
 
@@ -333,6 +342,11 @@
 </div>
 
 <script>
+  history.pushState(null, '', location.href);
+  window.addEventListener('popstate', function () {
+    history.pushState(null, '', location.href);
+  });
+
   document.addEventListener('DOMContentLoaded', () => {
     const tabs = document.querySelectorAll('#tab-nav a');
     const contents = document.querySelectorAll('.tab-content');
@@ -423,8 +437,23 @@
     });
   });
 
-
-
+  // Logout handler
+  document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          const res = await fetch('/auth/logout', { method: 'POST' });
+          const data = await res.json();
+          if (data.success) {
+            window.location.href = '/login';
+          }
+        } catch (err) {
+          window.location.href = '/login';
+        }
+      });
+    }
+  });
 
 </script>
 </body>

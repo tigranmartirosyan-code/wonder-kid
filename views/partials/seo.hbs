@@ -1,0 +1,44 @@
+<section id="seo-content" class="hidden">
+  <header class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-bold text-gray-900">SEO Management</h2>
+    <button class="add-btn flex items-center px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+            data-type="seo">
+      <i class="fas fa-plus mr-2"></i> Add SEO Entry
+    </button>
+  </header>
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+    <table class="min-w-full rounded-xl overflow-hidden">
+      <thead class="text-gray-700">
+      <tr>
+        <th class="px-4 py-2 rounded-tl-xl text-left">Page Name</th>
+        <th class="px-4 py-2 text-left">Meta Title</th>
+        <th class="px-4 py-2 text-left">Meta Description</th>
+        <th class="px-4 py-2 text-left">Keywords</th>
+        <th class="px-4 py-2 text-left">Canonical URL</th>
+        <th class="px-4 py-2 rounded-tr-xl text-left">Actions</th>
+      </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+      {{#each seoEntries}}
+        <tr>
+          <td class="px-4 py-2 font-semibold">{{pageName}}</td>
+          <td class="px-4 py-2">{{metaTitle}}</td>
+          <td class="px-4 py-2 truncate max-w-xs">{{metaDescription}}</td>
+          <td class="px-4 py-2 truncate max-w-xs">{{metaKeywords}}</td>
+          <td class="px-4 py-2 truncate max-w-xs">{{canonicalUrl}}</td>
+          <td class="px-4 py-2">
+            <button data-id="{{id}}" data-type="seo"
+                    class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button data-id="{{id}}" data-type="seo"
+                    class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,41 +1,21 @@
-function attachUpdateHandler(formId, endpoint) {
-  const form = document.getElementById(formId);
-  if (!form) return;
+// Logout handler
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch('/auth/logout', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+          window.location.href = '/login';
+        }
+      } catch (err) {
+        window.location.href = '/login';
+      }
+    });
+  }
+});
 
-  form.addEventListener("submit", async (e) => {
-    const id = form.dataset.id; // set when modal opens
-    if (!id) {
-      console.error(`❌ No ID found for form ${formId}`);
-      return;
-    }
-
-    const formData = new FormData(form);
-    const body = Object.fromEntries(formData.entries());
-
-
-
-    try {
-      const res = await fetch(`/${endpoint}/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-      window.location.reload(); // refresh page after update
-    } catch (err) {
-      console.error(`❌ Failed to update ${endpoint}:`, err);
-    }
-  });
-}
-
-attachUpdateHandler("blog-form", "blogs");
-attachUpdateHandler("candidate-form", "candidates");
-attachUpdateHandler("course-form", "courses");
-attachUpdateHandler("student-form", "students");
-attachUpdateHandler("trainer-form", "trainers");
-attachUpdateHandler("user-form", "users");
-attachUpdateHandler("transaction-form", "transactions");
 
 // Mock data to start with
 const mockData = [
@@ -82,6 +62,9 @@ const contentSections = {
   schedules: document.getElementById('schedules-content'),
   analytics: document.getElementById('analytics-content'),
   settings: document.getElementById('settings-content'),
+  seo: document.getElementById('seo-content'),
+  faq: document.getElementById('faq-content'),
+  pages: document.getElementById('pages-content'),
 };
 
 // --- Data Management and Rendering ---
@@ -334,7 +317,7 @@ function drawLineChart() {
 // --- Single Page Application (SPA) Navigation Logic ---
 function showContent(page) {
   // Hide all content sections
-  Object.values(contentSections).forEach(section => section.classList.add('hidden'));
+  Object.values(contentSections).forEach(section => { if (section) section.classList.add('hidden'); });
 
   // Show the selected content section
   const targetSection = contentSections[page];
@@ -430,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const type = form.dataset.type; // users, students, courses, etc.
       const id = form.dataset.id || null; // for PUT
       const url = id ? `/${type}/${id}` : `/${type}`;
-      const method = id ? 'PUT' : 'POST';
+      const method = id ? 'PATCH' : 'POST';
 
       // Collect form data
       const formData = new FormData(form);
@@ -459,28 +442,88 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // Initialize all forms
-  document.querySelectorAll('form[data-type]').forEach(form => handleFormSubmit(form));
+  // Initialize all forms except transaction-form (it has its own localStorage handler)
+  document.querySelectorAll('form[data-type]').forEach(form => {
+    if (form.id !== 'transaction-form') handleFormSubmit(form);
+  });
+
+  // Mappings for non-standard plural endpoints
+  const formIdOverrides = { seo: 'seo-form', faq: 'faq-form' };
+  const entityNameOverrides = { seo: 'SEO', faq: 'FAQ' };
+  function getFormId(type) {
+    return formIdOverrides[type] || (type.slice(0, -1) + '-form');
+  }
+  function getEntityName(type) {
+    return entityNameOverrides[type] || (type.charAt(0).toUpperCase() + type.slice(1, -1));
+  }
+
+  // Add button functionality - opens modal with empty form for creating
+  document.querySelectorAll('.add-btn[data-type]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.type; // e.g. "users", "students"
+      const formId = getFormId(type);
+
+      // Hide all forms in modal
+      document.querySelectorAll('#transaction-modal form').forEach(f => f.classList.add('hidden'));
+
+      // Show the correct form
+      const form = document.getElementById(formId);
+      if (form) {
+        form.reset();
+        delete form.dataset.id; // no id = POST (create)
+        form.classList.remove('hidden');
+      }
+
+      // Set modal title and show
+      const entityName = getEntityName(type);
+      modalTitle.textContent = `Add New ${entityName}`;
+      modal.classList.remove('hidden');
+    });
+  });
 
   // Edit button functionality
-  document.querySelectorAll('.edit-btn').forEach(btn => {
+  document.querySelectorAll('.edit-btn[data-type]').forEach(btn => {
     btn.addEventListener('click', async () => {
-
       const id = btn.dataset.id;
       const type = btn.dataset.type; // e.g. blogs, candidates
 
       // hide all forms
-      document.querySelectorAll("#transaction-modal form").forEach(f => f.classList.add("hidden"));
+      document.querySelectorAll('#transaction-modal form').forEach(f => f.classList.add('hidden'));
 
       // show the correct form
-      const form = document.getElementById(`${type.slice(0, -1)}-form`);
+      const formId = getFormId(type);
+      const form = document.getElementById(formId);
       if (form) {
+        form.reset();
         form.dataset.id = id; // set id for PATCH
-        form.classList.remove("hidden");
+
+        // Fetch existing data and populate form
+        try {
+          const res = await fetch(`/${type}/${id}`);
+          if (res.ok) {
+            const data = await res.json();
+            // Populate form fields with existing data
+            Object.keys(data).forEach(key => {
+              const input = form.querySelector(`[name="${key}"]`);
+              if (input) {
+                if (input.type === 'date' && data[key]) {
+                  input.value = data[key].split('T')[0];
+                } else {
+                  input.value = data[key] || '';
+                }
+              }
+            });
+          }
+        } catch (err) {
+          console.error('Failed to fetch entity data:', err);
+        }
+
+        form.classList.remove('hidden');
       }
 
-      modalTitle.textContent = `${id}`;
-      modal.classList.remove("hidden");
+      const entityName = getEntityName(type);
+      modalTitle.textContent = `Edit ${entityName}`;
+      modal.classList.remove('hidden');
     });
   });
 

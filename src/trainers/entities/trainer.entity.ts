@@ -16,6 +16,12 @@ export class Trainer {
   email: string;
 
   @Column({ type: 'text', nullable: true })
+  password: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   @Column({ type: 'text', nullable: true })

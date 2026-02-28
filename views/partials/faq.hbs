@@ -1,0 +1,42 @@
+<section id="faq-content" class="hidden">
+  <header class="flex items-center justify-between mb-8">
+    <h2 class="text-3xl font-bold text-gray-900">FAQ Management</h2>
+    <button class="add-btn flex items-center px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+            data-type="faq">
+      <i class="fas fa-plus mr-2"></i> Add FAQ
+    </button>
+  </header>
+  <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
+    <table class="min-w-full rounded-xl overflow-hidden">
+      <thead class="text-gray-700">
+      <tr>
+        <th class="px-4 py-2 rounded-tl-xl text-left">Question</th>
+        <th class="px-4 py-2 text-left">Answer</th>
+        <th class="px-4 py-2 text-left">Category</th>
+        <th class="px-4 py-2 text-left">Order</th>
+        <th class="px-4 py-2 rounded-tr-xl text-left">Actions</th>
+      </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+      {{#each faqEntries}}
+        <tr>
+          <td class="px-4 py-2 font-semibold max-w-xs truncate">{{question}}</td>
+          <td class="px-4 py-2 truncate max-w-sm">{{answer}}</td>
+          <td class="px-4 py-2">{{category}}</td>
+          <td class="px-4 py-2">{{sortOrder}}</td>
+          <td class="px-4 py-2">
+            <button data-id="{{id}}" data-type="faq"
+                    class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button data-id="{{id}}" data-type="faq"
+                    class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,5 +1,5 @@
 import {
-  Body, Delete, Get, Param, Patch, Post, Redirect
+  Body, Delete, Get, Param, Patch, Post
 } from '@nestjs/common';
 
 // Generic base controller
@@ -14,13 +14,11 @@ export class BaseController<
     remove(id: string): any;
   }
 > {
-  constructor(protected readonly service: TService, private redirectPath?: string) {}
+  constructor(protected readonly service: TService) {}
 
   @Post()
-  @Redirect(`/admin`)
   create(@Body() dto: TCreateDto) {
-    const result = this.service.create(dto);
-    return result;
+    return this.service.create(dto);
   }
 
   @Get()
@@ -34,11 +32,8 @@ export class BaseController<
   }
 
   @Patch(':id')
-  @Redirect('/admin')
   update(@Param('id') id: string, @Body() dto: TUpdateDto) {
-    const result = this.service.update(id, dto);
-    if (this.redirectPath) return { url: this.redirectPath };
-    return result;
+    return this.service.update(id, dto);
   }
 
   @Delete(':id')

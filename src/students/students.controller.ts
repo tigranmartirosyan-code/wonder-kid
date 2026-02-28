@@ -7,6 +7,6 @@ import { BaseController } from '../base.controller';
 @Controller('students')
 export class StudentsController extends BaseController<CreateStudentDto, UpdateStudentDto, StudentsService> {
   constructor(studentsService: StudentsService) {
-    super(studentsService, '/admin'); // redirect after create/update
+    super(studentsService);
   }
 }

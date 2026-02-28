@@ -14,6 +14,9 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 import { AuthModule } from './auth/auth.module';
 import { EmailModule } from './email/EmailModule';
 import { SchedulesModule } from './schedules/schedules.module';
+import { SeoModule } from './seo/seo.module';
+import { FaqModule } from './faq/faq.module';
+import { PagesModule } from './pages/pages.module';
 
 
 
@@ -37,8 +40,10 @@ import { SchedulesModule } from './schedules/schedules.module';
     TrainersModule,
     AuthModule,
     EmailModule,
-    SchedulesModule
-
+    SchedulesModule,
+    SeoModule,
+    FaqModule,
+    PagesModule,
   ],
 
   controllers: [AppController],

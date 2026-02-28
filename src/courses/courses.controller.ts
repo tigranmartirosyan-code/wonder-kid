@@ -8,6 +8,6 @@ import { BaseController } from '../base.controller';
 @Controller('courses')
 export class CoursesController extends BaseController<CreateCourseDto, UpdateCourseDto, CoursesService> {
   constructor(coursesService: CoursesService) {
-    super(coursesService, '/admin'); // redirect after create/update
+    super(coursesService);
   }
 }

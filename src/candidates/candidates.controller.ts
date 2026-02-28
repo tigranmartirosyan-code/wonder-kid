@@ -11,7 +11,7 @@ export class CandidatesController extends BaseController<
   CandidatesService
 > {
   constructor(candidatesService: CandidatesService) {
-    super(candidatesService, '/admin'); // redirect after create/update
+    super(candidatesService);
   }
 
   @Post('register')
