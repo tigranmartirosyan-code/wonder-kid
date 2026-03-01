@@ -244,11 +244,11 @@
     //     "students": []
     //   }
     // ];
-    let schedules;
+    let schedules = [];
 
     async function fetchSchedules() {
       try {
-        const response = await fetch('http://localhost:3000/schedules');
+        const response = await fetch('/schedules');
         if (!response.ok) throw new Error('Network response was not ok');
 
         schedules = await response.json();

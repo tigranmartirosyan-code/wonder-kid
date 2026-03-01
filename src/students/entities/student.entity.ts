@@ -18,6 +18,9 @@ export class Student {
   @Column({ type: 'text', nullable: true })
   password: string;
 
+  @Column({ nullable: true, unique: true })
+  facebookId: string;
+
   @Column()
   age: number;
 

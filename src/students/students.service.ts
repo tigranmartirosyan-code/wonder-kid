@@ -27,4 +27,8 @@ export class StudentsService extends AppService<Student, CreateStudentDto, Updat
   async findByEmail(email: string): Promise<Student | null> {
     return this.studentRepo.findOne({ where: { email } });
   }
+
+  async findByFacebookId(facebookId: string): Promise<Student | null> {
+    return this.studentRepo.findOne({ where: { facebookId } });
+  }
 }

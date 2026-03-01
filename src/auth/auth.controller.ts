@@ -25,48 +25,53 @@ export class AuthController {
     @Res() res: Response,
     @Req() req: Request,
   ) {
-    const { username, password } = body;
-    const secret = process.env.JWT_SECRET || 'mysecret';
+    try {
+      const { username, password } = body;
+      const secret = process.env.JWT_SECRET || 'mysecret';
 
-    // 1. Check users table (admin role)
-    const user = await this.usersService.findByEmail(username);
-    if (user && password === user.password) {
-      const role = user.role || 'admin';
-      const token = jwt.sign(
-        { username, role, userId: user.id },
-        secret,
-        { expiresIn: '1h' },
-      );
-      res.cookie('auth_token', token, { httpOnly: true });
-      return res.json({ success: true, role, message: 'Logged in successfully' });
+      // 1. Check users table (admin role)
+      const user = await this.usersService.findByEmail(username);
+      if (user && password === user.password) {
+        const role = user.role || 'admin';
+        const token = jwt.sign(
+          { username, role, userId: user.id },
+          secret,
+          { expiresIn: '1h' },
+        );
+        res.cookie('auth_token', token, { httpOnly: true, sameSite: 'lax' });
+        return res.json({ success: true, role, message: 'Logged in successfully' });
+      }
+
+      // 2. Check trainers table
+      const trainer = await this.trainersService.findByEmail(username);
+      if (trainer && password === (trainer as any).password) {
+        const token = jwt.sign(
+          { username, role: 'trainer', trainerId: trainer.id },
+          secret,
+          { expiresIn: '1h' },
+        );
+        res.cookie('auth_token', token, { httpOnly: true, sameSite: 'lax' });
+        return res.json({ success: true, role: 'trainer', message: 'Logged in successfully' });
+      }
+
+      // 3. Check students table
+      const student = await this.studentsService.findByEmail(username);
+      if (student && password === student.password) {
+        const token = jwt.sign(
+          { username, role: 'student', studentId: student.id },
+          secret,
+          { expiresIn: '1h' },
+        );
+        res.cookie('auth_token', token, { httpOnly: true, sameSite: 'lax' });
+        return res.json({ success: true, role: 'student', message: 'Logged in successfully' });
+      }
+
+      // No match
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    } catch (error) {
+      console.error('Login error:', error);
+      return res.status(500).json({ success: false, message: 'Server error during login' });
     }
-
-    // 2. Check trainers table
-    const trainer = await this.trainersService.findByEmail(username);
-    if (trainer && password === (trainer as any).password) {
-      const token = jwt.sign(
-        { username, role: 'trainer', trainerId: trainer.id },
-        secret,
-        { expiresIn: '1h' },
-      );
-      res.cookie('auth_token', token, { httpOnly: true });
-      return res.json({ success: true, role: 'trainer', message: 'Logged in successfully' });
-    }
-
-    // 3. Check students table
-    const student = await this.studentsService.findByEmail(username);
-    if (student && password === student.password) {
-      const token = jwt.sign(
-        { username, role: 'student', studentId: student.id },
-        secret,
-        { expiresIn: '1h' },
-      );
-      res.cookie('auth_token', token, { httpOnly: true });
-      return res.json({ success: true, role: 'student', message: 'Logged in successfully' });
-    }
-
-    // No match
-    return res.status(401).json({ success: false, message: 'Invalid credentials' });
   }
 
   @Post('register')
