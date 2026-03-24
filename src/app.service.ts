@@ -3,7 +3,7 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 
 interface ObjectLiteral {}
 
@@ -35,6 +35,84 @@ export abstract class AppService<
         'Failed to fetch entities: ' + error.message,
       );
     }
+  }
+
+  // Find paginated with search and filters
+  async findPaginated(options: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    searchFields?: string[];
+    filters?: Record<string, string>;
+    relations?: string[];
+    filterFields?: string[];
+  }): Promise<{
+    data: T[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    filterOptions: Record<string, string[]>;
+  }> {
+    const page = Math.max(1, options.page || 1);
+    const limit = Math.min(100, Math.max(1, options.limit || 10));
+    const skip = (page - 1) * limit;
+
+    const qb = this.repository.createQueryBuilder('entity');
+
+    if (options.relations?.length) {
+      options.relations.forEach(rel => {
+        qb.leftJoinAndSelect(`entity.${rel}`, rel);
+      });
+    }
+
+    if (options.search && options.searchFields?.length) {
+      const searchFields = options.searchFields;
+      qb.andWhere(
+        new Brackets(wb => {
+          searchFields.forEach((field, i) => {
+            if (i === 0) {
+              wb.where(`entity.${field} ILIKE :search`, { search: `%${options.search}%` });
+            } else {
+              wb.orWhere(`entity.${field} ILIKE :search`, { search: `%${options.search}%` });
+            }
+          });
+        }),
+      );
+    }
+
+    if (options.filters) {
+      Object.entries(options.filters).forEach(([key, value]) => {
+        if (value) {
+          qb.andWhere(`CAST(entity.${key} AS TEXT) = :filter_${key}`, { [`filter_${key}`]: value });
+        }
+      });
+    }
+
+    const [data, total] = await qb.skip(skip).take(limit).getManyAndCount();
+
+    const filterOptions: Record<string, string[]> = {};
+    if (options.filterFields?.length) {
+      for (const field of options.filterFields) {
+        const result = await this.repository
+          .createQueryBuilder('entity')
+          .select(`DISTINCT CAST(entity.${field} AS TEXT)`, 'value')
+          .where(`entity.${field} IS NOT NULL`)
+          .andWhere(`CAST(entity.${field} AS TEXT) != ''`)
+          .orderBy('value', 'ASC')
+          .getRawMany();
+        filterOptions[field] = result.map(r => r.value).filter(Boolean);
+      }
+    }
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+      filterOptions,
+    };
   }
 
   // Find one
@@ -90,4 +168,3 @@ export abstract class AppService<
     }
   }
 }
-

@@ -10,11 +10,14 @@ set -e
 # ============================================
 
 # ---------- YOUR CREDENTIALS ----------
-AWS_ACCOUNT_ID="CHANGE_ME"
+AWS_ACCOUNT_ID="191880710999"
 AWS_REGION="us-east-1"
 AWS_ACCESS_KEY="CHANGE_ME"
 AWS_SECRET_KEY="CHANGE_ME"
 DB_PASSWORD="postgres"
+FACEBOOK_APP_ID=""          # Your Facebook App ID from Meta Developer Dashboard
+FACEBOOK_APP_SECRET=""      # Your Facebook App Secret from Meta Developer Dashboard
+DOMAIN_NAME=""  # Set your domain (e.g., "wonderkid.example.com") for Let's Encrypt SSL. Leave empty to use self-signed cert with IP.
 EC2_INSTANCE_TYPE="t2.micro"
 AMI_ID="ami-0c7217cdde317cfec"  # Ubuntu 22.04 us-east-1
 KEY_NAME="wonder-kid-key"
@@ -145,7 +148,10 @@ sudo npm install -g pm2
 # Install Nginx
 sudo apt install -y nginx
 
-# Configure Nginx reverse proxy
+# Install Certbot for Let's Encrypt SSL
+sudo apt install -y certbot python3-certbot-nginx
+
+# Configure Nginx reverse proxy (HTTP only initially)
 sudo tee /etc/nginx/sites-available/wonder-kid > /dev/null << 'NGINX'
 server {
     listen 80;
@@ -190,6 +196,9 @@ DATABASE_NAME=test
 DATABASE_USER=postgres
 DATABASE_PASSWORD=postgres
 JWT_SECRET=wonder-kid-secret-2026
+NODE_ENV=production
+FACEBOOK_APP_ID=${FACEBOOK_APP_ID:-}
+FACEBOOK_APP_SECRET=${FACEBOOK_APP_SECRET:-}
 ENV
 
 # Install dependencies and build
@@ -205,11 +214,89 @@ pm2 startup systemd -u ubuntu --hp /home/ubuntu | tail -1 | sudo bash
 echo "App deployed and running!"
 APP_SCRIPT
 
+# Step 12: Setup SSL/HTTPS
+if [ -n "$DOMAIN_NAME" ]; then
+  log "Setting up Let's Encrypt SSL for $DOMAIN_NAME..."
+  ssh -i "${KEY_NAME}.pem" -o StrictHostKeyChecking=no ubuntu@"$EC2_IP" bash -s "$DOMAIN_NAME" << 'SSL_SCRIPT'
+set -e
+DOMAIN=$1
+
+# Update Nginx server_name to use the domain
+sudo sed -i "s/server_name _;/server_name $DOMAIN;/" /etc/nginx/sites-available/wonder-kid
+sudo nginx -t && sudo systemctl reload nginx
+
+# Obtain Let's Encrypt certificate
+sudo certbot --nginx -d "$DOMAIN" --non-interactive --agree-tos --register-unsafely-without-email --redirect
+
+echo "SSL certificate installed for $DOMAIN"
+SSL_SCRIPT
+  APP_URL="https://$DOMAIN_NAME"
+  log "HTTPS configured with Let's Encrypt for $DOMAIN_NAME"
+else
+  log "Setting up self-signed SSL certificate..."
+  ssh -i "${KEY_NAME}.pem" -o StrictHostKeyChecking=no ubuntu@"$EC2_IP" bash -s "$EC2_IP" << 'SELFSSL_SCRIPT'
+set -e
+SERVER_IP=$1
+
+# Generate self-signed certificate
+sudo mkdir -p /etc/nginx/ssl
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout /etc/nginx/ssl/selfsigned.key \
+  -out /etc/nginx/ssl/selfsigned.crt \
+  -subj "/C=US/ST=State/L=City/O=WonderKid/CN=$SERVER_IP"
+
+# Update Nginx with HTTPS config
+sudo tee /etc/nginx/sites-available/wonder-kid > /dev/null << NGINX
+server {
+    listen 80;
+    server_name _;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name _;
+
+    ssl_certificate /etc/nginx/ssl/selfsigned.crt;
+    ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_cache_bypass \$http_upgrade;
+    }
+}
+NGINX
+
+sudo nginx -t && sudo systemctl restart nginx
+echo "Self-signed SSL configured"
+SELFSSL_SCRIPT
+  APP_URL="https://$EC2_IP"
+  log "HTTPS configured with self-signed certificate (browser will show warning)"
+fi
+
+# Update .env with the callback URL
+ssh -i "${KEY_NAME}.pem" -o StrictHostKeyChecking=no ubuntu@"$EC2_IP" bash -s "$APP_URL" << 'ENV_SCRIPT'
+cd ~/wonder-kid
+echo "FACEBOOK_CALLBACK_URL=${1}/auth/facebook/callback" >> .env
+cd ~/wonder-kid && pm2 restart wonder-kid
+ENV_SCRIPT
+
 log "============================================"
 log "  DEPLOYMENT COMPLETE!"
 log "============================================"
 log "  EC2 IP:       $EC2_IP"
-log "  App URL:      http://$EC2_IP"
+log "  App URL:      $APP_URL"
 log "  SSH:          ssh -i ${KEY_NAME}.pem ubuntu@$EC2_IP"
 log "  Console:      https://${AWS_ACCOUNT_ID}.signin.aws.amazon.com/console"
 log "============================================"

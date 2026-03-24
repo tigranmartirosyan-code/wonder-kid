@@ -314,8 +314,429 @@ function drawLineChart() {
   }
 }
 
+// --- Helper: escape HTML to prevent XSS ---
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// --- Table column configs for each model ---
+const TABLE_CONFIGS = {
+  users: {
+    tableId: 'users-table',
+    endpoint: '/users',
+    type: 'users',
+    columns: [
+      { key: 'fullName' },
+      { key: 'email' },
+      { key: 'phone' },
+      { key: 'password' },
+      { key: 'role' },
+      { key: 'work_type' },
+    ],
+  },
+  students: {
+    tableId: 'students-table',
+    endpoint: '/students',
+    type: 'students',
+    columns: [
+      { key: 'image', render: (v) => `<img src="${escapeHtml(v)}" alt="Student" class="rounded-full w-16 h-16 object-cover">` },
+      { key: 'fullName' },
+      { key: 'email' },
+      { key: 'age' },
+      { key: 'groupName' },
+      { key: 'phones' },
+      { key: 'schedules', render: (v) => escapeHtml((v || []).map(s => s.title).join(', ')) },
+    ],
+  },
+  candidates: {
+    tableId: 'candidates-table',
+    endpoint: '/candidates',
+    type: 'candidates',
+    columns: [
+      { key: 'fullName' },
+      { key: 'age' },
+      { key: 'gender' },
+      { key: 'phones' },
+    ],
+  },
+  courses: {
+    tableId: 'courses-table',
+    endpoint: '/courses',
+    type: 'courses',
+    columns: [
+      { key: 'image', render: (v, row) => `<img src="${escapeHtml(v)}" alt="${escapeHtml(row.title)}" class="h-12 w-12 rounded-lg object-cover">` },
+      { key: 'title', className: 'font-semibold' },
+      { key: 'duration' },
+      { key: 'price' },
+    ],
+  },
+  trainers: {
+    tableId: 'trainers-table',
+    endpoint: '/trainers',
+    type: 'trainers',
+    columns: [
+      { key: 'image', render: (v, row) => `<img src="${escapeHtml(v)}" alt="${escapeHtml(row.fullName)}" class="h-12 w-12 rounded-lg object-cover">` },
+      { key: 'fullName', className: 'font-semibold' },
+      { key: 'role' },
+      { key: 'phone' },
+      { key: 'description', className: 'truncate max-w-xs' },
+      { key: 'schedules', render: (v) => escapeHtml((v || []).map(s => s.title).join(', ')) },
+    ],
+  },
+  blogs: {
+    tableId: 'blogs-table',
+    endpoint: '/blogs',
+    type: 'blogs',
+    columns: [
+      { key: 'image', render: (v, row) => `<img src="${escapeHtml(v)}" alt="${escapeHtml(row.title)}" class="h-12 w-20 object-cover rounded-lg">` },
+      { key: 'title', className: 'font-semibold' },
+      { key: 'description', className: 'truncate max-w-sm' },
+      { key: 'category' },
+    ],
+  },
+  schedules: {
+    tableId: 'schedules-table',
+    endpoint: '/schedules',
+    type: 'schedules',
+    columns: [
+      {
+        key: 'students',
+        className: 'align-top',
+        render: (v) => {
+          if (!v || !v.length) return '';
+          return `<ul class="space-y-2 max-h-32 overflow-y-auto pr-1">${v.map(s =>
+            `<li class="flex items-center space-x-2">
+              <img src="${escapeHtml(s.image)}" alt="${escapeHtml(s.fullName)}" class="h-8 w-8 rounded-full object-cover border">
+              <span class="text-sm font-medium text-gray-800">${escapeHtml(s.fullName)}</span>
+            </li>`
+          ).join('')}</ul>`;
+        },
+      },
+      {
+        key: 'trainers',
+        className: 'align-top',
+        render: (v) => {
+          if (!v || !v.length) return '';
+          return `<ul class="space-y-2 max-h-32 overflow-y-auto pr-1">${v.map(t =>
+            `<li class="flex items-center space-x-2">
+              <img src="${escapeHtml(t.image)}" alt="${escapeHtml(t.fullName)}" class="h-8 w-8 rounded-full object-cover border">
+              <span class="text-sm font-medium text-gray-800">${escapeHtml(t.fullName)}</span>
+              <span class="text-xs text-gray-500">(${escapeHtml(t.role)})</span>
+            </li>`
+          ).join('')}</ul>`;
+        },
+      },
+      { key: 'title', className: 'font-semibold' },
+      {
+        key: 'startDate',
+        className: 'text-sm whitespace-nowrap',
+        render: (v, row) => {
+          const fmt = (d) => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+          return `${escapeHtml(fmt(v))} &rarr; ${escapeHtml(fmt(row.endDate))}`;
+        },
+      },
+      {
+        key: 'color',
+        render: (v) => `<span class="px-3 py-1 rounded-lg text-white text-xs font-semibold shadow-sm" style="background-color: ${escapeHtml(v)};">${escapeHtml(v)}</span>`,
+      },
+    ],
+  },
+  seo: {
+    tableId: 'seo-table',
+    endpoint: '/seo',
+    type: 'seo',
+    columns: [
+      { key: 'pageName', className: 'font-semibold' },
+      { key: 'metaTitle' },
+      { key: 'metaDescription', className: 'truncate max-w-xs' },
+      { key: 'metaKeywords', className: 'truncate max-w-xs' },
+      { key: 'canonicalUrl', className: 'truncate max-w-xs' },
+    ],
+  },
+  faq: {
+    tableId: 'faq-table',
+    endpoint: '/faq',
+    type: 'faq',
+    columns: [
+      { key: 'question', className: 'font-semibold max-w-xs truncate' },
+      { key: 'answer', className: 'truncate max-w-sm' },
+      { key: 'category' },
+      { key: 'sortOrder' },
+    ],
+  },
+  pages: {
+    tableId: 'pages-table',
+    endpoint: '/pages',
+    type: 'pages',
+    columns: [
+      { key: 'title', className: 'font-semibold' },
+      { key: 'slug' },
+      { key: 'content', className: 'truncate max-w-sm' },
+      {
+        key: 'status',
+        render: (v) => {
+          const cls = v === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800';
+          return `<span class="px-2 py-1 text-xs font-semibold rounded-full ${cls}">${escapeHtml(v)}</span>`;
+        },
+      },
+    ],
+  },
+};
+
+// --- URL Params Helper ---
+let activeSection = 'dashboard';
+
+function updateUrlParams() {
+  const params = new URLSearchParams();
+  params.set('page', activeSection);
+
+  const tm = tableManagers[activeSection];
+  if (tm && tm.table) {
+    if (tm.searchTerm) params.set('search', tm.searchTerm);
+    // Collect all active filters
+    Object.entries(tm.filters).forEach(([key, value]) => {
+      if (value) params.set('filter_' + key, value);
+    });
+    if (tm.currentPage > 1) params.set('p', tm.currentPage.toString());
+    if (tm.pageSize !== 10) params.set('limit', tm.pageSize.toString());
+  }
+
+  const newUrl = `${window.location.pathname}?${params}`;
+  history.replaceState(null, '', newUrl);
+}
+
+function getUrlParams() {
+  return new URLSearchParams(window.location.search);
+}
+
+// --- Server-side Table Manager ---
+const tableManagers = {};
+
+class TableManager {
+  constructor(config) {
+    this.config = config;
+    this.table = document.getElementById(config.tableId);
+    if (!this.table) return;
+
+    this.tbody = this.table.querySelector('tbody');
+    this.currentPage = 1;
+    this.pageSize = 10;
+    this.searchTerm = '';
+    this.filters = {};
+    this.filtersPopulated = false;
+
+    this.searchInput = document.querySelector(`.table-search[data-table="${config.tableId}"]`);
+    this.filterSelects = document.querySelectorAll(`.table-filter[data-table="${config.tableId}"]`);
+    this.pageSizeSelect = document.querySelector(`.table-page-size[data-table="${config.tableId}"]`);
+    this.paginationContainer = document.querySelector(`.table-pagination[data-table="${config.tableId}"]`);
+
+    this.bindEvents();
+  }
+
+  // Restore state from URL params
+  restoreFromUrl(urlParams) {
+    const p = parseInt(urlParams.get('p'));
+    const limit = parseInt(urlParams.get('limit'));
+    const search = urlParams.get('search');
+
+    if (p > 0) this.currentPage = p;
+    if (limit > 0) {
+      this.pageSize = limit;
+      if (this.pageSizeSelect) this.pageSizeSelect.value = limit.toString();
+    }
+    if (search) {
+      this.searchTerm = search;
+      if (this.searchInput) this.searchInput.value = search;
+    }
+
+    // Restore filter values (stored as filter_fieldName in URL)
+    this.filterSelects.forEach(select => {
+      const key = select.dataset.filterKey;
+      const val = urlParams.get('filter_' + key);
+      if (key && val) {
+        // Add option temporarily if not yet populated
+        if (!select.querySelector(`option[value="${val}"]`)) {
+          const opt = document.createElement('option');
+          opt.value = val;
+          opt.textContent = val;
+          select.appendChild(opt);
+        }
+        select.value = val;
+        this.filters[key] = val;
+      }
+    });
+  }
+
+  bindEvents() {
+    if (this.searchInput) {
+      let timeout;
+      this.searchInput.addEventListener('input', () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          this.searchTerm = this.searchInput.value.trim();
+          this.currentPage = 1;
+          this.fetchData();
+        }, 300);
+      });
+    }
+
+    this.filterSelects.forEach(select => {
+      select.addEventListener('change', () => {
+        this.collectFilters();
+        this.currentPage = 1;
+        this.fetchData();
+      });
+    });
+
+    if (this.pageSizeSelect) {
+      this.pageSizeSelect.addEventListener('change', () => {
+        this.pageSize = parseInt(this.pageSizeSelect.value);
+        this.currentPage = 1;
+        this.fetchData();
+      });
+    }
+
+    if (this.paginationContainer) {
+      this.paginationContainer.querySelector('.pagination-prev').addEventListener('click', () => {
+        if (this.currentPage > 1) { this.currentPage--; this.fetchData(); }
+      });
+      this.paginationContainer.querySelector('.pagination-next').addEventListener('click', () => {
+        this.currentPage++;
+        this.fetchData();
+      });
+    }
+  }
+
+  collectFilters() {
+    this.filters = {};
+    this.filterSelects.forEach(s => {
+      const key = s.dataset.filterKey;
+      if (key && s.value) this.filters[key] = s.value;
+    });
+  }
+
+  async fetchData() {
+    const params = new URLSearchParams({
+      page: this.currentPage.toString(),
+      limit: this.pageSize.toString(),
+    });
+    if (this.searchTerm) params.set('search', this.searchTerm);
+    Object.entries(this.filters).forEach(([key, value]) => {
+      if (value) params.set(key, value);
+    });
+
+    try {
+      const res = await fetch(`${this.config.endpoint}?${params}`);
+      const result = await res.json();
+      this.renderRows(result.data);
+      this.renderPagination(result);
+      if (!this.filtersPopulated && result.filterOptions) {
+        this.populateFilters(result.filterOptions);
+        this.filtersPopulated = true;
+      }
+      updateUrlParams();
+    } catch (err) {
+      console.error(`Failed to fetch ${this.config.type}:`, err);
+    }
+  }
+
+  renderRows(data) {
+    this.tbody.innerHTML = '';
+    if (!data || data.length === 0) {
+      const colCount = this.config.columns.length + (window.__isAdmin ? 1 : 0);
+      this.tbody.innerHTML = `<tr><td colspan="${colCount}" class="px-4 py-8 text-center text-gray-500">No data found</td></tr>`;
+      return;
+    }
+
+    data.forEach(row => {
+      const tr = document.createElement('tr');
+      this.config.columns.forEach(col => {
+        const td = document.createElement('td');
+        td.className = `px-4 py-2 ${col.className || ''}`;
+        if (col.render) {
+          td.innerHTML = col.render(row[col.key], row);
+        } else {
+          td.textContent = row[col.key] != null ? String(row[col.key]) : '';
+        }
+        tr.appendChild(td);
+      });
+
+      if (window.__isAdmin) {
+        const actionTd = document.createElement('td');
+        actionTd.className = 'px-4 py-2';
+        actionTd.innerHTML = `
+          <button data-id="${escapeHtml(row.id)}" data-type="${this.config.type}"
+                  class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"><i class="fas fa-edit"></i></button>
+          <button data-id="${escapeHtml(row.id)}" data-type="${this.config.type}"
+                  class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"><i class="fas fa-trash"></i></button>
+        `;
+        tr.appendChild(actionTd);
+      }
+
+      this.tbody.appendChild(tr);
+    });
+  }
+
+  renderPagination(result) {
+    if (!this.paginationContainer) return;
+    const { total, page, totalPages } = result;
+    const start = total === 0 ? 0 : (page - 1) * this.pageSize + 1;
+    const end = Math.min(page * this.pageSize, total);
+
+    this.paginationContainer.querySelector('.pagination-info').textContent =
+      total === 0 ? 'No entries found' : `Showing ${start}-${end} of ${total}`;
+
+    const prevBtn = this.paginationContainer.querySelector('.pagination-prev');
+    const nextBtn = this.paginationContainer.querySelector('.pagination-next');
+    prevBtn.disabled = page <= 1;
+    nextBtn.disabled = page >= totalPages;
+
+    const pagesContainer = this.paginationContainer.querySelector('.pagination-pages');
+    pagesContainer.innerHTML = '';
+
+    const maxVisible = 5;
+    let startPage = Math.max(1, page - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+    if (endPage - startPage < maxVisible - 1) startPage = Math.max(1, endPage - maxVisible + 1);
+
+    for (let i = startPage; i <= endPage; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.className = i === page
+        ? 'px-3 py-1 border border-indigo-500 bg-indigo-600 text-white rounded-lg text-sm'
+        : 'px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-100 text-sm';
+      btn.addEventListener('click', () => {
+        this.currentPage = i;
+        this.fetchData();
+      });
+      pagesContainer.appendChild(btn);
+    }
+  }
+
+  populateFilters(filterOptions) {
+    this.filterSelects.forEach(select => {
+      const filterKey = select.dataset.filterKey;
+      if (filterKey && filterOptions[filterKey]) {
+        // Keep only the default "All" option
+        const defaultOpt = select.querySelector('option');
+        select.innerHTML = '';
+        select.appendChild(defaultOpt);
+        filterOptions[filterKey].forEach(val => {
+          const opt = document.createElement('option');
+          opt.value = val;
+          opt.textContent = val;
+          select.appendChild(opt);
+        });
+      }
+    });
+  }
+}
+
 // --- Single Page Application (SPA) Navigation Logic ---
-function showContent(page) {
+function showContent(page, skipUrlUpdate) {
+  activeSection = page;
+
   // Hide all content sections
   Object.values(contentSections).forEach(section => { if (section) section.classList.add('hidden'); });
 
@@ -339,6 +760,13 @@ function showContent(page) {
   // Close the sidebar on mobile
   if (window.innerWidth < 768) {
     sidebar.classList.remove('active');
+  }
+
+  // Fetch table data when navigating to a table section
+  if (tableManagers[page]) {
+    tableManagers[page].fetchData();
+  } else if (!skipUrlUpdate) {
+    updateUrlParams();
   }
 }
 
@@ -399,7 +827,27 @@ window.confirm = (message) => {
 // Initialize the app
 window.onload = function() {
   loadDataFromLocalStorage();
-  showContent('dashboard'); // Default to the dashboard on load
+
+  // Initialize table managers for all model tables
+  Object.entries(TABLE_CONFIGS).forEach(([key, config]) => {
+    const table = document.getElementById(config.tableId);
+    if (table) {
+      tableManagers[key] = new TableManager(config);
+    }
+  });
+
+  // Restore state from URL params
+  const urlParams = getUrlParams();
+  const section = urlParams.get('page') || 'dashboard';
+
+  // Restore table state if navigating to a table section
+  if (tableManagers[section]) {
+    tableManagers[section].restoreFromUrl(urlParams);
+  }
+
+  showContent(section, true);
+
+  // Trigger fetch with restored params (showContent already calls fetchData for table sections)
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -432,8 +880,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await res.json();
         alert(`${id ? 'Updated' : 'Created'} successfully!`);
 
-        // Optional: refresh table row or table
-        window.location.reload();
+        // Re-fetch current table data instead of reloading
+        if (tableManagers[type]) {
+          tableManagers[type].fetchData();
+        }
+        modal.classList.add('hidden');
 
       } catch (err) {
         console.error(err);
@@ -481,11 +932,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Edit button functionality
-  document.querySelectorAll('.edit-btn[data-type]').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const id = btn.dataset.id;
-      const type = btn.dataset.type; // e.g. blogs, candidates
+  // Edit and Delete buttons - use event delegation for dynamically rendered buttons
+  document.addEventListener('click', async (e) => {
+    // --- Edit button ---
+    const editBtn = e.target.closest('.edit-btn[data-type]');
+    if (editBtn) {
+      const id = editBtn.dataset.id;
+      const type = editBtn.dataset.type;
 
       // hide all forms
       document.querySelectorAll('#transaction-modal form').forEach(f => f.classList.add('hidden'));
@@ -524,27 +977,33 @@ document.addEventListener('DOMContentLoaded', () => {
       const entityName = getEntityName(type);
       modalTitle.textContent = `Edit ${entityName}`;
       modal.classList.remove('hidden');
-    });
-  });
+      return;
+    }
 
-  // Delete button functionality
-  document.querySelectorAll('.delete-btn').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      if (!confirm('Are you sure you want to delete?')) return;
+    // --- Delete button ---
+    const deleteBtn = e.target.closest('.delete-btn[data-type]');
+    if (deleteBtn) {
+      const confirmed = await window.confirm('Are you sure you want to delete?');
+      if (!confirmed) return;
 
-      const id = btn.dataset.id;
-      const type = btn.dataset.type;
+      const id = deleteBtn.dataset.id;
+      const type = deleteBtn.dataset.type;
 
       try {
         const res = await fetch(`/${type}/${id}`, { method: 'DELETE' });
         if (!res.ok) throw new Error('Delete failed!');
         alert('Deleted successfully!');
-        location.reload();
+
+        // Re-fetch current table data instead of reloading
+        if (tableManagers[type]) {
+          tableManagers[type].fetchData();
+        }
       } catch (err) {
         console.error(err);
         alert('Could not delete item.');
       }
-    });
+      return;
+    }
   });
 
 });

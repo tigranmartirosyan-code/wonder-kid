@@ -1,5 +1,5 @@
 <section id="schedules-content" class="hidden">
-  <header class="flex items-center justify-between mb-8">
+  <header class="flex items-center justify-between mb-4">
     <h2 class="text-3xl font-bold text-gray-900">Schedules Management</h2>
     {{#if isAdmin}}
     <button class="add-btn flex items-center px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
@@ -8,9 +8,32 @@
     </button>
     {{/if}}
   </header>
+  <hr class="border-black mb-4">
+
+  <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <select class="table-filter border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white text-gray-700 font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none cursor-pointer" data-table="schedules-table" data-filter-key="color">
+        <option value="">All Colors</option>
+      </select>
+      <select class="table-filter border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white text-gray-700 font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none cursor-pointer" data-table="schedules-table" data-filter-key="title">
+        <option value="">All Titles</option>
+      </select>
+      <select class="table-page-size border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white text-gray-700 font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none cursor-pointer" data-table="schedules-table">
+        <option value="10">10 / page</option>
+        <option value="25">25 / page</option>
+        <option value="50">50 / page</option>
+        <option value="100">100 / page</option>
+      </select>
+    </div>
+    <div class="relative min-w-[300px] max-w-md">
+      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+      <input type="text" placeholder="Search schedules..." class="table-search w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-table="schedules-table">
+    </div>
+  </div>
+
 
   <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
-    <table class="min-w-full rounded-xl overflow-hidden">
+    <table id="schedules-table" class="min-w-full rounded-xl overflow-hidden">
       <thead class="text-gray-700">
       <tr>
         <th class="px-4 py-2 rounded-tl-xl text-left">Students</th>
@@ -22,65 +45,15 @@
       </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
-      {{#each schedules}}
-        <tr>
-          <!-- Students -->
-          <td class="px-4 py-2 align-top">
-            <ul class="space-y-2 max-h-32 overflow-y-auto pr-1">
-              {{#each students}}
-                <li class="flex items-center space-x-2">
-                  <img src="{{image}}" alt="{{fullName}}" class="h-8 w-8 rounded-full object-cover border">
-                  <span class="text-sm font-medium text-gray-800">{{fullName}}</span>
-                </li>
-              {{/each}}
-            </ul>
-          </td>
-
-          <!-- Trainers -->
-          <td class="px-4 py-2 align-top">
-            <ul class="space-y-2 max-h-32 overflow-y-auto pr-1">
-              {{#each trainers}}
-                <li class="flex items-center space-x-2">
-                  <img src="{{image}}" alt="{{fullName}}" class="h-8 w-8 rounded-full object-cover border">
-                  <span class="text-sm font-medium text-gray-800">{{fullName}}</span>
-                  <span class="text-xs text-gray-500">({{role}})</span>
-                </li>
-              {{/each}}
-            </ul>
-          </td>
-
-          <!-- Title -->
-          <td class="px-4 py-2 font-semibold">{{title}}</td>
-
-          <!-- Dates -->
-          <td class="px-4 py-2 text-sm whitespace-nowrap">
-            {{formatDate startDate "MMM D, YYYY"}} → {{formatDate endDate "MMM D, YYYY"}}
-          </td>
-
-          <!-- Color -->
-          <td class="px-4 py-2">
-            <span class="px-3 py-1 rounded-lg text-white text-xs font-semibold shadow-sm"
-                  style="background-color: {{color}};">
-              {{color}}
-            </span>
-          </td>
-
-          <!-- Actions -->
-          {{#if ../isAdmin}}
-          <td class="px-4 py-2">
-            <button data-id="{{id}}" data-type="schedules"
-                    class="edit-btn px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button data-id="{{id}}" data-type="schedules"
-                    class="delete-btn px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600">
-              <i class="fas fa-trash"></i>
-            </button>
-          </td>
-          {{/if}}
-        </tr>
-      {{/each}}
       </tbody>
     </table>
+  </div>
+  <div class="table-pagination flex items-center justify-between mt-4 text-sm text-gray-600" data-table="schedules-table">
+    <span class="pagination-info"></span>
+    <div class="flex items-center gap-1">
+      <button class="pagination-prev px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">Prev</button>
+      <span class="pagination-pages flex gap-1"></span>
+      <button class="pagination-next px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+    </div>
   </div>
 </section>

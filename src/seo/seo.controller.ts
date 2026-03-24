@@ -6,6 +6,9 @@ import { BaseController } from '../base.controller';
 
 @Controller('seo')
 export class SeoController extends BaseController<CreateSeoDto, UpdateSeoDto, SeoService> {
+  protected searchFields = ['pageName', 'metaTitle', 'metaDescription', 'metaKeywords'];
+  protected filterFields = ['pageName'];
+
   constructor(seoService: SeoService) {
     super(seoService);
   }

@@ -75,17 +75,6 @@ export class AppController {
     const decoded = jwt.verify(token, secret) as any;
     const role = decoded.role || 'admin';
 
-    const users = await this.usersService.findAll();
-    const students = await this.studentsService.findAll();
-    const candidates = await this.candidatesService.findAll();
-    const trainers = await this.trainersService.findAll(['schedules']);
-    const courses = await this.coursesService.findAll();
-    const blogs = await this.blogsService.findAll();
-    const schedules = await this.schedulesService.findAll();
-    const seoEntries = await this.seoService.findAll();
-    const faqEntries = await this.faqService.findAll();
-    const pageEntries = await this.pagesService.findAll();
-
     const isAdmin = role === 'admin';
     const isTrainer = role === 'trainer';
 
@@ -107,21 +96,11 @@ export class AppController {
 
     return res.render('admin', {
       title: 'Wonder Kid Admin Panel',
-      users,
-      students,
-      candidates,
-      courses,
-      trainers,
-      schedules,
-      blogs,
       role,
       isAdmin,
       isTrainer,
       currentUserName,
       currentUserImage,
-      seoEntries,
-      faqEntries,
-      pageEntries,
     });
   }
 

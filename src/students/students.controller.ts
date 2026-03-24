@@ -6,6 +6,10 @@ import { BaseController } from '../base.controller';
 
 @Controller('students')
 export class StudentsController extends BaseController<CreateStudentDto, UpdateStudentDto, StudentsService> {
+  protected searchFields = ['fullName', 'email', 'groupName', 'phones'];
+  protected filterFields = ['groupName', 'age', 'email'];
+  protected defaultRelations = ['schedules'];
+
   constructor(studentsService: StudentsService) {
     super(studentsService);
   }

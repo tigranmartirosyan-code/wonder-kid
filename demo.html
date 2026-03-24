@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wonder Kid Gallery</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      color: #1c1e21;
+    }
+    .header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .header h1 { font-size: 2rem; font-weight: 700; }
+    .header p { margin-top: 0.5rem; opacity: 0.85; font-size: 1rem; }
+    .gallery-container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .gallery-item {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      aspect-ratio: 1;
+    }
+    .gallery-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.92);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      object-fit: contain;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px; right: 24px;
+      color: white;
+      font-size: 2.5rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      z-index: 1001;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: white;
+      font-size: 3rem;
+      cursor: pointer;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+      z-index: 1001;
+    }
+    .lightbox-nav:hover { background: rgba(255,255,255,0.25); }
+    .lightbox-prev { left: 20px; }
+    .lightbox-next { right: 20px; }
+    .lightbox-counter {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,0.7);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 600px) {
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 8px;
+      }
+      .lightbox-nav { width: 40px; height: 40px; font-size: 2rem; }
+      .header h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Wonder Kid Gallery</h1>
+    <p>182 Photos</p>
+  </div>
+
+  <div class="gallery-container">
+    <div class="gallery-grid">
+        <div class="gallery-item" onclick="openLightbox(0)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/646182365_1286639903522505_8718965994822985080_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=5vdszHp0_AsQ7kNvwEe4tvf&_nc_oc=Adlrd_0O_xhta0y3TqfbHFAk4laxa-qpTShYXNSs0E7HtwVO5ekK8tzQtM1QdRud5C0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=32MPzYj_A-bBHXOXt0_7Fg&_nc_ss=8&oh=00_Afwl0Z6Kv14svLjxdnGEuNXtk8D5PFTLg_dLMQth9PwkQA&oe=69B12462" alt="May be an image of studying and text" loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(1)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/509423051_1083594527160378_8624118148231130_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=c5FxTyif2O4Q7kNvwFIeI4P&_nc_oc=AdmtkzTgYfwvZEaYClhmx7ZCycl-GhnD_IVKtUBCS4guvPol5lTUIcOGBc51Gd27jRQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=TMHYGw07hlTsEP9uXuXu0A&_nc_ss=8&oh=00_Afycir6J20tENeEa8xQ6Q8gDGUJEWKKfsP4lCD-8wQ4l0A&oe=69B11CB1" alt="Возможно, это изображение 1 человек, учится, детская игрушка и текст" loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(2)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/509282497_1083594200493744_7584628139162166021_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=dtvsGZSUpjQQ7kNvwFSOEAV&_nc_oc=AdmTIFPp6mkxJXmCx1B7qB9Zyj5VVML8OnsJ8Cx-tLWdk_cFD7yfBk8BuvGjEB66LRA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=TMHYGw07hlTsEP9uXuXu0A&_nc_ss=8&oh=00_Afzp2zC-Sq1IduyxlAvD2dR8N9UAmvE9KOOWeaCeQJuf9A&oe=69B13E58" alt="Возможно, это изображение 3 человека и текст" loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(3)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/509324081_1083594517160379_7336961840609200450_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=0fmsIl8CKLAQ7kNvwFJe1qo&_nc_oc=Adkipuvo76E1bkGOXeSjdMiTUqkLnWt0PO2hsB2I-f_3nkDGsjkOBxbvETkuhVn8SRk&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=TMHYGw07hlTsEP9uXuXu0A&_nc_ss=8&oh=00_AfzAM9wYbgo1FVraCS4o7VNEHLi2vmc6CDihupPAUAvi5Q&oe=69B14BC8" alt="Возможно, это изображение 1 человек, учится, улыбается и текст" loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(4)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508354845_1083594343827063_2040682027218255328_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=tJxbPp4ItkwQ7kNvwFGu1fI&_nc_oc=AdnWehVbwJTCFRstuAok_XlaYQ5Zy3Pzj2jHGF1xebOBQXImu0ymX7WkN94K1PO3yXA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=TMHYGw07hlTsEP9uXuXu0A&_nc_ss=8&oh=00_AfxC6n_1kv-B-PNSO5TRXL-jHMhD2Yqy76tXtSVEQb5nEg&oe=69B1204E" alt="Возможно, это изображение 1 человек, учится, детская игрушка и текст" loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(5)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/509356571_1083594217160409_2405193369152877715_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=O3dwOVQEj-sQ7kNvwFm1wkM&_nc_oc=AdlceAtq6aqXg8PUZNvkyTkaC49YBQJk6v2ElRGhWf_mOpf0YhVRRs_xQYD4REWSy8k&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=TMHYGw07hlTsEP9uXuXu0A&_nc_ss=8&oh=00_Afw46ybP3vWjjlLCZXWEDU0ctF2SrRIz9ZBFUFAYdqnyTQ&oe=69B11C6B" alt="Возможно, это изображение 8 человек, ребенок и текст" loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(6)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/509419024_1083596237160207_4829290354040387224_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=X0NtyoQk_LIQ7kNvwHxhmTF&_nc_oc=Admjyhz7FKEp62JQIALNdR93LaqikmbjYk-V7rMMlJDPHrpLkdLGGtUfQR7VDZzlVyQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=TMHYGw07hlTsEP9uXuXu0A&_nc_ss=8&oh=00_AfxoXC9lP_DsMYzbypioAHtCRb-oEIiuTYD22RnD_0z8hA&oe=69B14096" alt="Возможно, это изображение 5 человек и ребенок" loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(7)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508131722_1081606587359172_7364366908255943468_n.jpg?stp=dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=a934a8&_nc_ohc=honw7YvVLscQ7kNvwGuRL8e&_nc_oc=Adlj3_9lbAMT4rrw-XkE6HI9puGeApanN58qUuZ6fNXXtmVvbD5Yea-xwludvnDWF6Y&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=4-kYGn-99RtkgmRmvb9EUQ&_nc_ss=8&oh=00_AfwGI_3bCtLzvWejhmjII0OGWfd6enYL_bfJ5awIgOov3w&oe=69B13514" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(8)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508261662_1080628147457016_1389449929559335849_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=Z2T8sD_xQ7kQ7kNvwFOw57E&_nc_oc=AdlipVMTEfqhkT6Vh5Tk_B28WtS_iEvNT2q6UAfPNWpWrM_nXzZSVBI_SwKoHwRJQvk&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=4-kYGn-99RtkgmRmvb9EUQ&_nc_ss=8&oh=00_AfwWy-Zj-A1dA1VYuIkcD2ZfqeZ4FoLfj5iZEvgeP1RX0Q&oe=69B11E41" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(9)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508276452_1080628134123684_1186166910053797336_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=oz5vGvFa9m8Q7kNvwEi7FXK&_nc_oc=AdkyW6-lCEuzp-ZCyU7D_Ddnn_4iJoWK7NkxgRic4RB9lZwUUQkVedWWQgKT90fC8pM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=4-kYGn-99RtkgmRmvb9EUQ&_nc_ss=8&oh=00_AfwYvtrUnZ6kr_ojG7qI33aVn1lpL856M1UGheOcNibvhA&oe=69B14F50" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(10)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508320652_1080628107457020_8338521172410758519_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=y6fJaGLGRGgQ7kNvwFlWInT&_nc_oc=AdlHnaQ_5cpw-hQO0DuCtMViSFM4Gca2XJ471T78l7061WYVLGB8WVTj7mi8ffNioyw&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=4-kYGn-99RtkgmRmvb9EUQ&_nc_ss=8&oh=00_AfzYMQLemFgPR0cd7SltpytAOc1cdel8Ncnu6kngjzrq8w&oe=69B13FDF" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(11)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508188845_1080628090790355_1017708548194291328_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=AN0Gl5ofAQAQ7kNvwHjjdLt&_nc_oc=Admq3LJilBazOoDA7aGu2mFAHGd8rgcZeFOOQtInHQKwM1Ilul_xf_-wh9KfYgs0zoo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=4-kYGn-99RtkgmRmvb9EUQ&_nc_ss=8&oh=00_AfxkMkoCITgc5OQ2g9va8PoXI8K3Djq3cDdD7rXELtLBcg&oe=69B1426F" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(12)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508347227_1080628024123695_8679737632850470832_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=FjkVcofCq2sQ7kNvwHf332t&_nc_oc=AdmZzQabmorOmnKSbx1DsFPxXGGtATjU4UtinPodFvfDAg-ES4OIRrkwu02ZBkhkhbE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=4-kYGn-99RtkgmRmvb9EUQ&_nc_ss=8&oh=00_AfzTabb0cqe1ujKBugVQdtYW6T3jM3Y4YsJmAdMOsdUjwA&oe=69B11B5C" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(13)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508226722_1080628010790363_4608729467564716588_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=P6hwbCwNQYcQ7kNvwFW1g-J&_nc_oc=AdmmpM602CsfiQ5EbVgAMgZU94cQcIsGxvjjQFCufpeJKs2IGXlTbtulv4Fte7PCzKY&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=4-kYGn-99RtkgmRmvb9EUQ&_nc_ss=8&oh=00_AfwCK6r-MfZfmUhAfhJ4mQyUgpUVc33N48z8_wcGj4y6cA&oe=69B13744" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(14)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508229062_1080627980790366_5274600908284689650_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=Kl6iA5RUhHsQ7kNvwGopRZz&_nc_oc=AdmqHWTcEFZN8xANNL2UO854AcGV4eotV5Bn8yA6-zgguUAlLEB3M_MU3a1IM4eFMSM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=4-kYGn-99RtkgmRmvb9EUQ&_nc_ss=8&oh=00_AfyvMvwtHpNXuPFxTNAxbFWmamGe4IXDstYaegN0_m_rFA&oe=69B13BF7" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(15)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508254708_1080627970790367_1310259413214486235_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=z4Ij54dOkaYQ7kNvwGBE6pN&_nc_oc=AdmTxQ58cHlrABVjSO3kF7zkQgHOyAFz-AUyl44gUmnFeyJ_WyNmpEpRnf01E1ik0mQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=eVn3pmJa6i3rWxzQYHFkfg&_nc_ss=8&oh=00_AfzN1LWtlmcR5_xU3aOnUT3PnN2-Zyib2TOMp2FoBe9Niw&oe=69B1233A" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(16)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508229338_1080627930790371_8491558566448989570_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=ef8rBwjOmCIQ7kNvwE70QxH&_nc_oc=AdmqyO5uhkZkyqmzN5CX8Gu4oVQlBgfHe-ENl1DiHl7K5WWHvBLmY_4KR8_A5G8lLF4&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=eVn3pmJa6i3rWxzQYHFkfg&_nc_ss=8&oh=00_Afxn5QtEHZD8ecJdKXEurxPNK_EHdmkR-vPedz1Y8OGBpg&oe=69B13BEB" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(17)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/507296108_1080627894123708_8196945825733559563_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=-Iaf2f8l7_oQ7kNvwGAKRHz&_nc_oc=Adl7opRszWbLZ6YTrC-BT4lFv6PrRhWOfOIBU95AQBg7K-kXWf-aUcXiSPO8Be6qPNM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=eVn3pmJa6i3rWxzQYHFkfg&_nc_ss=8&oh=00_AfybTZj2J0uLwS1hQJoVtNUhznzC7Z2AgKLlfPasZufiyQ&oe=69B13FDF" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(18)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508223189_1080627880790376_3311480958559068569_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=fqZx7C579m4Q7kNvwERI-O7&_nc_oc=AdkmHzwC9lurxIkS6wxtTsJ6jBvUMCJaeK9PkdEoiSdEeUUZHu0TNt7V5miZ_G6FDKA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=eVn3pmJa6i3rWxzQYHFkfg&_nc_ss=8&oh=00_AfyCgdkdlCOVKz3MdgBPtvbtxh4BmbCEVTAKL31y8ofy7g&oe=69B13F81" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(19)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508388548_1080627777457053_8525890484451076676_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=w7kc3TA2ERsQ7kNvwEoZ09Q&_nc_oc=AdlAWAghuMeAvi1y6RQpATz9He0Jez19ruPXRzsbvyt8nEUUAGch2fe8H99a9YedFDU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=eVn3pmJa6i3rWxzQYHFkfg&_nc_ss=8&oh=00_AfzvSpTWgw42krs5i9rbVrFBfuMt4TXYJdYTzp3cRVRJHw&oe=69B12ACF" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(20)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508245167_1080627744123723_4700828520037010171_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=UZ2zBFlkNaIQ7kNvwGJJjsR&_nc_oc=AdkM9Pg4uhfUOzy7Jf1UML4mwNiV35lnb206_OWsk2XcYXjGrHf4SBA9r17pwMw4IFw&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=eVn3pmJa6i3rWxzQYHFkfg&_nc_ss=8&oh=00_AfxmzK454XPsUmS5AoAxRJGvRq8cfSbw1hZ9LZO1g4C6oQ&oe=69B14229" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(21)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508264972_1080627714123726_8675543086923985011_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=erhMJIRY5EYQ7kNvwE2M8BN&_nc_oc=Adn4OpbLIlgKUWrSPuhvbHynJjyB-tooRD8d6MXSy1JQ9hUOR6ghsQu7Hah5viu1YVg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=eVn3pmJa6i3rWxzQYHFkfg&_nc_ss=8&oh=00_AfzLRRVsoLEUgwzhfDNDcPR7fwOJQ31d6bA2xIlFLstIeg&oe=69B1298E" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(22)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/507410555_1080627704123727_5290684914746496140_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=lvwz4m8NKe4Q7kNvwGsyair&_nc_oc=AdkkP-kWgUSPc-vicoFMnF0KwKBz7pxs7g3afZbW41ZQlxCMfm3UPS24bW8Jos9apqY&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=eVn3pmJa6i3rWxzQYHFkfg&_nc_ss=8&oh=00_AfynDA7VUHr4D3qmLA9G7HD24RePGNMfNkIjl0Yh2RHZZQ&oe=69B12B18" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(23)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508265062_1080627660790398_1662183537130691335_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=jmLb__0-8IsQ7kNvwGREsHe&_nc_oc=AdnxV2OSm4_S512fNNtmFvLlt_DoAoXxNFaMMK97IXYwCaGW2MCkWfmsOcs4AyYb8NU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ZFyWY0g-4kTRiGrExluzfQ&_nc_ss=8&oh=00_AfyPRiNedWfVAmMd-8DFVIUdtJSH0BFo2h9bwuB0vHSGFQ&oe=69B11DEB" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(24)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/508203762_1080627657457065_4967043717292044111_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=-uyk32hViTkQ7kNvwEmcOgD&_nc_oc=AdkKtPUjatNstR3EdfDAX1I-vYkVvf5FihQRqi1U98a8BYX9WChF8UYCxasdv6873us&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ZFyWY0g-4kTRiGrExluzfQ&_nc_ss=8&oh=00_AfxAaqzXgd1Wjeey8ia7JWCWVN0LroqIQLS2jwa6A_8vPw&oe=69B128FC" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(25)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505528122_1077933181059846_6364660596414937326_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=CaEzi_xbq5YQ7kNvwGtJOIY&_nc_oc=Admm4sADeb9Tbu15aPJADkMMHaSM6ghkskgeT32z-8vWhpEsNEIWMx30a4BwlBRjG74&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ZFyWY0g-4kTRiGrExluzfQ&_nc_ss=8&oh=00_AfyjLu-7-ntejv2oKnz_O1whRvBJcPjMzeZp1rv5IsNwWg&oe=69B130F8" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(26)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505635575_1077933137726517_8144297604812714397_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=a934a8&_nc_ohc=aFD5-aem1-gQ7kNvwEtXHw5&_nc_oc=AdklYOd46O9TaSAfQ7LXb8Xuj_PK5Drrw29_ucGrBB1SkT1cI7s8Sf1O_L56gC5Z8JQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ZFyWY0g-4kTRiGrExluzfQ&_nc_ss=8&oh=00_AfxeXbgwJ0hhsf4nQ-UF_L4K-x75bf-Tp217WIiz_-Ikwg&oe=69B15082" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(27)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505327173_1077933074393190_7266332898974828394_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=a934a8&_nc_ohc=BDsPS0dl-rkQ7kNvwGX1sxn&_nc_oc=AdlSLSSnd9g8WYvMAoEiASEVgwLWrTbvjFfS4GDgqLnOpvUkYLZByNXE0OUn94JcXjo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ZFyWY0g-4kTRiGrExluzfQ&_nc_ss=8&oh=00_AfylQxIgXZ_phHnsW2TvZveV5DJ_UGaPwX5l9rg4clpXjw&oe=69B12C72" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(28)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505487992_1077933051059859_4587336334681481868_n.jpg?stp=c0.135.1639.1639a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=a934a8&_nc_ohc=aGle1_mZpV8Q7kNvwHPyzu8&_nc_oc=AdlQ-p_QuCkg48HfKB59XIRFgX0zfJl4F2jIHrBAK7aNoVzFZmLGwMky3OSZ7n9DNa0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ZFyWY0g-4kTRiGrExluzfQ&_nc_ss=8&oh=00_Afze6JHyNJjNI13dMNlXeeA-eJUcdNOP2NQGpoIAUqLvkQ&oe=69B12CD2" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(29)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505286845_1077933031059861_7638095477093872432_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=XP-KuFKpdoYQ7kNvwH2-8Ot&_nc_oc=AdkYzh18ho6nuQAap_ow0F8r9xb_H30NVuK2zwCnqYnaKBQOG2Vux14hGhAG9nNf5CQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ZFyWY0g-4kTRiGrExluzfQ&_nc_ss=8&oh=00_Afz4OurwkjzaYkbPINmc-9m4dNRso7YP1jNrmMXzgcZRNQ&oe=69B14A19" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(30)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/506237410_1077932987726532_1491597268298496152_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=AnsSSOI5ZRAQ7kNvwHdReq5&_nc_oc=AdnfpW6iRRysgejwko-c-Bt8ct58lk_paM52fD5BtARMCn8NpX67FPXHzXti7_LHAUs&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ZFyWY0g-4kTRiGrExluzfQ&_nc_ss=8&oh=00_Afz34ZkG67PpwpDz1nJdan3MUf2vgZoHN-KfLnm2hePMdA&oe=69B11FDF" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(31)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/506210402_1077932967726534_3778904372078611190_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=NPzO0WdqtocQ7kNvwHe0n5A&_nc_oc=AdmdLyoicDNzMxTJUeUWvs8w0lKSfBeXhkcObyXCMy5J4UNdb8YxH3P6unkWp3VO-LY&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=jZV7BBHLNdVAByK8wWyu8g&_nc_ss=8&oh=00_AfyPhMReZ7GDIlt7nrnTJFj5q-ieuMlZ2or0TCjhCs1Y4Q&oe=69B133B6" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(32)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505512215_1077932944393203_2791632930375066657_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=4Yy_7jY4xcIQ7kNvwEAlS2l&_nc_oc=AdlIl-jdWMC8PDZUB6K3E6GywXYPR9KPd0_2KC_qAyzYKh8KQRqX7jz5A7hwYF1Y87k&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=jZV7BBHLNdVAByK8wWyu8g&_nc_ss=8&oh=00_AfyGOJiMVdKSpY4LoGmg48D-sE9jyTkcKQ8H3QFHZ2bIyA&oe=69B11A51" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(33)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505819556_1077932901059874_6256102490932455932_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=kKU0aqWd268Q7kNvwEsr9Ed&_nc_oc=AdmzoqBX2xSNiPK_mQVBaPHgxYNctXR98mCMwHc8NVD0oZQngByAvCAxQT_bew9d5QU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=jZV7BBHLNdVAByK8wWyu8g&_nc_ss=8&oh=00_AfyzpVB-nluJR82diNnfIYyiyv1Kp9P7Hb7HlzOjsNOndw&oe=69B11F10" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(34)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505810535_1077932874393210_7980274765443490105_n.jpg?stp=c0.135.1639.1639a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=_QtbqfY118oQ7kNvwEGihou&_nc_oc=AdkmwZPoiCRvkY4EGRXCfaosw87aY6oCX4DEVCBzfw8yq8e_nu81yB_X3j1tsFIoRoY&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=jZV7BBHLNdVAByK8wWyu8g&_nc_ss=8&oh=00_Afxkbf_aj9xb-MSGxIWjepCTYnd6jKjcZiCx9yQ6Aab8iw&oe=69B13EBF" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(35)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505167042_1077932851059879_7067856025795674815_n.jpg?stp=c0.135.1639.1639a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=a934a8&_nc_ohc=IY9a1qelba4Q7kNvwFWly5n&_nc_oc=AdlFvwEhzWcz2jDKczWXvuXOU45ACVO9llUUxzNJHb3cn3akn86V8g3Sg5n_N-vLqF8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=jZV7BBHLNdVAByK8wWyu8g&_nc_ss=8&oh=00_AfzaRwgQHy55HC0QktmWO4MDNSYNnTnC8cmtLuHarQWPNg&oe=69B130D5" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(36)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505474690_1077932794393218_8729155909623421931_n.jpg?stp=c0.135.1639.1639a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=b0Fc-AByVRcQ7kNvwGFleBN&_nc_oc=Adl5vzM8DMNZWF-XXYqmmqnv8yN6cRGLQQT8wcZIB6icqUGC8S889u86y0dKvfBuSOg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=jZV7BBHLNdVAByK8wWyu8g&_nc_ss=8&oh=00_Afx1lCij7ll0m9RXUdn9MPJllay_U3YhukKck-Z5scFbPw&oe=69B145D8" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(37)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505371616_1077932784393219_762556406320853496_n.jpg?stp=c0.135.1639.1639a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=2k0Ey9jjk6kQ7kNvwFJAPvn&_nc_oc=AdkHbkzNs6oeKenoDJ6gqQv5lEhEFxg4qjb2QaN8Z-ih1cDHSLu_HU8Vv3c3CUd1P90&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=jZV7BBHLNdVAByK8wWyu8g&_nc_ss=8&oh=00_Afw-MyxaK-jKEtvNZp-3flGGC2WqIxA5pWLuKWu-Un8dNg&oe=69B14180" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(38)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505407650_1077932751059889_3030628688677835934_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=DPIwXqbixs8Q7kNvwGw3aZz&_nc_oc=AdkC03AApS0IA83OMo1VIE3hjVFyGk3WCYIk2_xVArX5B0WogOqwBWL-46M71XTRF3E&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=jZV7BBHLNdVAByK8wWyu8g&_nc_ss=8&oh=00_AfwQ-4NbrJkwxDjiWxqLKjEWI7BgqOzZfXJfneIwuWRb_w&oe=69B15062" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(39)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505034962_1077932694393228_2624531558124370807_n.jpg?stp=c0.135.1639.1639a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=a934a8&_nc_ohc=5VBtMYrSyioQ7kNvwEOlf42&_nc_oc=AdkAtNrgYNG5CcRwhpkKKIf6AfDSlafzhdcWGCNpy6sLJjVhzrQbpZm3zDaYp7NpVvo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=5tRPCOEeI3-EmNp8WgSvqA&_nc_ss=8&oh=00_AfzWIppQ1oGWEIKrFPSUXv5uUZhp78CZMnicA_Np9OnB1A&oe=69B1415E" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(40)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505407271_1077932677726563_5878172541700290158_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=a934a8&_nc_ohc=ZUBdq6PrE4QQ7kNvwFOYewq&_nc_oc=Adn7GH11k-TQI_gFGZMGH8R1JyAqg2MuIWc9ESIXmiklTKxFFmAdTsFOqYfTPzhNgDw&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=5tRPCOEeI3-EmNp8WgSvqA&_nc_ss=8&oh=00_AfxX8UU2QNQNf1TJUDJCaFmKSmRjC_c3sP_Hv86JIVs9ig&oe=69B149D5" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(41)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505379910_1077932674393230_236219168378912114_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=LyJJ-rK9ncwQ7kNvwHyMYB1&_nc_oc=AdkVisA4OrS2hAgefYW0YrVZcrSejGRoZ29eHG6iGR0_e8QCEqK6jLGGgVNI_Qx_AS0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=5tRPCOEeI3-EmNp8WgSvqA&_nc_ss=8&oh=00_AfxUtEVK3guJvRX_3mG1yMRjT9IDoy6AHJ548MWybcn-OQ&oe=69B13255" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(42)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494196829_1076509464535551_3059687238116347638_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=BeTmEbYDARUQ7kNvwHwmjQz&_nc_oc=Adm88_JLAxYphZYJTAfu6L7woR2gxL7l8BjWesyBfFaEFBuYlCqn8mOJvfY9qnLKWu8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=5tRPCOEeI3-EmNp8WgSvqA&_nc_ss=8&oh=00_AfyOcExH-reZIfrYi7hqDZDD3rHraybbFhSHENEEJtwMPw&oe=69B146FB" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(43)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/496469921_1076509441202220_1369971586878800693_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=a934a8&_nc_ohc=wmlDUK8qpNQQ7kNvwGxTdKk&_nc_oc=AdlmpNVmIrFE84UBAAkrN81xsiFiJOEKfO_3pXoTkfvDDN4rtNtnh5a53luUgPEKDqo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=5tRPCOEeI3-EmNp8WgSvqA&_nc_ss=8&oh=00_AfxBScnahyJlqoLIMjh0rL9JgpaWcvniJdBOByRD5QIF_g&oe=69B11EF0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(44)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/496708967_1076509404535557_2797935222354437583_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=ExtZO3PtkScQ7kNvwG5mOmE&_nc_oc=Adk9n4ZTvott8JvY9JQVoPoKPd388GmUEO1lEfqr6JhjHAsyoywBLCjxfZjz0v3cO-E&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=5tRPCOEeI3-EmNp8WgSvqA&_nc_ss=8&oh=00_Afw-NdyMHPy6IG9z7L7UXwZc8sjq4JbOGpX9k9yVQOfXfA&oe=69B14CD8" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(45)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/492478121_1076509367868894_5116805045709263714_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=9bCp9uGIv4oQ7kNvwHs0hUo&_nc_oc=AdmXV5kN8LMwm_vPyaC0rk9BtxZ3KLA1MZrvwpXe6vqIqMD5q2X7IUYhAk4RDQU6Hss&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=5tRPCOEeI3-EmNp8WgSvqA&_nc_ss=8&oh=00_AfyRYdyVoS6MZ7GrcegCmysjhi6v68TFmBwkFlN2tdwjPA&oe=69B13291" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(46)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/502528405_1076509331202231_6124354950919391706_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=a934a8&_nc_ohc=nkNpO57cXX8Q7kNvwEilrm1&_nc_oc=Adki2zlyw-gXt4unr4CRB-zK0Ob8w-Phqa3FfTpmRUQqEOTDW4MwA7j908g2rFscu00&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=5tRPCOEeI3-EmNp8WgSvqA&_nc_ss=8&oh=00_AfzwEXl-Sxc7vJW0j-8HSrpT9AT4w5H1suLqEXE2IfoFjA&oe=69B13C4A" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(47)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505942125_1076509294535568_4901145340427677317_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=lu92CqElOjQQ7kNvwGcR68U&_nc_oc=AdlBZsa3vwYfYxgCptHJrC3kOt-xLzVF-RJXvabuLiXwxo2QYnRIeyEOWrU1O0_nclA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=-MMSDRpS1QQSqTIah9vtbA&_nc_ss=8&oh=00_AfxFe6Gfd-jUJZsfCJU0kkfSGqYaXnwQqASR2mJ4egnIwQ&oe=69B12C7D" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(48)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/496068057_1076509271202237_177955530806851673_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=03f0NqmqA54Q7kNvwHh9PQz&_nc_oc=AdnCSZ7xWkBp82H_Q_wQmxdIT93AS56hIGmAM866avLT9KZaXZS1YEUmDVDsto5M95I&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=-MMSDRpS1QQSqTIah9vtbA&_nc_ss=8&oh=00_AfyH57BSES3e2QR0oQd4xs5mwng5Q_mmgiZo9l0k2VaLWA&oe=69B136EC" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(49)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/492508872_1076509254535572_160047820022166212_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=a934a8&_nc_ohc=QOzw-tqNQD0Q7kNvwHx0ycG&_nc_oc=AdnPyNcdY1xV4X28I8GzwU9c1i37Jz2XywsIkT-8BWHYYGJu2ZRXeBglpQ02c277mKU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=-MMSDRpS1QQSqTIah9vtbA&_nc_ss=8&oh=00_AfwfsXfwvbM-un6CTaVOCbGu-Xdv7g86OdKS-BU-xZ_9BA&oe=69B12801" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(50)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/492846477_1076509164535581_9156479399902501527_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=a934a8&_nc_ohc=4kN329qQTScQ7kNvwGQFz9Z&_nc_oc=AdmCxVyHC6-wqm1b_Zp0F-djA_C126TglvC4ENJ6eLNezw36fKW5kQ9d31tmq0cI7Lo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=-MMSDRpS1QQSqTIah9vtbA&_nc_ss=8&oh=00_Afzo986q9j9oPYFvE0QPsLPn-ZP2-44qi_8f16RCSXVJtQ&oe=69B1251F" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(51)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495151077_1076509077868923_2512822754784479128_n.jpg?stp=c0.106.960.960a_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=jtKu-RuPFQsQ7kNvwFPy1db&_nc_oc=AdlBpfhUmtvQEKlY-36p21PucwugmEvZzSNscfP30VsqpCjHrlG_GyPurmLnLijbWiU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=-MMSDRpS1QQSqTIah9vtbA&_nc_ss=8&oh=00_AfyPDc86gzxbGce9ypGtQeM4tAbUj9rKYpCpVC3G2oYnfw&oe=69B14937" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(52)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495611296_1076509194535578_6226781912833425559_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=8AdVC_k1tOQQ7kNvwFkgshv&_nc_oc=AdnAxV4-dID43DDCCNY1gqMPAg1NoceYWSeTMAkDfTkGoUCnUDeGraNtEIhf72JWuV4&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=-MMSDRpS1QQSqTIah9vtbA&_nc_ss=8&oh=00_Afyg91t8vXuZO-iWteKW9bI5BMoqUU2M45qiCMAb2gfcqw&oe=69B12079" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(53)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505720150_1076509137868917_7716916385039856775_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=a934a8&_nc_ohc=TTRsuMV6dQIQ7kNvwFp37RJ&_nc_oc=AdmEaiSPcF18Sd6mR4jEHtEv4klrhQl9mmLboa28Q9RDSzBlUoJRLych8IpNY7Vzkos&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=-MMSDRpS1QQSqTIah9vtbA&_nc_ss=8&oh=00_AfzKBYZULkgkkd48mnFR9Na_sOB3iXpai9OJe6p117yW8A&oe=69B136DA" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(54)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505114805_1076508997868931_6468124680285169025_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=a934a8&_nc_ohc=UwGTryhuu2IQ7kNvwGkG-CL&_nc_oc=AdmGLDcQfmAQK3AJ9dp6oMuLOxacVDIPitaJsSRARm_iHRlUrEIzaGl_EyCbCM-dCSg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=-MMSDRpS1QQSqTIah9vtbA&_nc_ss=8&oh=00_AfxCCKf20v1srfS4p_nw64RoUTA0qKs4VBHMMFgowhPSaA&oe=69B148B0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(55)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503704039_1076508954535602_6651255442015753435_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=skM2ctm2QG4Q7kNvwGzJegY&_nc_oc=AdkFZC-vSvZBCsmwpiX1KXgACGBViY0SI1aROhglOua4ERt6B5FiCQ-ouM8_eHP_Tyk&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=UulZoSk2H6yHEdLJjPfejw&_nc_ss=8&oh=00_AfzRJwUTyKpDunNwsRwssk2Q1AAogMlJeS1eDO4_fNKceA&oe=69B14D87" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(56)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/493923615_1076508924535605_7761140692584152746_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=qOLRUDs6Ne0Q7kNvwHDi93K&_nc_oc=AdmSyB8DO_9uSagzOpjTCsctQVMmFd4prp0CRu-0yh_Z4JbjvoHIaOBF4dOOxm2jCRI&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=UulZoSk2H6yHEdLJjPfejw&_nc_ss=8&oh=00_AfzF6nynp_kHYA9EtAxFen04a_GcajMIDym3q4GHFWxzKg&oe=69B11A16" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(57)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503719626_1076508791202285_1786679369585593821_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=a934a8&_nc_ohc=9qPnC8YkTxwQ7kNvwFOJO6i&_nc_oc=AdmVBPQU8B0L2pM1-0_auGgeStECE9TGWHQ_r3-XPlGQ_a4qNWb0dlMffl6bg4M3VEE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=UulZoSk2H6yHEdLJjPfejw&_nc_ss=8&oh=00_AfwQaZ81GzxImYi3QlMbXKDTQHCsh0hWKmym3ySzkLA1SQ&oe=69B14D74" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(58)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503930687_1076508787868952_2703712824749837432_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=NvmjRVnBHPcQ7kNvwE08D-L&_nc_oc=AdkoFh3-5ti5En1jgX9pq18eoj1ErXUPUUbekVJMEevCDkQJ8oqkSH75GIlcWlBZ-Lk&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=UulZoSk2H6yHEdLJjPfejw&_nc_ss=8&oh=00_AfznNbL9rmqITH05UJ-GJcLzZCrLTsBezZd7BtzG5cR4FQ&oe=69B14EE8" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(59)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/505190465_1076508761202288_8294257379166561894_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=FR9MopQOPD8Q7kNvwF6ECCg&_nc_oc=AdkEFkRHhy4FkuTF8NQPG2-k0hJz7ObcbXBUGd_w91mb8Cn_2NLB279Sz-w5nx-jHpU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=UulZoSk2H6yHEdLJjPfejw&_nc_ss=8&oh=00_AfxY3Z07vzqJC4A2i9toP74phPRgBJqFrqkq923j_uYn5Q&oe=69B14990" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(60)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494694379_1073422218177609_5762346803469782568_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=a934a8&_nc_ohc=rwBgwFNUqw4Q7kNvwGqVyb6&_nc_oc=AdnWs-jjdFOVGJv5eqNbPKLzVfHEnlPslGXQAvyjPcmdDmIltISuxfsK5rNc7a1g_ew&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=UulZoSk2H6yHEdLJjPfejw&_nc_ss=8&oh=00_AfyW2Ynk8tG5HijWZvJygIEyzbMYW5SwaWrzZEpa4cPdLQ&oe=69B132E1" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(61)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503809604_1073422094844288_5867596686273077752_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=-_Mvvd8XULgQ7kNvwHDuNbk&_nc_oc=AdmINrWkQYtIrIuQ8XN6KrGme5XOpQM9Ct6FjRd5uoDRd_c8CPfRbdWamKqe_xd7T6A&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=UulZoSk2H6yHEdLJjPfejw&_nc_ss=8&oh=00_AfwS_cANqRCbGwG9GUBP8zckVh6ADY38QM795_DbI9BFyg&oe=69B121DC" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(62)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/504214527_1073422054844292_3312219997867327152_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=a934a8&_nc_ohc=1KYADvBP_2MQ7kNvwEzIL4H&_nc_oc=AdmeyHuDB0soq7LqFel3MwetkeXP3MTgbHbdD5Wtg46zk3gj60YbJ1t3lbGrXZDh6TY&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=UulZoSk2H6yHEdLJjPfejw&_nc_ss=8&oh=00_AfyKTLHVGDAaedXVVVwzFGZE4uf-BDKxdSMbzg7YITLSOA&oe=69B1464A" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(63)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/497861684_1073422031510961_6725440836529959702_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=PmE1HsPCHOsQ7kNvwEDcskV&_nc_oc=AdlADqMe2lga6UwAPrJdI4tch0OBRLsDnex6LkW7aeoN63SZ14fLENoDyEslH1KOWlc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=U9p1s_OxebPszyh1Fk8k6A&_nc_ss=8&oh=00_Afy3zPQbNrQC9Maol-X34gRRdIXJmgPAwtFCphvZWBgf3g&oe=69B144D7" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(64)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494353960_1073422008177630_7341462300607880467_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=cJuQUJeYDagQ7kNvwHlEXR8&_nc_oc=AdmXwPhcV7cVLCR_loF3lngHz1RNr5vZ7uH2y_8zrqiPqMWgUR-jFB0UjzpKkhFf2j4&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=U9p1s_OxebPszyh1Fk8k6A&_nc_ss=8&oh=00_Afy6bVlRfhI7QM2ygBCByPg9PlvjjLNQkK6RpgYd-jJrbQ&oe=69B142B0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(65)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494512983_1073421984844299_6309689316917956706_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=s57_9BH4ZU0Q7kNvwHv8HCp&_nc_oc=Adnewkp7MRzcYQBbx-d3WIL6CUO2pDWekRxXSK3FzhE15w1PMGmgDMLVtZJZgR3HxTg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=U9p1s_OxebPszyh1Fk8k6A&_nc_ss=8&oh=00_Afz3H56oJ9jvN9ueLv81gI_w8MZ1twspNar9q4rXAG4vnA&oe=69B14F8E" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(66)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/502578369_1073421934844304_2862988776018247733_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=GEHHP9c2GhwQ7kNvwEupLjL&_nc_oc=AdlaFsfXZ663QpsySonQpFId3JcDwVTbNBP5Ro7LdcS-TCxizgXgCkJ0e9UFGrcuOxA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=U9p1s_OxebPszyh1Fk8k6A&_nc_ss=8&oh=00_AfyHCu-yl_OPNVefiNg_nr-riZNzU0L9S-xHpvkgX0bCLw&oe=69B14794" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(67)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494838832_1073421894844308_5461598690942410463_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=mo0AMejH3t4Q7kNvwFUiD7V&_nc_oc=AdkrFieVXPFyl21cbL45ghw_HxKiRTRPZIUEZHfTZknosW3eun67lahtPdiTsqLbei8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=U9p1s_OxebPszyh1Fk8k6A&_nc_ss=8&oh=00_AfzAbLGpd5dGmznPF2lKEOQPF_3STnz4QvcICNnnTkfl8w&oe=69B128B5" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(68)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503910304_1073421874844310_4841927883439217583_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=6soRzGDxTpsQ7kNvwHZuc_3&_nc_oc=AdlOOouYV7a9wdo0rz8v-fSzVV0M7-c37jWdYH6KjrrGOrwERPk_aIMaxpUCp9pRMx8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=U9p1s_OxebPszyh1Fk8k6A&_nc_ss=8&oh=00_AfzB2QEYdi1sasFDNceABnc4vz1jl8nf0DOKLnWmJGcBjg&oe=69B11F46" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(69)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/502680648_1073421741510990_4760862409254614833_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=owiDvGakQHwQ7kNvwFMD6vf&_nc_oc=AdkEAJ3rRqfHDy1M_DAac_jfHhyReLBYaq6Eb3QCjXeVfIh-FvqOeT73dpDZ6WjTLi8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=U9p1s_OxebPszyh1Fk8k6A&_nc_ss=8&oh=00_AfxtyxhmZ_W_JCu3pI0V6bUj1zgDRnMG6ZcsKJoWF1SEag&oe=69B12583" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(70)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503803466_1073421711510993_1308559124413809980_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=a934a8&_nc_ohc=OYgP7N95HQIQ7kNvwHfq78H&_nc_oc=Adnufjy_GOgwTlSmypy6BTRwRwL27ckilWlgs49aXztXPLvsEaRDkhKwU-nxsCsjX0k&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=U9p1s_OxebPszyh1Fk8k6A&_nc_ss=8&oh=00_AfxJnpb8rNrSV9zLO4quZpeKBbYJcMnXMaNzVvdmz7CH6w&oe=69B131D0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(71)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/502950151_1073421688177662_4380567895192999014_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=IgvJeIa0MC4Q7kNvwGasvCd&_nc_oc=AdmBhjLxN4CEtzwz-cOFFp8ORlfMX-Jc5av23UDrfawwPBlZsD-UmGkdXKvZtObfjyQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=o2Re-LPwIYT5qhJQAAJbig&_nc_ss=8&oh=00_AfwE1_kpJg-dl-uKT-FoRPWGInvCl2_HfPq71e1yyldQhg&oe=69B14EE8" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(72)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/504398294_1073421658177665_2790203357136378772_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=nz9EpO2TNYgQ7kNvwGvDtl8&_nc_oc=AdlkI00a7hxGPkywqD0Ba7BkrSCuZf8SFF6T6p2h19tZr6yTyGM72bi-wHI_Z0Tc_Zc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=o2Re-LPwIYT5qhJQAAJbig&_nc_ss=8&oh=00_AfxNmlvkrZBPI0jUHitGWHV75jvW9M5w1xcV2p3WgWUrIQ&oe=69B13FEE" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(73)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495577536_1073421684844329_6753839867160843362_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=AZ948BRE17YQ7kNvwHzB1Az&_nc_oc=Adm_IjE5Mzwr1f081XX7NFH3pCgRZQGZvxmxtkOk6kAH6_oBWYgOHe49CfNcP7dMLpc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=o2Re-LPwIYT5qhJQAAJbig&_nc_ss=8&oh=00_Afxc1Z_iqtri35aA6FaKU43N1zRIFWzoMbqs5hVXKbn-kg&oe=69B144D7" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(74)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/493703530_1073421641511000_837635661758833148_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=a934a8&_nc_ohc=JGTG_t1w7lIQ7kNvwEUVf-b&_nc_oc=Adngan91nzN2t_TxTQcD8rJnobXhQ6X30W78wbOoQxdSxygX44b0JiM1tAjV9tJmCR8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=o2Re-LPwIYT5qhJQAAJbig&_nc_ss=8&oh=00_Afw1eCoAYxKp0alNrTbO2c_-bokZz1tCvrg_z3jwDZkaCQ&oe=69B147FA" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(75)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494042137_1073421584844339_7383122083396571407_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=a934a8&_nc_ohc=YZTET_87jM0Q7kNvwH4sCAq&_nc_oc=AdlukebipI09qcHvz6t5SC-Y3-GVZxp1Q9VD39r1F6fxbxLD3pUXTWS6LGwtOrl_q1I&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=o2Re-LPwIYT5qhJQAAJbig&_nc_ss=8&oh=00_AfxPQZ_1PN5DEm6DiUMzZ-BlUqQVt1z6Jy-zVxVnJaew1g&oe=69B127AB" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(76)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495141307_1073421564844341_2609610677920491445_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=fp_0yhcxfvUQ7kNvwF90es3&_nc_oc=AdnyAhxCeufG0FpsKzAuefoXvFPyolN3Kpy63FjBSpZ-YyYHnKcusvll4eVJmWwd1UM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=o2Re-LPwIYT5qhJQAAJbig&_nc_ss=8&oh=00_Afy118oSORx3MJxlPA2eWOZMgiRocXCjgGjxgv-853wTeg&oe=69B123CC" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(77)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494232745_1073421378177693_2702453324774005169_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=plCr1En7kpoQ7kNvwFm0U3k&_nc_oc=AdlZIrGtiRfbv1D9Dfb_6tMVat7T-4x0mX9nPXN6IruZEVGufk1KRGxeXdorRnjIAlE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=o2Re-LPwIYT5qhJQAAJbig&_nc_ss=8&oh=00_AfxphevTnhYHIbnvAHjD6pbsr8E--oItARe9UqiWnzYy3Q&oe=69B13548" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(78)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/502739251_1073421374844360_7559008396566327337_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=a934a8&_nc_ohc=faKZWuXqJZUQ7kNvwGM1iKM&_nc_oc=AdmrxTAj2qGny3_ZupgYmFj3QKqyyA5A3jY-Z73nitR47lNn20GSPmAByqRtzvjywNc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=o2Re-LPwIYT5qhJQAAJbig&_nc_ss=8&oh=00_AfybxbPKNuon-WPflF8jTx-UWsCyjDiM1o2b5z53a8IO-g&oe=69B122BE" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(79)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/504277734_1073421314844366_1597180601782591535_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=a934a8&_nc_ohc=p7KFO6PO-RoQ7kNvwHYUUj7&_nc_oc=AdkKj477mD7WVk30Eyr43XaCePHZ0qBwfExduUOSRZ1jGFrCq8ZiI9W2nGGHIiJreTI&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=XaY10N0K6vZYqH0OEWrkFg&_nc_ss=8&oh=00_AfwIKRVLepkNfi_L0FOfFwASV1I3EWaQBy-0IEmRbh2mjw&oe=69B11D60" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(80)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/496076904_1073420518177779_4872146370520789804_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=dr9FeZnh-7kQ7kNvwFngdTX&_nc_oc=Adny3NFlnZXO6cu6zoAXGq05Hh8b2Nn0ogfchRYQDSnoe-erlIVgL4TfzM61kSXa-dM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=XaY10N0K6vZYqH0OEWrkFg&_nc_ss=8&oh=00_Afyh4nRMx6MJSrU6xJMbVh5hl7oQn7prjyn-SggnYsg2eQ&oe=69B13000" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(81)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/499489913_1073420501511114_1717994054790991776_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=YvicTWCBoH0Q7kNvwHVu-pj&_nc_oc=AdnSZ8AkqDi3Sx2B11WACoZ7m-OhASA11Vc5z_qN90J2NuDM8MckZ9gvt8ZUs4ju4aM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=XaY10N0K6vZYqH0OEWrkFg&_nc_ss=8&oh=00_AfyKDTDbHz2Zy4k4_AlwjWNz6uos4WEUAqA_p1NhEuWi6Q&oe=69B1392D" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(82)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/499686566_1073420411511123_1684735483189851235_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=sbja6UgCUuIQ7kNvwFj6oD0&_nc_oc=Adn6mG66bLS-mYXRdDckmVEHEPcOVgVQzKCsYilcbbdDpSgflTGtwePCxEJI3kozjmQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=XaY10N0K6vZYqH0OEWrkFg&_nc_ss=8&oh=00_Afz0PXj6SVEQvn7GEhGsNT7-KeuV3KAUIhs9_s-fVdASlg&oe=69B12392" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(83)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/492961149_1073420391511125_6225756172673502288_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=a934a8&_nc_ohc=_GwtM1tcwXIQ7kNvwEDhUIJ&_nc_oc=AdkK5-MbTWAbBgSfWQJ9PnBt36uHSzjecaBPQ_xk0oy6y7wY9dkpR22OzWMZshr5rQo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=XaY10N0K6vZYqH0OEWrkFg&_nc_ss=8&oh=00_AfxNEMwQk4IjghGBF7KEWRJGf09nLcoxlNpoTE_-LEdFKw&oe=69B1394A" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(84)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495264757_1073420364844461_4872667926562002451_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=a934a8&_nc_ohc=jO2zSvizhbUQ7kNvwHijaS8&_nc_oc=AdkY5C5rsFYpZrHtHTWQ-JAxl-sBFyVomgorwg-vhxTXXhOPIQKah5dD_ctkobuNyVw&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=XaY10N0K6vZYqH0OEWrkFg&_nc_ss=8&oh=00_Afz0_b1XzWmGqO3RlxYcX4gOZksvZfGJWnV6qM1uZOtk1w&oe=69B121B0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(85)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/497653021_1073420278177803_3353343371898612056_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=n5DrCeGjqccQ7kNvwERhP3Z&_nc_oc=AdkOiSh8zgNpInt1-n-L0kZp07A3xFPwQoQC7LgMCbrKZV5GPPDumMeR-ugpH0vxCtU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=XaY10N0K6vZYqH0OEWrkFg&_nc_ss=8&oh=00_AfwBye6KJkAiaz6PmZYaFqA6exG6sY3RhQsl7LDkjt479A&oe=69B1269B" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(86)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494021109_1073420291511135_4458813119128796995_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=a934a8&_nc_ohc=sgSMT6UNopAQ7kNvwGrAN2g&_nc_oc=AdmPsczPOSeFxOX-iHj4X2brypPxQJUEr2qzsP_puWzgDfXlRQHI096DCdwnAgW8DBU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=XaY10N0K6vZYqH0OEWrkFg&_nc_ss=8&oh=00_Afyww02Im93_xf9ij8-0in1XaGE86BSa3pG_oAzK-2PXZA&oe=69B126DB" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(87)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/492891111_1073420261511138_3798862798580127209_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=a934a8&_nc_ohc=V_cxhFy9cW4Q7kNvwFtcHHl&_nc_oc=AdnHugxuDEwcqvfGoxhnMcFKh7V18NnPuoFxAJSAzL1zce7tcUqGBr9nKs8uQhiDwyk&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ObXCMKVa5-eFMg8SUmahWQ&_nc_ss=8&oh=00_Afzz_MicYeJf4ANvyzM4vpVlg4fPLwVl4cmkescXmwldFQ&oe=69B12D7D" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(88)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/497915041_1073420244844473_6102955893987267486_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=-sibU2t-8H0Q7kNvwF3yhdQ&_nc_oc=Adm0FG65N9ivhEx8JLvRgAHgfPDsz265praqhibFE-6Mv4qHVHgiAjy4nnRzZ9Tgff8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ObXCMKVa5-eFMg8SUmahWQ&_nc_ss=8&oh=00_Afw8yqk6v8IblIJDBY-msUywkhAaf2Ufc7rFGZtQG8ymvw&oe=69B143F7" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(89)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494610874_1073420228177808_6157362430748818676_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=a934a8&_nc_ohc=-7XxFVkANvgQ7kNvwGeH36j&_nc_oc=Adl76gVVkxm00t8WwKWDQlY_yYjqUfNdv2xgeDhkVHtAb2oZcNpzVmbJSECE1rTn4xc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ObXCMKVa5-eFMg8SUmahWQ&_nc_ss=8&oh=00_AfyBtXDL5l1N9bl__yRDqhdXHBuTbkZPTXSinLvLrgje-A&oe=69B1418E" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(90)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/499852456_1073419948177836_3567637731893329459_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=a934a8&_nc_ohc=Yi_v6rnes6EQ7kNvwFnoTZc&_nc_oc=AdntDNl8AqmZ7ctCwL4B5MFsZNIcwVFYKlZ_m5Sn2Ip2rVYxMuXeOIwZN9vjg1STS8g&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ObXCMKVa5-eFMg8SUmahWQ&_nc_ss=8&oh=00_AfyvntTxofzenKndEyqhHe1WLuRgo8rjyfxyMlsZ0iUjJg&oe=69B12689" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(91)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/492568495_1073419881511176_5497181533585105198_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=EfY1seJrCS0Q7kNvwHK0cb7&_nc_oc=Adl0Iz2Qul-ksQlV4iPSZTPWd8UhlOjpTE_HmkkpHDHWop83WrLKx8n1R_J2kcHnf44&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ObXCMKVa5-eFMg8SUmahWQ&_nc_ss=8&oh=00_Afx8Uh7T_TkErBLG58kxlu-oOFrwzfgMLqifYnw_-xTekw&oe=69B145FD" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(92)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503103554_1073419871511177_5478919996983153778_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=Rkz2RhkD314Q7kNvwGtNRbV&_nc_oc=AdldBLZewY0F0Oy9RNzHMsimYO0mEOJlXtGMiUJFCThW1PWm02-kgs5In4_JUpgLGW0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ObXCMKVa5-eFMg8SUmahWQ&_nc_ss=8&oh=00_AfymIKkIkCDh7zqKtw2NeI_hMi5B96hpk6jjYwah4TkhzQ&oe=69B130C2" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(93)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495914025_1073419828177848_6284678803425461422_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=a934a8&_nc_ohc=yWMfgLjJ550Q7kNvwH0NiH3&_nc_oc=Admydm2wP3J_ovdVdqcaF-QcmGZfvcZweKDS94wnlZc8uJbIf79ATnQkVn1QrfB-fns&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ObXCMKVa5-eFMg8SUmahWQ&_nc_ss=8&oh=00_AfwXZet4nYZph_VkxnsZDwasU9VDO1N3UY-NmWfXtWCnCw&oe=69B11F9B" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(94)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/497768537_1073419784844519_3421216789563212079_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=cn2_UC7Rk1EQ7kNvwGEwbtf&_nc_oc=AdmTWvku4R99Hls7ULlODo7JgI6DH9nj7OL9fThqdPCg5ovnqIxHIYiEJVIOa8RhuTs&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=ObXCMKVa5-eFMg8SUmahWQ&_nc_ss=8&oh=00_AfyOLBzIy2FUT0MUOwiaiEBEjg2VcGd4HrgYeYT7LO_2Wg&oe=69B11CFB" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(95)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/504039330_1073419764844521_475983920047645012_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=0CA7QzOE198Q7kNvwHR7tOW&_nc_oc=AdkRiSpFwd6NB1nLRyjtohQbGgrzbvRVdQmTclHPkU-U1QyV89CPilAnD-jlDDFmXmQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=DQHOc9D1FH5RbwfiQLswgQ&_nc_ss=8&oh=00_AfxBr_Qw-3vCnPMxOVNDxTOEEbtiP03RLgZJSSvlEDI0Ww&oe=69B13600" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(96)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494278740_1073419748177856_995366325382012582_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=5UmkHW-YaLQQ7kNvwHvUzTQ&_nc_oc=AdnF7d6DFX96Hcw0dFMs6FEoMQMoXf-295oOL38Gp9U4afe8ku1bebj3g0hokKxU6rc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=DQHOc9D1FH5RbwfiQLswgQ&_nc_ss=8&oh=00_AfwtxaCuhRfU4N5JYmRvpBPCF1vlvPn-nsE9HRWqm-fdVg&oe=69B1268A" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(97)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/499494687_1072886671564497_4692676935652998836_n.jpg?stp=c300.0.1200.1200a_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=WjYPSQ8rgDcQ7kNvwE6JulD&_nc_oc=AdkjtGWgZ7ewlWL398QL11vjMIXAr7nS_Jiz1QHzkiNBUe5XEIfVVvFNVc5_sY7S_cA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=DQHOc9D1FH5RbwfiQLswgQ&_nc_ss=8&oh=00_Afy2PqJLqHjY9yoMhrhxKKNdWhFGfLIHIyeZ41S9MeiEyQ&oe=69B136F0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(98)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/501052864_1072886714897826_4801602112438642340_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=a934a8&_nc_ohc=4i4YjlKWDGAQ7kNvwH7md6G&_nc_oc=Adlq-9r1ALLFC24nOVV6KITlrZBBUxFbKGcLdn8cIa_VoRZ6yfRAsgctia9-vTarco8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=DQHOc9D1FH5RbwfiQLswgQ&_nc_ss=8&oh=00_AfzD37dSVg7bIGWmifu5gEx9E3axO-0RHQp27nytJn6Dpw&oe=69B15228" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(99)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495149247_1072886644897833_3928625309582371045_n.jpg?stp=c300.0.1200.1200a_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=YSyMBU8lDOsQ7kNvwHqEp_R&_nc_oc=AdmZEM_p60trxuwpVkCOB7-0JX54SC6Y9lmEtFJaSBkuBJXoEIWHdQOGx1_Htti6gM0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=DQHOc9D1FH5RbwfiQLswgQ&_nc_ss=8&oh=00_AfwBmst5sMgqNmQD-LZgDEcoCKOP5XDHC1cabsszs3hqFQ&oe=69B12ADB" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(100)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/493946649_1072886604897837_4822547427121444904_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=a934a8&_nc_ohc=ujD-H2ZgJGsQ7kNvwHckF2c&_nc_oc=Adlyx0FC3cQwFjkitkQLPnnm58Oxva66y7kbbpsZW2Jtm6zAT0irjJ7IVdM4myHkS_M&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=DQHOc9D1FH5RbwfiQLswgQ&_nc_ss=8&oh=00_AfwpbSR-COrQJdE7O0ycMqaJiDuvtuo7Io6BhklGw4-mZA&oe=69B14455" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(101)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/501044045_1072886551564509_4482255453660677746_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=fXBYaSoGzC8Q7kNvwGC_QBG&_nc_oc=AdmrAiMLk906SWLbUK2gBwNqcZSntI0hQuXbnUNlYE-Y3-AhOaobQHabct5EG_qrU2Y&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=DQHOc9D1FH5RbwfiQLswgQ&_nc_ss=8&oh=00_AfwPCsDMN0C58KcNX808AAaNbeYvo2qxxVqvYy_RdYPt5Q&oe=69B12793" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(102)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/493729201_1072886571564507_1261300584891053550_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=a934a8&_nc_ohc=EsfabK4Y1IIQ7kNvwGTczqC&_nc_oc=Admx7-XpOt2my5NaoGtrxxNzE3UIHuiyDL2ATtWEpy-Iwea2vXlc8nkDLDk0JBMPMXo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=DQHOc9D1FH5RbwfiQLswgQ&_nc_ss=8&oh=00_Afy5zVdyajSGAzPGaVjU9VttO1FGCDKfT9SDqsjH13hHUw&oe=69B14A1D" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(103)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/492508871_1072886498231181_587200207499126347_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=oXZvzQlWQWcQ7kNvwHf-JmV&_nc_oc=Adlda94tI4Ax5U1Xyt3xnEnA-gxnYbsigHKmdHwfsQ45cwHgFDE-ZhxZSbpJXj6IgEM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=_qJBzgog6-nGRbBrVZfffQ&_nc_ss=8&oh=00_Afz5QW5GhyEfwrSqQB7uXPrTB714xJ83mf4P4Dm0bGgSGA&oe=69B122D0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(104)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494434970_1072886464897851_3452842948312164442_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=a934a8&_nc_ohc=MmuIWnF9hyUQ7kNvwHxzy5O&_nc_oc=AdkMIDd1MaH_RVzCY2IcOkhPY1GiT-cShYl190iZH8uJo1Chj0d9e9Q46po8HKLMIwE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=_qJBzgog6-nGRbBrVZfffQ&_nc_ss=8&oh=00_Afy29nZSKZCnDPetFQEmUEwpqBRMtIRjUChiRyUiqeMu1w&oe=69B13B21" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(105)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/498241409_1071344378385393_5934852012331490738_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=AQgdayAVSFQQ7kNvwGtThCk&_nc_oc=Adnz_5WMqevPu3oHbJNcL9q9sAK5QJilIaXGQ_QEOpryinUv6kPbxK82tiX7KaJJRC8&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=_qJBzgog6-nGRbBrVZfffQ&_nc_ss=8&oh=00_Afwzneraz2Ocgz0s_K3IyZvWV1Ji-sBFIeV1iVgyX8zKnQ&oe=69B12FBB" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(106)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/493278540_1071344345052063_7769503207357270022_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=KsHPhsUaLBUQ7kNvwFBCku4&_nc_oc=AdnrTv2oexMU2legpa9P9D82B8w3A-Kq_YVipsTtWFr1mtfkSzbzYMcgaaavNlaVE5I&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=_qJBzgog6-nGRbBrVZfffQ&_nc_ss=8&oh=00_Afwp1bYCOFDPk7m0EwUjlPBC5wiee0XF6Ild7xg9yBi6dw&oe=69B11B8E" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(107)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/492953223_1071344321718732_1368975223213079453_n.jpg?stp=c0.135.1640.1640a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=vt5RyjAMEpMQ7kNvwHEd7OK&_nc_oc=Admaq4xZo5j2fezZS4AOftXeVF73_ka7C4Q1CYVHamHb_0KxOc1d8ALCgsGd_VuhB60&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=_qJBzgog6-nGRbBrVZfffQ&_nc_ss=8&oh=00_Afy7VeSz6BUHLsCS4gzGkiD9akPzEHu7Zn4McpI70pyU8Q&oe=69B13F58" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(108)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500778919_1071344268385404_8813345767801699991_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=EAesZ5IBuH4Q7kNvwFKqDsr&_nc_oc=AdluWK3wCM85GB9_yswy1Vn3UPYkKH6DPhItZxwckpNVPHIDKVsy9b25100BWRbzY0o&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=_qJBzgog6-nGRbBrVZfffQ&_nc_ss=8&oh=00_AfxC5wA25nEgjoQldQcvAUdbZd9UCSKEsL7jiSs7YTWjmg&oe=69B143ED" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(109)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/497874816_1071344255052072_5042554790838903759_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=0usIoIX5r4kQ7kNvwGEp6le&_nc_oc=Adn-I_SRdCgltdmTZ09HM49lsFd5Nhpz2DYHvVmxj3i_D7hhrFXutBXPMfi0-aMkohg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=_qJBzgog6-nGRbBrVZfffQ&_nc_ss=8&oh=00_AfxMcmB4efqLJ-9ciKb8XdTT25NWGJKuvrOJDPSYhWCcKA&oe=69B11B99" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(110)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/499977494_1071344185052079_34472344681506007_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=orByuF207LcQ7kNvwHvTJYT&_nc_oc=Adkl5qPbhK0IKRd88gK4vTtFQUTJ5xW2n4YFiICUBfGhZVudhJipJhWwNKVi9hTWp28&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=_qJBzgog6-nGRbBrVZfffQ&_nc_ss=8&oh=00_AfynKjcrfCMbpU2w7esQPc-mx9RMlYOpvdZrENKNK-hpCQ&oe=69B144A2" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(111)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/502555076_1071344181718746_5766588997792904882_n.jpg?stp=c0.135.1638.1638a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=V6_Suyky7EUQ7kNvwHfPsag&_nc_oc=AdnetovqOUf8vVSXAZaWA2dgt8UlOuqSn9OYuTF16spPqv6lAoQn_IyMJ1dpJLlzHSw&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=gdxDmLuI7fNK-HAg3sDsqA&_nc_ss=8&oh=00_Afzd3_wPzmVDMmSOXxVkMqc_A0zFW6XYmo8tvWu94MVjgg&oe=69B13A9D" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(112)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503804896_1071266655059832_3911055848144440505_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=YENUJn1RZrkQ7kNvwGJrm17&_nc_oc=Adk0J0lYEvKEtE4MXCOwIUsjuO6_S3sSxH4It9i5SobOLVPB8X6Blv-aVJrJR-5R65A&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=gdxDmLuI7fNK-HAg3sDsqA&_nc_ss=8&oh=00_AfzN7iUdBIRiP2JROQkDXIOICOLc3K3pANrKo_Ng19MlMQ&oe=69B14FAA" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(113)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503324110_1071266631726501_5662938979954922129_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=0eEUF6eAzjwQ7kNvwG16dV5&_nc_oc=Adl5BOBvVc88YWEsx9N1Mc1DhLy1AiC4Zilm8xaLDV_YDRX5lD-Jq-M5T2OfOz0nnwg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=gdxDmLuI7fNK-HAg3sDsqA&_nc_ss=8&oh=00_Afy2-luzVRhiwNN0dP7s-pc2vhoWg7Q7hrvgcyLZKStjqA&oe=69B1485B" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(114)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503621837_1071266615059836_6783069800261746150_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=-cF_5aH85FYQ7kNvwGLpi3s&_nc_oc=AdmMWOYzcNiDErtk0DZmVbdH_p34fjbkW0McdqhKZVuyhwBWyVBZTwRTg8LWqT6tkas&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=gdxDmLuI7fNK-HAg3sDsqA&_nc_ss=8&oh=00_AfwyG9hBYAz-HZIbs0W2gboDldcDEv9qUQr14WqkEHIpLg&oe=69B13EEE" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(115)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503233780_1071266585059839_5469501725508427555_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=NAFJISp_3-oQ7kNvwFm_GrG&_nc_oc=Adk6cjkSWuKlF9xE-2P1vnkRr77U1jocW-VTT6j2MDxCmI8QhC24Yg0Zz-Pcih5dsPA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=gdxDmLuI7fNK-HAg3sDsqA&_nc_ss=8&oh=00_AfyJAISHyvUn9opfM9j5ZIEIHcdRMlEc57TCiqPD4E-JEw&oe=69B13F92" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(116)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503199958_1071266558393175_1393328566282118550_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=wfN_aLYWepUQ7kNvwFLFC9_&_nc_oc=AdmttcnHW-thTckbBEvYtsiWbfbR1gQHT7KfcWZ5_JYsy9ig4Wt4uWG0UwTXIoJ_5LM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=gdxDmLuI7fNK-HAg3sDsqA&_nc_ss=8&oh=00_AfyJxhhFn1qGoVGpsM75T9C5WTNbYfReK14B8N1NLDBBxg&oe=69B14D1F" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(117)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503373758_1071266518393179_3259674105295565887_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=FtIbmtAvKrsQ7kNvwEqk2Df&_nc_oc=AdkJsQ-uXt9SXq-KdaFO43xf7ss_nirFNJfk9-hG6FH2fzdjooi78EwsLNros0kEX4g&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=gdxDmLuI7fNK-HAg3sDsqA&_nc_ss=8&oh=00_Afyr0aE9T3jAmx5Tm99uzDXEHLXDelG-T22iOg2b7lXJ6g&oe=69B12893" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(118)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503690876_1071266488393182_1512143153561488420_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=Oaz68hyGDsUQ7kNvwFAjVsQ&_nc_oc=AdnQMNYAjAuApSY92uGMmqEmBPoD5y0eog8Tv5Vax2CJ_5zsfIXN43MNFq_iy6Y4xLM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=gdxDmLuI7fNK-HAg3sDsqA&_nc_ss=8&oh=00_AfzwjNDgoZpMknKQKlqpn4NYvuLKBi4su-rTXJXbBGeNpg&oe=69B13A6B" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(119)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503530418_1071266471726517_1259332904894349362_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=pjDl2nX35qoQ7kNvwHPlGdH&_nc_oc=AdkKgzffDGL5UlypKBRpC-RffbNDz57N0A--DJPgR5Hx0ce4U_5BVHVYFXWRq6yGDqI&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=tJtgVgemOEwO4CXrL9tF4A&_nc_ss=8&oh=00_Afx09ZjWNEaxaCgyoy9IsS6V7Lb0EZAnnVxEDO-JhOghpQ&oe=69B13B46" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(120)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503276275_1071266461726518_872842431857137992_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=stdAcGKNR-8Q7kNvwE36He-&_nc_oc=AdnfBTTtDvxy-x9LU8uxe8vHr3t5yna89dLWPWj9vk8MebdAeQ5RqA3CiG0FxiN9YW0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=tJtgVgemOEwO4CXrL9tF4A&_nc_ss=8&oh=00_AfygoWgto4zT0eP2IPCis-GxRXSN62MmrWwzBMN8Ax4LWA&oe=69B15126" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(121)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503809202_1071266445059853_3865596007740548264_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=Py7O2HAJIxAQ7kNvwEsRhOj&_nc_oc=Admya1ng93W8MdmG30e2-x1AluppiZM-QlVzBXyFB3tqfFsP7SkQbc5ggUGoMSEeyKM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=tJtgVgemOEwO4CXrL9tF4A&_nc_ss=8&oh=00_Afx-GKckVGPYEADiKNSDVtC8vp3NzMP84eDgFgUNkZuD4A&oe=69B141D7" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(122)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503605256_1071266395059858_4454722596515036454_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=pEYbSNQ5ENIQ7kNvwGuyLcX&_nc_oc=AdkwEQeD6tXfkJ3ngbz6tXIALZmu5GYOVrJnsoBgBB3SSXyy-_GyTkQUhpF5QXfeodA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=tJtgVgemOEwO4CXrL9tF4A&_nc_ss=8&oh=00_Afzu_dwOCIrD0raLY8SgvS1b9y8B8RL-9GQv65K0zts3LA&oe=69B126DC" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(123)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503511227_1071266368393194_6434788179925131245_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=K1a92S0RYXUQ7kNvwErcJ9m&_nc_oc=AdnNt-6q8n_Qbxr7Ah8LvqRB769Tn3m3K_eIr1nRE1UhTzEZXDMRrDGIwtdIqex9k3s&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=tJtgVgemOEwO4CXrL9tF4A&_nc_ss=8&oh=00_AfwCG5bdWQH2BQtwVdGQHDKKhd5WRy7tEbxmHDfZ8eBGaw&oe=69B148CF" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(124)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503590421_1071266341726530_8943982203240090852_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=5sSB9pEXmvAQ7kNvwGLDC9S&_nc_oc=Adk3URT_0b9QHUEkidwX8Mg3njSaSKikvZSqVmTkmaPfb-gWi-Xuixv1NLmeCwXKg9A&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=tJtgVgemOEwO4CXrL9tF4A&_nc_ss=8&oh=00_AfwLVncpWlHJAyW3JMzjjGaZCKHikU0ZbMh31rk_hITI0A&oe=69B133ED" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(125)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503361532_1071266308393200_2925230244957029926_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=VKEKS4XD2egQ7kNvwEdXioA&_nc_oc=Adl4roR_6ryKFkprmbyapfDXeLBJFRo-ZyxiO86NZyTf23TuzqDvFJJqp78-FL02p9o&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=tJtgVgemOEwO4CXrL9tF4A&_nc_ss=8&oh=00_Afy-jOtDKZdGJNbRtLyst_UrxI2luukS6aQGJ3lQm0BtCQ&oe=69B14C5E" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(126)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503633813_1071266281726536_2430407590388948551_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=UjZgry19V_oQ7kNvwHxukQB&_nc_oc=Adna1IDAiHi_plOSsSEKmO2Q8W-njDVKrhyAv0s-Qvx0yER8hbkJkgXGNnNqaWgSsr0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=tJtgVgemOEwO4CXrL9tF4A&_nc_ss=8&oh=00_AfyoQ1uhv8YOdXknXL_uhdXWFwaB4felEgqpjdaiyx7znA&oe=69B1445D" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(127)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503572005_1071266248393206_3539249617047886467_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=9eYe2TeNBWcQ7kNvwGJCe5z&_nc_oc=AdmYcEB105oD9Rj9QLRcGeACzBAsJOh7TZxDYMf5qwQAI1AHSufGk_PAbm-K2z0T9vE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=27l7Ou25kh3k9OLNPXweJg&_nc_ss=8&oh=00_AfwTLRV-SITIM7sxcpcR65YW1rERlAQFFHi7rlBOfLfJJg&oe=69B1240F" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(128)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503485966_1071266225059875_2731748685651467188_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=QxlCsL54BpUQ7kNvwGAkA6w&_nc_oc=AdnX4qGErIlQCruTwkI5d4XHG2e3JrZb8WCn0RlzrJUEU65J3FmftHPAMhZ5wu-TsnY&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=27l7Ou25kh3k9OLNPXweJg&_nc_ss=8&oh=00_AfzW_ax_iLnx91wBxDt7k7GPwWmI7wRk1S_sNCpEue4iag&oe=69B13DEC" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(129)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503702079_1071266218393209_8064736985070185660_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=ev7Q--UVmSQQ7kNvwEK2XIi&_nc_oc=AdmJYajYKIWe7h3MO2o-PHcV7pFKVMZr19Sf1UI7ueQM8NyA13LICTskRfbQNOg5g-Y&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=27l7Ou25kh3k9OLNPXweJg&_nc_ss=8&oh=00_AfwV36XT_s1YWLhldmJkYTkfjeHzk9ecsVq0JQrKBEzHpA&oe=69B135CD" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(130)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503249674_1071266191726545_4021027640507986848_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=6UfHinZF2w0Q7kNvwF0SPQV&_nc_oc=AdmaAIuvcl8flHbW3mRluQ0ZTwjCC-F4enkNruq_TmRKIdiOb-X7VBk1cyRyIht-f7w&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=27l7Ou25kh3k9OLNPXweJg&_nc_ss=8&oh=00_AfwyX8cO4J5a0qLLHDUixr0Tun1mFYG4iDVSMaigNzVNhw&oe=69B12499" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(131)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503277050_1071266158393215_5759675218745139088_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=mfuzg0Xncd4Q7kNvwEiO0QX&_nc_oc=AdnjkOgeZ7JtM1OGl0wJ9WSJFyNr-_eYIcL5B18gbz-Pe-jyDpjfDH9iW_Di0cKxARI&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=27l7Ou25kh3k9OLNPXweJg&_nc_ss=8&oh=00_AfwjV7hWKTw_ydWXo1QuhEJXYBITVcVsak0zeQzWsUTihQ&oe=69B12F07" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(132)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503202449_1071266145059883_7394228477048353337_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=U7Hb_mWx29EQ7kNvwGKny8J&_nc_oc=AdnM9tEpqJlL3S1b4ctY8j7bg-lkpVVJSliL0tis1NoQaKs55vbC9iv2y8v2UXUiTKE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=27l7Ou25kh3k9OLNPXweJg&_nc_ss=8&oh=00_AfwXxT1Pblf7Hj1brQmRGBTdrIav9ftprRBFy3LCkGCXIQ&oe=69B11C6B" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(133)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503596844_1071266135059884_6585816398573972742_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=xKkJqdhXxQcQ7kNvwGAE_dX&_nc_oc=Adnn8y2HM2ExqN79mLiRTpYYTYfyDGP4ASKRdkLoosom6dAEik1Gmj2mOHKXSGmFZqE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=27l7Ou25kh3k9OLNPXweJg&_nc_ss=8&oh=00_Afy7eqQIX81IrGAp-M-i3XsoD8LpWlaRhmoWin42Gige-g&oe=69B144DC" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(134)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503214765_1071266088393222_3879471941463475532_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=egbOB238PUAQ7kNvwH0ktw1&_nc_oc=Adlev7dhGbQf5UhCNOM2zBOlamQFIy964rE-r-e6MQV0sAONNteDRWPb8IUDjuHvfgI&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=27l7Ou25kh3k9OLNPXweJg&_nc_ss=8&oh=00_AfzG4GxqJyoLc8BMLlYLaWaF_XrwiUFoio0X6qtQwTm5lw&oe=69B125F8" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(135)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503527875_1071266075059890_7178186547436654334_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=krJIjHZes8kQ7kNvwHoUA7Y&_nc_oc=AdmxVDPB-IxY47ekMfeYKm8I5Gh97RNieNn13qpn7f8gFfRMQPp8yheKv111wJ4_q6I&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=nhq3gOFsQkhWXMpwzh5NIA&_nc_ss=8&oh=00_AfyDKv0eUjbpdWDFsOSmoRy5EVdO-jplnzDrCl2gwdDgxw&oe=69B13155" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(136)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503567188_1071266038393227_801477329980683929_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=614Abd1uJpsQ7kNvwE_N6_R&_nc_oc=Admq0nr7351ibZwiaWH18BhRzTfhv6Ry3fGETXnuQdO0OxSZlpZ4JMOJAZ3luASji08&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=nhq3gOFsQkhWXMpwzh5NIA&_nc_ss=8&oh=00_AfyOelXoikXsRdYN1FdJlqJgMQ9ba9UB3AsObLTn9gLJ9g&oe=69B13E57" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(137)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503757648_1071266028393228_5217448753138112632_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=x7Is-adprP0Q7kNvwG9OeXo&_nc_oc=AdkMCfKffLaAizlAIqwnZZKcoLaQj1Mm3l2RhktmgK10BpfJYtNxNyF7XCWQfc02kE0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=nhq3gOFsQkhWXMpwzh5NIA&_nc_ss=8&oh=00_AfyV4rXG5wgOlPH20NOZKkhADU1VcOQI9jNgHd92jnvwpw&oe=69B1416A" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(138)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503503347_1071265958393235_1421226132417839308_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=iD4BrCtzbQYQ7kNvwFBuMCA&_nc_oc=Adk4XeJCYv3N6QvNx7UnRun-LZ3iOxbs6Dp26kcvn0Rt22btb8SO0h4rMotNxmZJNkc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=nhq3gOFsQkhWXMpwzh5NIA&_nc_ss=8&oh=00_AfwsGloq1Szb55hV46tfArTwgOTTTJIOfGPt6JilYdBH6Q&oe=69B12E2E" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(139)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/503537457_1071265971726567_7694309230099738691_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=t6ZHu_wKiioQ7kNvwFIFMW9&_nc_oc=AdmWEMKytj4ySo7bQjK5mi4IWqPjtqbuMABe6dcOxxJ6FZOUAkGxjCsG8MqCg0EMmOc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=nhq3gOFsQkhWXMpwzh5NIA&_nc_ss=8&oh=00_AfylTKHctn0KY7jDOGhafJXqqV3Nl3ugtGg8HtO-BN7j6w&oe=69B14A34" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(140)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495158094_1069162508603580_3426027637682821212_n.jpg?stp=c256.0.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=a934a8&_nc_ohc=8w6kUtP3zfIQ7kNvwHM0iv1&_nc_oc=AdnuJK4LdC8jct89Y5nIIJJ0UlkIYGf4LwSfnsqYBVqppF5Zn7_G_XS44FDQrRyrXIM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=nhq3gOFsQkhWXMpwzh5NIA&_nc_ss=8&oh=00_AfzwQWbPuuslJTa0cztayzpVljgp0UBizN4Ia08BmJzAUA&oe=69B136AD" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(141)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/498174655_1069162405270257_1490156547797199601_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=a934a8&_nc_ohc=tkwKxRDnx5sQ7kNvwFm8HML&_nc_oc=AdnE6mRe19AXnThh8n898GEMU1gA8gOStTg1mUYpHnlJezCbaczUO5gDIvWjxZCrH94&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=nhq3gOFsQkhWXMpwzh5NIA&_nc_ss=8&oh=00_AfyAz4iOYrkbhn3vPF72oykmQdEQL6VNG-J-R6gHQdCsJg&oe=69B13887" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(142)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/495278319_1069162388603592_2026474123739335164_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=a934a8&_nc_ohc=w0FKO5twZEgQ7kNvwGShdxK&_nc_oc=AdmKeu5ipO6j1bHbXjeXSKQqoi_K4pSTszwexSVloHXN4PnfCONy_Qfr5SJtbCad9zo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=nhq3gOFsQkhWXMpwzh5NIA&_nc_ss=8&oh=00_AfwCxUbeBKds8lA5K4pRYoqFt5D1l4lDJ4zsOVmOvRhcpA&oe=69B1351D" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(143)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500579254_1069162368603594_4793382984218497369_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=a934a8&_nc_ohc=2b5OOsfzliQQ7kNvwEtUduB&_nc_oc=AdltDJj87ULpbUMyTBOkf5e6x3bd00sPUd6gAllinQdSRa5RjHtb4ewvrX78B0nLmH4&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=kxEpazKKPLhQaSHgHV-h6w&_nc_ss=8&oh=00_Afxh_97NSyfL12A2XXOTKYxmk0bXrW2fd_6GIdyS3Oivrg&oe=69B1283E" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(144)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/502579241_1069162335270264_3467369395565091406_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=a934a8&_nc_ohc=3TiI87JaniwQ7kNvwExZCLm&_nc_oc=AdmyAKyy_j3ewJKcSHMu_vXcMbH_XaZ-Y0L-Ket4A44umjsnrYA7S08cTf_zKs7McaQ&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=kxEpazKKPLhQaSHgHV-h6w&_nc_ss=8&oh=00_AfyoU5kITpuwejaUNbefZE5Z-j4PKU5q7ODFv4P7uzWiDQ&oe=69B15057" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(145)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/494926244_1069162311936933_7082179893916158148_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=a934a8&_nc_ohc=E6_HqBvO5AIQ7kNvwHAo8GQ&_nc_oc=AdlvWqw6njF1cKs7G0J4PSsJjg3U9uFuyjFW-nu4MFngkfSHzEtnT9w3R8Inbymf3H0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=kxEpazKKPLhQaSHgHV-h6w&_nc_ss=8&oh=00_AfxH3MSqzIQIYErRyOBqOCbBRJkRPMxNy4-a2fLyytdUzQ&oe=69B14082" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(146)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500566625_1069162245270273_5706713226381343958_n.jpg?stp=c0.184.721.721a_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=a934a8&_nc_ohc=Bry1AiTHHL8Q7kNvwHTcZ3m&_nc_oc=AdmzrPFArglBpDgLFscfxfPB2YLatL1fHHy2esRB9BHjDf7-H4SaorvCqzh_X5cA0zE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=kxEpazKKPLhQaSHgHV-h6w&_nc_ss=8&oh=00_AfwYzHgpQklV3kZqdovot-mdEo3nFA1_DQddJHmB--C-rQ&oe=69B13E27" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(147)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500659001_1067048085481689_6472905032626408560_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=110&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=33BqaXHyUwUQ7kNvwEZLS-J&_nc_oc=AdmUyHm8E-gv_NIUOkQ8CV9ju6mDC110-pOJ7mBN0L-K3I8HWCqHm8jc3PQztdHfy5Y&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=kxEpazKKPLhQaSHgHV-h6w&_nc_ss=8&oh=00_AfzNQAlJd5Ft_4a7RN0G4CnMpg_jCo11NiES02L5Kh-fyg&oe=69B12900" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(148)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500707830_1067048018815029_6902838738404867147_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=F_Sx0ue_DGUQ7kNvwHRkjUc&_nc_oc=AdmujjSzKPqkCVwTzYYVEWzq1ZQ6EkFfC5KjhnEVHoQyggOsCxGYIyxXEMVCI6UQoA0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=kxEpazKKPLhQaSHgHV-h6w&_nc_ss=8&oh=00_Afxe2ihMhXj6gqQrTTgpgSLB0awdd8yIID31mC7EvfJh1g&oe=69B12BFA" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(149)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500682395_1067047972148367_3123683700354434167_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=ayOYYnj-47IQ7kNvwH34BjF&_nc_oc=AdnLl25xUEnqeW0QsaFBolLEObeDjBWJsPjhnEX-6umjKKpWVTGMmcDPnVTk6NbHBMc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=kxEpazKKPLhQaSHgHV-h6w&_nc_ss=8&oh=00_AfwWjyTCiS4GhVP4JhZUjMg1bqDsnbgykKlvTgvFM8O3_g&oe=69B130D2" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(150)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500476358_1067047478815083_4796954946178284624_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=V2pnSGKMlwQQ7kNvwHAzboW&_nc_oc=AdmiQFkeKfDDCvAyaxemAa-z8P0lhjLAUyeQZdjJAw7ptKm0Sxb21iHBtfcfIhTV_wI&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=kxEpazKKPLhQaSHgHV-h6w&_nc_ss=8&oh=00_AfxcVrV05K8hzvOSxG4R8Ub7OM2DC0Id1Y3r6I6nJihClA&oe=69B14921" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(151)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500947294_1067047415481756_8543264094986393360_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=aZ3e8bdy3tQQ7kNvwFgj0CZ&_nc_oc=Adnx3B4L_9Cq91KQmg8IbTgfvbodsUbfAT247HkHGMiXkGyH9TZJ2XPYClayNptSYFg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=YR0FmKPL1zi-tboSSFySMw&_nc_ss=8&oh=00_AfyXWFe0cSxrlLRs4Sr-fTiddbpGtL21l8Nsc04pznwkjw&oe=69B12041" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(152)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/501051212_1067047105481787_4627495104885015281_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=74Nwvzrhg_AQ7kNvwFRuOBB&_nc_oc=AdlzLpICqmFn6c-VxuT49-8w2o37Q_wO-wD4vqkaEAtvF-DB2rIUuJRbSFdj9III2tg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=YR0FmKPL1zi-tboSSFySMw&_nc_ss=8&oh=00_Afw-ui6gojXup6RqoZy4KT6DpMVgEyeK0XYo9N3nJFGEgg&oe=69B151C5" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(153)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500785259_1067047062148458_8710715560063432556_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=jObS0tM6cK4Q7kNvwG61m4X&_nc_oc=AdlfeKtuujMHPbsvpmd4nOBWEDAW2TmlIMg_HfsZ5d2fXCGu4A4WHx0a6MJcP2r8pmk&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=YR0FmKPL1zi-tboSSFySMw&_nc_ss=8&oh=00_AfxgXDy_tgGgN_pOnM_nmPrEcV4DgMJMmXAc3kzzoPVbzA&oe=69B11FD7" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(154)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500710102_1067048218815009_7145328463692025882_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=DpUabMNsLfsQ7kNvwGUp85o&_nc_oc=Adnpk-8AD-IbPANVGXkn7eJ5w6IjcSa-PhIIIxfvw6eWITtHtWsa6JEW68uQ-x9NOEo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=YR0FmKPL1zi-tboSSFySMw&_nc_ss=8&oh=00_AfzUoS0ujEs-yUciEhH645WQ4DTuIyAeNMvQIxrTdY3bBA&oe=69B14832" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(155)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500709758_1067048212148343_2363620845069640072_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=4fThTerlZ6kQ7kNvwGQWpG2&_nc_oc=AdnB1jrygsycT2e-lB7PGIIFst89UOA0o79S3kHyxdqawmJICYJhlaeBIAoWwYvPdLs&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=YR0FmKPL1zi-tboSSFySMw&_nc_ss=8&oh=00_AfzgDwyEnw-qKtmnTDUtDmYIPnhIbicvVmPZYYOaI1yldA&oe=69B12BA1" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(156)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500682407_1067048165481681_5837415798787476691_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=jOvewiovz8QQ7kNvwGhKNi5&_nc_oc=AdlDmTJAg_nu98erk-CkQJsvzqCkUPgOrWiz6ezXtPrqSdq_FsMKmyBVZwJ7hvG9kyM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=YR0FmKPL1zi-tboSSFySMw&_nc_ss=8&oh=00_Afzx1Mcs98o-l-HYr0ABKZjqrYp15eIROS5O9XD9Jr0rDw&oe=69B14510" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(157)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500707787_1067048168815014_3454159026641137297_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=8agDY9lVzn0Q7kNvwGjk7aH&_nc_oc=AdnbtiXuHJ0wnOyjpFj7_Hz7gAQYCMaNN3lFZMqccnw_Tnmyi06k39MPcoSFqD3XyBA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=YR0FmKPL1zi-tboSSFySMw&_nc_ss=8&oh=00_AfxQ836ZR4iaioQSQqSx97Fnq9z1z7d5VqzC7XD8X0uWYg&oe=69B14E28" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(158)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/501134404_1067048125481685_8027963602075698572_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=lrfYOzBcveQQ7kNvwH9sdtI&_nc_oc=Adm4lGWacp8Z6v_bKa67hKo3Wq2iMLmIvEmi_RS8ZsG29zGUZVLKyAm2lCCG0JoITTA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=YR0FmKPL1zi-tboSSFySMw&_nc_ss=8&oh=00_AfxhzAYKkjQlp2P7iCwDSLXVa3YafxhP8Djg41P0STpRXg&oe=69B12969" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(159)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500055617_1067048118815019_8510881084247064756_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=sZWOCqwKzBoQ7kNvwHPbmMz&_nc_oc=AdlgWwmzAnuamJoBYm_WsEr2ObnzL6jy-DI7660rw9dg0Cyta-_LN-gRG6wgoo3wi3k&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=vWBE-Z63inUPYGzZwljaow&_nc_ss=8&oh=00_AfxtBiFcqFVBCmXAvi3gGIHQPmMEw55nmlBIpBh6oeqzUQ&oe=69B128C1" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(160)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500353818_1067048078815023_7954871097184617120_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=hcSaCAH7uYEQ7kNvwEpqy4F&_nc_oc=AdlDHvPPV1yz-PIgPAqfseVE1kRXx2hWt_tSnckRowEOhL9L5ANyhKj0DCzLUyxSkmE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=vWBE-Z63inUPYGzZwljaow&_nc_ss=8&oh=00_AfxS1XIxHA6h3_YsX4Zh1iYgX0ZAcXOmbqfrMHMhtwZ6zw&oe=69B12599" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(161)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500709127_1067048015481696_8788263136759002625_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=iaRgjRCiGHMQ7kNvwERSjuL&_nc_oc=Adlw3-mjr3G1_PthM0sIWHsCALJDytyYZzfSu4r2ERx00i6f9Ovz6fb2whCDZQjYTcY&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=vWBE-Z63inUPYGzZwljaow&_nc_ss=8&oh=00_Afxjxo4h6lUJPhPWYz1M9Ow1KWN3NkXKWS3JZTEAbmF6jw&oe=69B145A8" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(162)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500710671_1067047978815033_3865360238854340782_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=100&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=eXObJ_GGL8oQ7kNvwEbJebS&_nc_oc=AdkA1s4XXJbXKAuEnopOuMtFfunutTx1PqdNMDcN3Zk6icXIOd4SDWa6fsn1tqqjpMg&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=vWBE-Z63inUPYGzZwljaow&_nc_ss=8&oh=00_AfwdUrCA89EH_g_tegUAJYU8jyul1aYiMJktUKomP6Rbwg&oe=69B1318A" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(163)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500732983_1067047948815036_6000884914492711916_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=ZIavlKp9keQQ7kNvwGtiopw&_nc_oc=AdmO586rD_0kgqIBUrYsf6Na0znL0AaVm8Xkim774pVelKbrlIibDBU_R-6KeVzG9XM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=vWBE-Z63inUPYGzZwljaow&_nc_ss=8&oh=00_AfyTeMT-HajDICA8JFosDI8xYkGBRhbdEF3_52uWNAbyVg&oe=69B12E40" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(164)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500241611_1067047938815037_278920272357886279_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=hWK-C38DI0wQ7kNvwG-08Ql&_nc_oc=AdnF25lZa533Bnm9m-5Rg2q1qFxUumIJNhlnOFv8I7T14FVzdcktpFm2UjyGtJK_SJ4&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=vWBE-Z63inUPYGzZwljaow&_nc_ss=8&oh=00_Afy61q3k3gEQUYVLPCVWDTDP6AO6Qcp1IhX0_OJItACcXg&oe=69B144F9" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(165)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/501023798_1067047912148373_8260363108053031140_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=104&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=aXwMO-G-kRkQ7kNvwHEMkPY&_nc_oc=Adkx_cTscbFwvTOCR2yHx9Nn18fXpnz93rQ8u3A9LI7fw9jN1spSSOhNCPVSS3WsoCA&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=vWBE-Z63inUPYGzZwljaow&_nc_ss=8&oh=00_AfxfK3cFjkdD1aRxvU6hOFNasKmRsn371aAnLEiSGGAHxA&oe=69B11C91" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(166)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/501069531_1067047918815039_5804515158226817115_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=eljDgWrQFTUQ7kNvwGJZ9di&_nc_oc=AdnQczKp4VdyxhEWpgNPv0l2ZhvtmBRsfFp66BDZAqxBkWdPykxlBcD3CdapghGZFc0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=vWBE-Z63inUPYGzZwljaow&_nc_ss=8&oh=00_Afw8i5XVokI6epX8oTSCJyuzBLqPGQLKDr9DxnT-7nDUXQ&oe=69B12F3D" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(167)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500063989_1067047885481709_2627929051995455755_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=111&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=Tc5Lsj5riSAQ7kNvwFV-PG6&_nc_oc=Adk6QGc9N0ieAfD1vqGC1FZ0xr7ja7Dqk--wjcp-93Nva9sVw0gkm6v4jEX5CxW746Q&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=bwRcPLoAgP8iFwZ3GH51-g&_nc_ss=8&oh=00_AfzVJigg5kYfgJZuIETcluCKp2gf8RvwJWelIzdR43PdYg&oe=69B1330F" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(168)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500707618_1067047878815043_6425491194204141935_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=4KVL8AZ28bgQ7kNvwG8UDf1&_nc_oc=Adk0ZWJdymOxxmj8Z3OV3OUdUNvjy7ANP2D3G-Xj4RlD3k1X8eCQK4iDvzrqPqH6qvc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=bwRcPLoAgP8iFwZ3GH51-g&_nc_ss=8&oh=00_AfxNI3SMOCUpjPPDvmpSs6dTHL87skSlReDtj9p7vckjhQ&oe=69B15229" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(169)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500474510_1067047852148379_666638827261825188_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=107&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=ODd29ppMAbcQ7kNvwFiTweF&_nc_oc=Adn9F6_L5zQLJGjhLjQvEYV9-WpdR6Td5STCOVlLtGrVC_RsBOVKXb_7f8YGX7eIBzk&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=bwRcPLoAgP8iFwZ3GH51-g&_nc_ss=8&oh=00_AfzqSVhoYPQW-HEB2LxXnVrKL58KiztMwmz-WhNsONSddw&oe=69B137BD" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(170)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500071480_1067047848815046_8869728325417797242_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=WioANuEeBy4Q7kNvwHKs0_w&_nc_oc=AdmcEEClDqxlcUNoI4WkMyiy-scvGYaRjM48SsCCmBZEs6LhOFCn_UVRMHwTk90dhHY&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=bwRcPLoAgP8iFwZ3GH51-g&_nc_ss=8&oh=00_AfzfcuLW3i1i3JLARDvO6M-yOA6XSp899mntl8skCWcAjg&oe=69B12D18" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(171)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500045523_1067047808815050_5849376705245530488_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=101&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=2N_ZDjw91EkQ7kNvwGtCgmK&_nc_oc=AdlTJdIpmZs6WtcD2jlWMOPI76mMm9N8iogqntM3znQgw0j35fZW4VNFiuWo99JL-eo&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=bwRcPLoAgP8iFwZ3GH51-g&_nc_ss=8&oh=00_AfyJK_CkNM-ORKasDDAFLtu5-cZ4GR2iucU0SbpS4OhMWQ&oe=69B11B0B" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(172)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500499499_1067047802148384_7847518000203100453_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=eorMVOLjXwUQ7kNvwFUe_VS&_nc_oc=AdngsgGv_XUBA_4FUwGItVA048ta-JS7cOwL6FNobqNaGhEWU86MBqPfm0oIFvFhJs4&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=bwRcPLoAgP8iFwZ3GH51-g&_nc_ss=8&oh=00_AfxG4BdGV0cLKm_5LeEl0dz3LMLgZBJBpJhO0rCZmigUlA&oe=69B12AF0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(173)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/501342688_1067047735481724_8891471460010335101_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=8n4lHlHVVHwQ7kNvwFYruPX&_nc_oc=AdlXDMvV2dfT69fSdRQU64TgI8VojLlpnOwAkMNAS989VKZ1IZq4sbCj5vpUuSMCxWE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=bwRcPLoAgP8iFwZ3GH51-g&_nc_ss=8&oh=00_AfzSKLLyYbUa2tjLnvVnUxBcSLWmr04j_OSkMF08MAx-Bg&oe=69B1340A" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(174)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500606248_1067047732148391_6848827950986009787_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=eW2VXNOEnxcQ7kNvwHJSmur&_nc_oc=Adlf3o7zdEz70TFh-bTiZD03Iaka8gjal5nUaqdLFZ9i83GDkpE80maB3T0pDAfnrqE&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=bwRcPLoAgP8iFwZ3GH51-g&_nc_ss=8&oh=00_AfzTBkuLC2pT-pfFcrPRM4pWmEsdVrz0uVPl6sidyPH6Xg&oe=69B12BC9" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(175)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500557639_1067047682148396_433390065444260317_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=YjdG7ovKQlsQ7kNvwEGtLLW&_nc_oc=AdlTPcC8UMBmona6g3aC8BBoPT0tkg0InDm3uTD1FehgVjKfPEoOLH6tntfequGfKf4&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=qUV60rdOCoe7DEM6N16WqQ&_nc_ss=8&oh=00_Afykq48iWVXbAFAGac0cpEUtkqmjLA5MrD-JQA8Hp44p_A&oe=69B12C04" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(176)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/501296760_1067047668815064_3354781589968680685_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=106&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=5spTftaktL8Q7kNvwFELSb6&_nc_oc=Adn5fcnK-M_QtFzvc0as9k6nQeS8LAwQvy0BXX7NHwp7eK9wP3tk5qzcrmtBA9I6JYM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=qUV60rdOCoe7DEM6N16WqQ&_nc_ss=8&oh=00_AfxK6pruSyH6F_GbTE8phbGU0wxZOTJ1HGZjtiE5P2HPjA&oe=69B11D53" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(177)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500679125_1067047622148402_8914443821183445482_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=103&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=TUdQ9_EhhQYQ7kNvwEQc-K3&_nc_oc=AdnlZB1uYCyZaVuYlX-BJAtO_6BDpNnGmaIkzooDBtBdINqrklkq2KnJTDDdK5ZEijc&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=qUV60rdOCoe7DEM6N16WqQ&_nc_ss=8&oh=00_Afzno45w5ruVlRPKNfKWZVC8XZvOvHM-N30nPix1S1OYlA&oe=69B12869" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(178)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500708597_1067047628815068_2642828048867235991_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=108&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=Pr0dx99diikQ7kNvwF330oD&_nc_oc=Adm5CVmJpV6T4LmlyH1HWm5VmMyg-ioAlaae2NlG2uF-QmiDXe2fA0PGbXRjZ5B8pXU&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=qUV60rdOCoe7DEM6N16WqQ&_nc_ss=8&oh=00_Afwk4zt_iMxnO44Zc6YbBPWLcysPYxoBj2fYbBdHj_nvNQ&oe=69B12AA0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(179)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500311257_1067047562148408_2670211812441193298_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=109&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=TFzhxdInMW4Q7kNvwEyMpmj&_nc_oc=AdnZPVsoJVfGlv0xziw5pLA6tAvDtB-LNbO4rb8-VGffSN6CHV2Xjc6-bWeuiS7Cido&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=qUV60rdOCoe7DEM6N16WqQ&_nc_ss=8&oh=00_AfzbmZyU3kLxwihMzllMXSAJvAa7DGJlqEphg7d5uJ_QbQ&oe=69B14029" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(180)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500044079_1067047535481744_4527735459286787511_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=102&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=rIeV60AhZMgQ7kNvwFzvGQi&_nc_oc=Adkx7YoFOyDck9dHeROKRH3VwdIeua3dletRZMzTCFDvByOY9CuPLf2I-Sg_mT9lhBM&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=qUV60rdOCoe7DEM6N16WqQ&_nc_ss=8&oh=00_AfxakDLjAkcR9cNaRqfpVJw9swA7XbHp52y8q8Lm2R-ywQ&oe=69B12DD0" alt="No photo description available." loading="lazy">
+        </div>
+        <div class="gallery-item" onclick="openLightbox(181)">
+          <img src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/500362194_1066822688837562_2108767278846673417_n.jpg?stp=c0.169.1536.1536a_cp6_dst-jpg_s600x600_tt6&_nc_cat=105&ccb=1-7&_nc_sid=5df8b4&_nc_ohc=9rR6BoFDEYEQ7kNvwGQr2QA&_nc_oc=AdmP3Xrs-dxCS-lJgPEQP9xwxj63DYaot-AvI8R_pkY8nD8FMZlX1-fmZuH-O86ujb0&_nc_zt=23&_nc_ht=scontent.fevn1-1.fna&_nc_gid=qMejgZc4lzN-4QfRPxkU1w&_nc_ss=8&oh=00_AfwpLmZ2G8YYKZ4s5IxZWVashyA8gK2VfvrAjJ1yxVXpkw&oe=69B1452D" alt="No photo description available." loading="lazy">
+        </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <button class="lightbox-nav lightbox-prev" onclick="navigate(-1)">&#8249;</button>
+    <img id="lightbox-img" src="" alt="">
+    <button class="lightbox-nav lightbox-next" onclick="navigate(1)">&#8250;</button>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+
+  <script>
+    const images = document.querySelectorAll('.gallery-item img');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const counter = document.getElementById('lightbox-counter');
+    let currentIndex = 0;
+
+    function openLightbox(index) {
+      currentIndex = index;
+      const src = images[index].src.replace('s600x600', 's960x960');
+      lightboxImg.src = src;
+      lightboxImg.alt = images[index].alt;
+      counter.textContent = (index + 1) + ' / ' + images.length;
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function navigate(dir) {
+      currentIndex = (currentIndex + dir + images.length) % images.length;
+      openLightbox(currentIndex);
+    }
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+    });
+  </script>
+</body>
+</html>

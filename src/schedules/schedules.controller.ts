@@ -6,7 +6,11 @@ import { BaseController } from '../base.controller';
 
 @Controller('schedules')
 export class SchedulesController extends BaseController<CreateScheduleDto, UpdateScheduleDto, SchedulesService> {
+  protected searchFields = ['title'];
+  protected filterFields = ['color', 'title'];
+  protected defaultRelations = ['students', 'trainers'];
+
   constructor(schedulesService: SchedulesService) {
-    super(schedulesService); // no redirect needed
+    super(schedulesService);
   }
 }

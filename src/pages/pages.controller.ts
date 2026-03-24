@@ -6,6 +6,9 @@ import { BaseController } from '../base.controller';
 
 @Controller('pages')
 export class PagesController extends BaseController<CreatePageDto, UpdatePageDto, PagesService> {
+  protected searchFields = ['title', 'slug', 'content', 'status'];
+  protected filterFields = ['status', 'title'];
+
   constructor(pagesService: PagesService) {
     super(pagesService);
   }

@@ -15,29 +15,27 @@
 <main class="flex-1 p-6 md:p-10 overflow-auto">
   {{> dashboard}}
   {{#if isAdmin}}
-  {{> user users=users}}
+  {{> user}}
   {{/if}}
-  {{> student students=students}}
-  {{> candidate candidates=candidates}}
-  {{> course courses=courses }}
-  {{> trainer trainers=trainers }}
-  {{> blog blogs=blogs }}
-  {{> schedule schedules=schedules }}
+  {{> student}}
+  {{> candidate}}
+  {{> course}}
+  {{> trainer}}
+  {{> blog}}
+  {{> schedule}}
   {{> analistic}}
   {{#if isAdmin}}
-  {{> seo seoEntries=seoEntries}}
-  {{> faq faqEntries=faqEntries}}
-  {{> pages pageEntries=pageEntries}}
+  {{> seo}}
+  {{> faq}}
+  {{> pages}}
   {{> setting}}
   {{/if}}
 </main>
 
 {{> modal}}
 <script>
-  history.pushState(null, '', location.href);
-  window.addEventListener('popstate', function () {
-    history.pushState(null, '', location.href);
-  });
+  window.__isAdmin = {{#if isAdmin}}true{{else}}false{{/if}};
+  window.__role = '{{role}}';
 </script>
 <script src="/javascript/admin.js"></script>
 </body>

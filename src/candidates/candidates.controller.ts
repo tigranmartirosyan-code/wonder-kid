@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Redirect } from '@nestjs/common';
+import { Body, Controller, Post, Redirect } from '@nestjs/common';
 import { CandidatesService } from './candidates.service';
 import { CreateCandidateDto } from './dto/create-candidate.dto';
 import { UpdateCandidateDto } from './dto/update-candidate.dto';
@@ -10,6 +10,9 @@ export class CandidatesController extends BaseController<
   UpdateCandidateDto,
   CandidatesService
 > {
+  protected searchFields = ['fullName', 'gender', 'phones'];
+  protected filterFields = ['gender', 'age'];
+
   constructor(candidatesService: CandidatesService) {
     super(candidatesService);
   }
