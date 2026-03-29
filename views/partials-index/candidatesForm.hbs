@@ -1,16 +1,16 @@
  <section style="background-color: #07993A" class="py-20 px-6 lg:px-12 animate-fadeIn">
     <div class="container mx-auto">
-      <h4 class="text-3xl text-white font-extrabold mb-6 text-center">APPLY FOR COURSE</h4>
+      <h4 class="text-3xl text-white font-extrabold mb-6 text-center">{{#if t.form.title}}{{t.form.title}}{{else}}APPLY FOR COURSE{{/if}}</h4>
 
       <form action="/candidates/register" method="post" class="flex flex-col md:flex-row items-center justify-center gap-4">
-        <input type="text" id="fullName" name="fullName" placeholder="Your full name *"
+        <input type="text" id="fullName" name="fullName" placeholder="{{#if t.form.namePh}}{{t.form.namePh}}{{else}}Your full name *{{/if}}"
                class="w-full md:w-auto px-4 py-3 rounded-none bg-white text-gray-800 transition duration-200">
-        <input type="email" id="email" name="email" placeholder="Your email *"
+        <input type="email" id="email" name="email" placeholder="{{#if t.form.emailPh}}{{t.form.emailPh}}{{else}}Your email *{{/if}}"
                class="w-full md:w-auto px-4 py-3 rounded-none bg-white text-gray-800 transition duration-200">
-        <input type="tel" id="phones" name="phones" placeholder="+374"
+        <input type="tel" id="phones" name="phones" placeholder="{{#if t.form.phonePh}}{{t.form.phonePh}}{{else}}+374{{/if}}"
                class="w-full md:w-auto px-4 py-3 rounded-none bg-white text-gray-800 transition duration-200">
         <button type="submit"
-          class="bg-blue-600 text-white text-sm font-medium px-8 py-3 rounded-none border-none hover:bg-blue-700 transition duration-200 transform hover:scale-105 shadow-md">APPLY NOW</button>
+          class="bg-blue-600 text-white text-sm font-medium px-8 py-3 rounded-none border-none hover:bg-blue-700 transition duration-200 transform hover:scale-105 shadow-md">{{#if t.form.submitBtn}}{{t.form.submitBtn}}{{else}}APPLY NOW{{/if}}</button>
       </form>
     </div>
   </section>

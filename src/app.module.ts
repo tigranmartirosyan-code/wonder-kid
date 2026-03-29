@@ -17,6 +17,11 @@ import { SchedulesModule } from './schedules/schedules.module';
 import { SeoModule } from './seo/seo.module';
 import { FaqModule } from './faq/faq.module';
 import { PagesModule } from './pages/pages.module';
+import { LandingSectionsModule } from './landing-sections/landing-sections.module';
+import { UploadModule } from './upload/upload.module';
+import { I18nMiddleware } from './i18n/i18n.middleware';
+import { LocalesController } from './locales/locales.controller';
+import { TranslateController } from './translate/translate.controller';
 
 
 
@@ -44,19 +49,24 @@ import { PagesModule } from './pages/pages.module';
     SeoModule,
     FaqModule,
     PagesModule,
+    LandingSectionsModule,
+    UploadModule,
   ],
 
-  controllers: [AppController],
+  controllers: [AppController, LocalesController, TranslateController],
   providers: [], // Add WebSocketGateway to providers
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(I18nMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.GET });
+
     consumer
       .apply(AuthMiddleware)
       .forRoutes(
         { path: '/admin', method: RequestMethod.ALL },
         { path: '/profile', method: RequestMethod.ALL },
       );
-
   }
 }

@@ -24,6 +24,24 @@ export class Trainer {
   @Column({ type: 'text', nullable: true })
   description: string;
 
+  @Column({ nullable: true })
+  fullName_hy: string;
+
+  @Column({ nullable: true })
+  fullName_ru: string;
+
+  @Column({ nullable: true })
+  role_hy: string;
+
+  @Column({ nullable: true })
+  role_ru: string;
+
+  @Column({ type: 'text', nullable: true })
+  description_hy: string;
+
+  @Column({ type: 'text', nullable: true })
+  description_ru: string;
+
   @Column({ type: 'text', nullable: true })
   image: string;
 

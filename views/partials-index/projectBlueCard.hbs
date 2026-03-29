@@ -1,25 +1,39 @@
 <section class="container mx-auto px-6 py-20 text-center">
-  <h2 class="text-3xl md:text-4xl font-extrabold mb-2">OUR PROJECTS</h2>
-  <h3 class="text-xl md:text-2xl font-bold mb-12">EXPERIENCE THE FUN</h3>
+  <h2 class="text-3xl md:text-4xl font-extrabold mb-2">
+    {{#if (eq lang 'hy')}}{{#if t.projects.title}}{{t.projects.title}}{{else}}{{#if section.title}}{{section.title}}{{else}}OUR PROJECTS{{/if}}{{/if}}
+    {{else if (eq lang 'ru')}}{{#if t.projects.title}}{{t.projects.title}}{{else}}{{#if section.title}}{{section.title}}{{else}}OUR PROJECTS{{/if}}{{/if}}
+    {{else}}{{#if section.title}}{{section.title}}{{else}}OUR PROJECTS{{/if}}{{/if}}
+  </h2>
+  <h3 class="text-xl md:text-2xl font-bold mb-12">
+    {{#if (eq lang 'hy')}}{{#if t.projects.subtitle}}{{t.projects.subtitle}}{{else}}{{#if section.subtitle}}{{section.subtitle}}{{else}}EXPERIENCE THE FUN{{/if}}{{/if}}
+    {{else if (eq lang 'ru')}}{{#if t.projects.subtitle}}{{t.projects.subtitle}}{{else}}{{#if section.subtitle}}{{section.subtitle}}{{else}}EXPERIENCE THE FUN{{/if}}{{/if}}
+    {{else}}{{#if section.subtitle}}{{section.subtitle}}{{else}}EXPERIENCE THE FUN{{/if}}{{/if}}
+  </h3>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-    <!-- Project Card 1 -->
+    {{#each (parseJSON section.body)}}
+    <div class="project-card p-4">
+      <h4 class="font-bold text-lg mb-1">{{this.title}}</h4>
+      {{#if this.desc}}<p class="text-sm text-gray-600 mt-1">{{this.desc}}</p>{{/if}}
+    </div>
+    {{else}}
     <div class="project-card  p-4">
-      <h4 class="font-bold text-lg mb-1">Basics of graphic design</h4>
+      <h4 class="font-bold text-lg mb-1">{{#if t.projects.p1}}{{t.projects.p1}}{{else}}Basics of graphic design{{/if}}</h4>
     </div>
     <div class="project-card p-4">
-      <h4 class="font-bold text-lg mb-1">3D effects</h4>
+      <h4 class="font-bold text-lg mb-1">{{#if t.projects.p2}}{{t.projects.p2}}{{else}}3D effects{{/if}}</h4>
     </div>
     <div class="project-card p-4">
-      <h4 class="font-bold text-lg mb-1">Branches of graphic design</h4>
+      <h4 class="font-bold text-lg mb-1">{{#if t.projects.p3}}{{t.projects.p3}}{{else}}Branches of graphic design{{/if}}</h4>
     </div>
     <div class="project-card p-4">
-      <h4 class="font-bold text-lg mb-1">Adobe Illustrator, Adobe Photoshop</h4>
+      <h4 class="font-bold text-lg mb-1">{{#if t.projects.p4}}{{t.projects.p4}}{{else}}Adobe Illustrator, Adobe Photoshop{{/if}}</h4>
     </div>
     <div class="project-card p-4">
-      <h4 class="font-bold text-lg mb-1">Brandbook creation</h4>
+      <h4 class="font-bold text-lg mb-1">{{#if t.projects.p5}}{{t.projects.p5}}{{else}}Brandbook creation{{/if}}</h4>
     </div>
     <div class="project-card p-4">
-      <h4 class="font-bold text-lg mb-1">Work with printing companies</h4>
+      <h4 class="font-bold text-lg mb-1">{{#if t.projects.p6}}{{t.projects.p6}}{{else}}Work with printing companies{{/if}}</h4>
     </div>
+    {{/each}}
   </div>
 </section>

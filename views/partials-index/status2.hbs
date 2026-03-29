@@ -1,30 +1,56 @@
 <section class="stats-section-2">
   <!-- Decorative SVG wave -->
   <div class="wave">
-    <svg width="100%" height="auto" viewBox="0 0 1440 348" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="100%" viewBox="0 0 1440 348" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" clip-rule="evenodd"
             d="M1437 21.6027V252.004H1438V317.004H-3V277.349V252.004V21.6027C-3 21.6027 46 4.10323 122.5 87.3491C159.598 127.718 217.273 108.438 278.989 87.8075C344.538 65.8952 414.646 42.459 469.5 87.3491C526.92 134.339 580.125 106.621 643.22 73.7495C697.151 45.6526 758.308 13.7912 835.5 21.6027C898.46 27.9741 954.073 52.8121 1003.88 75.0567C1086.58 111.992 1153.27 141.777 1211 68.004C1303.5 -50.1996 1437 21.6027 1437 21.6027Z"
             fill="#FDCB04" />
-
     </svg>
   </div>
   <div style="margin-top: -250px;" class="stats-container-yellow">
-
-    <div class="stat-card ">
-      <b>WHEN:</b>
-      <p>28.05.2024</p>
+    {{#if (eq lang 'en')}}
+    {{!-- English: DB items if saved, else locale --}}
+    {{#each (parseJSON section.body)}}
+    <div class="stat-card">
+      <b>{{this.label}}</b>
+      <p>{{this.value}}</p>
     </div>
-    <div class="stat-card ">
-      <b>Days:</b>
-      <p>Monday, Thursday (7pm - 9pm)</p>
-    </div>
-    <div class="stat-card ">
-      <b>Duration:</b>
-      <p>4 month</p>
+    {{else}}
+    <div class="stat-card">
+      <b>{{#if t.schedule.i1Label}}{{t.schedule.i1Label}}{{else}}WHEN:{{/if}}</b>
+      <p>{{#if t.schedule.i1Value}}{{t.schedule.i1Value}}{{else}}28.05.2026{{/if}}</p>
     </div>
     <div class="stat-card">
-      <b>Number of lessons:</b>
-      <p>16 lessons + 1 exam</p>
+      <b>{{#if t.schedule.i2Label}}{{t.schedule.i2Label}}{{else}}Days:{{/if}}</b>
+      <p>{{#if t.schedule.i2Value}}{{t.schedule.i2Value}}{{else}}Monday, Thursday (7pm - 9pm){{/if}}</p>
     </div>
+    <div class="stat-card">
+      <b>{{#if t.schedule.i3Label}}{{t.schedule.i3Label}}{{else}}Duration:{{/if}}</b>
+      <p>{{#if t.schedule.i3Value}}{{t.schedule.i3Value}}{{else}}4 months{{/if}}</p>
+    </div>
+    <div class="stat-card">
+      <b>{{#if t.schedule.i4Label}}{{t.schedule.i4Label}}{{else}}Number of lessons:{{/if}}</b>
+      <p>{{#if t.schedule.i4Value}}{{t.schedule.i4Value}}{{else}}16 lessons + 1 exam{{/if}}</p>
+    </div>
+    {{/each}}
+    {{else}}
+    {{!-- ARM / RUS: always locale --}}
+    <div class="stat-card">
+      <b>{{#if t.schedule.i1Label}}{{t.schedule.i1Label}}{{else}}WHEN:{{/if}}</b>
+      <p>{{#if t.schedule.i1Value}}{{t.schedule.i1Value}}{{else}}28.05.2026{{/if}}</p>
+    </div>
+    <div class="stat-card">
+      <b>{{#if t.schedule.i2Label}}{{t.schedule.i2Label}}{{else}}Days:{{/if}}</b>
+      <p>{{#if t.schedule.i2Value}}{{t.schedule.i2Value}}{{else}}Monday, Thursday (7pm - 9pm){{/if}}</p>
+    </div>
+    <div class="stat-card">
+      <b>{{#if t.schedule.i3Label}}{{t.schedule.i3Label}}{{else}}Duration:{{/if}}</b>
+      <p>{{#if t.schedule.i3Value}}{{t.schedule.i3Value}}{{else}}4 months{{/if}}</p>
+    </div>
+    <div class="stat-card">
+      <b>{{#if t.schedule.i4Label}}{{t.schedule.i4Label}}{{else}}Number of lessons:{{/if}}</b>
+      <p>{{#if t.schedule.i4Value}}{{t.schedule.i4Value}}{{else}}16 lessons + 1 exam{{/if}}</p>
+    </div>
+    {{/if}}
   </div>
 </section>

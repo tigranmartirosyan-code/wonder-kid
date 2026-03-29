@@ -1,7 +1,7 @@
 <section id="about" class="bg-gray-100 py-20 px-6 lg:px-12 animate-fadeIn" style="animation-delay: 0.8s;">
-  <div
-    class="container mx-auto flex flex-col lg:flex-row items-center justify-between space-y-12 lg:space-y-0 lg:space-x-12">
-    <!-- Left content -->
+  {{#with (parseJSON section.body) as |g|}}
+  {{!-- JSON body: has text + img1..img6 --}}
+  <div class="container mx-auto flex flex-col lg:flex-row items-center justify-between space-y-12 lg:space-y-0 lg:space-x-12">
     <div class="w-full lg:w-1/2 text-center lg:text-left">
       <div class="flex justify-center lg:justify-start items-center space-x-2 mb-4">
         <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
@@ -9,41 +9,77 @@
         <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
         <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
       </div>
-      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">Together, We Can Transform Education</h2>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">
+        {{#if (eq ../lang 'hy')}}{{#if ../t.about.title}}{{../t.about.title}}{{else}}{{#if section.title}}{{section.title}}{{else}}Together, We Can Transform Education{{/if}}{{/if}}
+        {{else if (eq ../lang 'ru')}}{{#if ../t.about.title}}{{../t.about.title}}{{else}}{{#if section.title}}{{section.title}}{{else}}Together, We Can Transform Education{{/if}}{{/if}}
+        {{else}}{{#if section.title}}{{section.title}}{{else}}Together, We Can Transform Education{{/if}}{{/if}}
+      </h2>
       <p class="text-lg text-gray-600 leading-relaxed mb-6">
-        By inviting joy and curiosity into the classroom, we can enable all students and educators to
-        thrive, developing the skills needed to build a better world for themselves and for others. Prepare
-        preschool and kindergarten students for school and life by building confidence and social skills
-        while igniting their STEAM journey. LEGO® Education Early Learning tools inspire natural curiosity
-        and encourage learning through play.
+        {{#if (eq ../lang 'hy')}}{{#if ../t.about.body}}{{../t.about.body}}{{else}}{{#if g.text}}{{g.text}}{{else}}By inviting joy and curiosity into the classroom, we can enable all students and educators to thrive, developing the skills needed to build a better world for themselves and for others.{{/if}}{{/if}}
+        {{else if (eq ../lang 'ru')}}{{#if ../t.about.body}}{{../t.about.body}}{{else}}{{#if g.text}}{{g.text}}{{else}}By inviting joy and curiosity into the classroom, we can enable all students and educators to thrive, developing the skills needed to build a better world for themselves and for others.{{/if}}{{/if}}
+        {{else}}{{#if g.text}}{{g.text}}{{else}}By inviting joy and curiosity into the classroom, we can enable all students and educators to thrive, developing the skills needed to build a better world for themselves and for others.{{/if}}{{/if}}
       </p>
-      <a href="#"
+      <a href="{{#if section.buttonLink}}{{section.buttonLink}}{{else}}#{{/if}}"
          class="inline-flex items-center text-lg font-semibold text-blue-600 hover:text-blue-800 transition duration-200">
-        READ MORE
-        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-             xmlns="http://www.w3.org/2000/svg">
+        {{#if (eq ../lang 'hy')}}{{#if ../t.about.readMore}}{{../t.about.readMore}}{{else}}{{#if section.buttonText}}{{section.buttonText}}{{else}}READ MORE{{/if}}{{/if}}
+        {{else if (eq ../lang 'ru')}}{{#if ../t.about.readMore}}{{../t.about.readMore}}{{else}}{{#if section.buttonText}}{{section.buttonText}}{{else}}READ MORE{{/if}}{{/if}}
+        {{else}}{{#if section.buttonText}}{{section.buttonText}}{{else}}READ MORE{{/if}}{{/if}}
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
         </svg>
       </a>
     </div>
-
-    <!-- Right image grid -->
     <div class="w-full lg:w-1/2 relative bg-yellow-400 p-4 rounded-3xl shadow-2xl">
       <div class="grid grid-cols-2 gap-4">
-        <img src="/images//pexels-a-darmel-7750686.png" alt="Student 1"
-             class="rounded-xl w-full h-auto object-cover">
-        <img src="/images//pexels-a-darmel-7750701.png" alt="Student 2"
-             class="rounded-xl w-full h-auto object-cover">
-        <img src="/images//pexels-a-darmel-7750704.png" alt="Student 3"
-             class="rounded-xl w-full h-auto object-cover">
-        <img src="/images//pexels-a-darmel-7750701.png" alt="Student 4"
-             class="rounded-xl w-full h-auto object-cover">
-        <img src="/images//pexels-a-darmel-7750686.png" alt="Student 5"
-             class="rounded-xl w-full h-auto object-cover">
-        <img src="/images//pexels-a-darmel-7750701.png" alt="Student 6"
-             class="rounded-xl w-full h-auto object-cover">
-
+        <img src="{{#if g.img1}}{{g.img1}}{{else}}/images/pexels-a-darmel-7750686.png{{/if}}" alt="Student 1" class="rounded-xl w-full h-auto object-cover">
+        <img src="{{#if g.img2}}{{g.img2}}{{else}}/images/pexels-a-darmel-7750701.png{{/if}}" alt="Student 2" class="rounded-xl w-full h-auto object-cover">
+        <img src="{{#if g.img3}}{{g.img3}}{{else}}/images/pexels-a-darmel-7750704.png{{/if}}" alt="Student 3" class="rounded-xl w-full h-auto object-cover">
+        <img src="{{#if g.img4}}{{g.img4}}{{else}}/images/pexels-a-darmel-7750701.png{{/if}}" alt="Student 4" class="rounded-xl w-full h-auto object-cover">
+        <img src="{{#if g.img5}}{{g.img5}}{{else}}/images/pexels-a-darmel-7750686.png{{/if}}" alt="Student 5" class="rounded-xl w-full h-auto object-cover">
+        <img src="{{#if g.img6}}{{g.img6}}{{else}}/images/pexels-a-darmel-7750701.png{{/if}}" alt="Student 6" class="rounded-xl w-full h-auto object-cover">
       </div>
     </div>
   </div>
+  {{else}}
+  {{!-- Plain text / no body fallback --}}
+  <div class="container mx-auto flex flex-col lg:flex-row items-center justify-between space-y-12 lg:space-y-0 lg:space-x-12">
+    <div class="w-full lg:w-1/2 text-center lg:text-left">
+      <div class="flex justify-center lg:justify-start items-center space-x-2 mb-4">
+        <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+        <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+        <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+        <div class="w-3 h-3 bg-yellow-400 rounded-full"></div>
+      </div>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">
+        {{#if (eq lang 'hy')}}{{#if t.about.title}}{{t.about.title}}{{else}}{{#if section.title}}{{section.title}}{{else}}Together, We Can Transform Education{{/if}}{{/if}}
+        {{else if (eq lang 'ru')}}{{#if t.about.title}}{{t.about.title}}{{else}}{{#if section.title}}{{section.title}}{{else}}Together, We Can Transform Education{{/if}}{{/if}}
+        {{else}}{{#if section.title}}{{section.title}}{{else}}Together, We Can Transform Education{{/if}}{{/if}}
+      </h2>
+      <p class="text-lg text-gray-600 leading-relaxed mb-6">
+        {{#if (eq lang 'hy')}}{{#if t.about.body}}{{t.about.body}}{{else}}{{#if section.body}}{{section.body}}{{else}}By inviting joy and curiosity into the classroom, we can enable all students and educators to thrive, developing the skills needed to build a better world for themselves and for others.{{/if}}{{/if}}
+        {{else if (eq lang 'ru')}}{{#if t.about.body}}{{t.about.body}}{{else}}{{#if section.body}}{{section.body}}{{else}}By inviting joy and curiosity into the classroom, we can enable all students and educators to thrive, developing the skills needed to build a better world for themselves and for others.{{/if}}{{/if}}
+        {{else}}{{#if section.body}}{{section.body}}{{else}}By inviting joy and curiosity into the classroom, we can enable all students and educators to thrive, developing the skills needed to build a better world for themselves and for others.{{/if}}{{/if}}
+      </p>
+      <a href="{{#if section.buttonLink}}{{section.buttonLink}}{{else}}#{{/if}}"
+         class="inline-flex items-center text-lg font-semibold text-blue-600 hover:text-blue-800 transition duration-200">
+        {{#if (eq lang 'hy')}}{{#if t.about.readMore}}{{t.about.readMore}}{{else}}{{#if section.buttonText}}{{section.buttonText}}{{else}}READ MORE{{/if}}{{/if}}
+        {{else if (eq lang 'ru')}}{{#if t.about.readMore}}{{t.about.readMore}}{{else}}{{#if section.buttonText}}{{section.buttonText}}{{else}}READ MORE{{/if}}{{/if}}
+        {{else}}{{#if section.buttonText}}{{section.buttonText}}{{else}}READ MORE{{/if}}{{/if}}
+        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+    <div class="w-full lg:w-1/2 relative bg-yellow-400 p-4 rounded-3xl shadow-2xl">
+      <div class="grid grid-cols-2 gap-4">
+        <img src="{{#if section.imageUrl}}{{section.imageUrl}}{{else}}/images/pexels-a-darmel-7750686.png{{/if}}" alt="Student 1" class="rounded-xl w-full h-auto object-cover">
+        <img src="/images/pexels-a-darmel-7750701.png" alt="Student 2" class="rounded-xl w-full h-auto object-cover">
+        <img src="/images/pexels-a-darmel-7750704.png" alt="Student 3" class="rounded-xl w-full h-auto object-cover">
+        <img src="/images/pexels-a-darmel-7750701.png" alt="Student 4" class="rounded-xl w-full h-auto object-cover">
+        <img src="/images/pexels-a-darmel-7750686.png" alt="Student 5" class="rounded-xl w-full h-auto object-cover">
+        <img src="/images/pexels-a-darmel-7750701.png" alt="Student 6" class="rounded-xl w-full h-auto object-cover">
+      </div>
+    </div>
+  </div>
+  {{/with}}
 </section>

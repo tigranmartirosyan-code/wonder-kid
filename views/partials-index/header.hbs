@@ -1,5 +1,4 @@
 <!-- Fixed Header & Navigation -->
-<!-- The 'fixed' and 'top-0' classes make the header stick to the top -->
 <header class="fixed top-0 left-0 w-full z-50 bg-white shadow-lg p-6">
   <nav class="container mx-auto flex justify-between items-center">
     <div class="flex items-center space-x-2">
@@ -7,25 +6,47 @@
               data="/svg/Group 4.svg"
               class="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl h-auto">
       </object>
-
     </div>
     <div class="hidden lg:flex items-center space-x-6">
-      <a href="#products" class="text-sm font-medium hover:text-blue-600 transition duration-200">OUR COURSES</a>
-      <a href="#about" class="text-sm font-medium hover:text-blue-600 transition duration-200">ABOUT US</a>
-      <a href="#contact-form" class="text-sm font-medium hover:text-blue-600 transition duration-200">CONTACT
-        US</a>
-      <a href="#" class="text-sm font-medium hover:text-blue-600 transition duration-200">BLOG</a>
+      <a href="#products" class="text-sm font-medium hover:text-blue-600 transition duration-200">{{#if t.nav.courses}}{{t.nav.courses}}{{else}}OUR COURSES{{/if}}</a>
+      <a href="#about"    class="text-sm font-medium hover:text-blue-600 transition duration-200">{{#if t.nav.about}}{{t.nav.about}}{{else}}ABOUT US{{/if}}</a>
+      <a href="#contact-form" class="text-sm font-medium hover:text-blue-600 transition duration-200">{{#if t.nav.contact}}{{t.nav.contact}}{{else}}CONTACT US{{/if}}</a>
+      <a href="#"         class="text-sm font-medium hover:text-blue-600 transition duration-200">{{#if t.nav.blog}}{{t.nav.blog}}{{else}}BLOG{{/if}}</a>
       <a href="#products"
-         class="bg-blue-600 text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-blue-700 transition duration-200 transform hover:scale-105 shadow-md">COURSES</a>
-      <div class="flex items-center space-x-1">
-        <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8a4 4 0 000-8zM2 8a6 6 10 12 0a6 6 0 00-12 0z"
-                clip-rule="evenodd"></path>
-        </svg>
-        <span class="text-sm font-medium text-gray-600">ENG</span>
+         class="bg-blue-600 text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-blue-700 transition duration-200 transform hover:scale-105 shadow-md">{{#if t.nav.coursesCta}}{{t.nav.coursesCta}}{{else}}COURSES{{/if}}</a>
+
+      <!-- Language switcher pill (desktop) -->
+      <div class="flex items-center border border-gray-200 rounded-full overflow-hidden text-xs font-semibold">
+        <a href="/lang/en"
+           class="px-3 py-1.5 transition {{#if (eq lang 'en')}}bg-blue-600 text-white{{else}}text-gray-600 hover:bg-gray-100{{/if}}">ENG</a>
+        <a href="/lang/hy"
+           class="px-3 py-1.5 transition border-l border-gray-200 {{#if (eq lang 'hy')}}bg-blue-600 text-white{{else}}text-gray-600 hover:bg-gray-100{{/if}}">ARM</a>
+        <a href="/lang/ru"
+           class="px-3 py-1.5 transition border-l border-gray-200 {{#if (eq lang 'ru')}}bg-blue-600 text-white{{else}}text-gray-600 hover:bg-gray-100{{/if}}">RUS</a>
       </div>
+
+      <!-- Dark / Light mode toggle -->
+      <button id="theme-toggle" aria-label="Toggle dark mode">
+        <!-- Sun icon — shown in dark mode -->
+        <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <!-- Moon icon — shown in light mode -->
+        <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
     </div>
-    <div class="lg:hidden">
+    <div class="lg:hidden flex items-center gap-3">
+      <!-- Dark / Light mode toggle (mobile) -->
+      <button id="theme-toggle-mobile" aria-label="Toggle dark mode" onclick="document.getElementById('theme-toggle').click()" class="theme-toggle-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="theme-mobile-sun" style="display:none">
+          <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="theme-mobile-moon">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
       <button id="menu-btn" class="text-gray-600 focus:outline-none">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
              xmlns="http://www.w3.org/2000/svg">
@@ -37,18 +58,21 @@
   </nav>
   <!-- Mobile Menu -->
   <div id="nav-menu" class="hidden lg:hidden flex flex-col items-center mt-4 space-y-4">
-    <a href="#products" class="text-sm font-medium hover:text-blue-600 transition duration-200">OUR COURSES</a>
-    <a href="#about" class="text-sm font-medium hover:text-blue-600 transition duration-200">ABOUT US</a>
-    <a href="#contact-form" class="text-sm font-medium hover:text-blue-600 transition duration-200">CONTACT US</a>
-    <a href="#" class="text-sm font-medium hover:text-blue-600 transition duration-200">BLOG</a>
+    <a href="#products"    class="text-sm font-medium hover:text-blue-600 transition duration-200">{{#if t.nav.courses}}{{t.nav.courses}}{{else}}OUR COURSES{{/if}}</a>
+    <a href="#about"       class="text-sm font-medium hover:text-blue-600 transition duration-200">{{#if t.nav.about}}{{t.nav.about}}{{else}}ABOUT US{{/if}}</a>
+    <a href="#contact-form" class="text-sm font-medium hover:text-blue-600 transition duration-200">{{#if t.nav.contact}}{{t.nav.contact}}{{else}}CONTACT US{{/if}}</a>
+    <a href="#"            class="text-sm font-medium hover:text-blue-600 transition duration-200">{{#if t.nav.blog}}{{t.nav.blog}}{{else}}BLOG{{/if}}</a>
     <a href="#products"
-       class="bg-blue-600 text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-blue-700 transition duration-200 transform hover:scale-105 shadow-md">COURSES</a>
-    <div class="flex items-center space-x-1">
-      <svg class="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8a4 4 0 000-8zM2 8a6 6 0 1012 0a6 6 0 00-12 0z"
-              clip-rule="evenodd"></path>
-      </svg>
-      <span class="text-sm font-medium text-gray-600">ENG</span>
+       class="bg-blue-600 text-white text-sm font-medium px-6 py-2 rounded-full hover:bg-blue-700 transition duration-200 transform hover:scale-105 shadow-md">{{#if t.nav.coursesCta}}{{t.nav.coursesCta}}{{else}}COURSES{{/if}}</a>
+
+    <!-- Language switcher pill (mobile) -->
+    <div class="flex items-center border border-gray-200 rounded-full overflow-hidden text-xs font-semibold">
+      <a href="/lang/en"
+         class="px-3 py-1.5 transition {{#if (eq lang 'en')}}bg-blue-600 text-white{{else}}text-gray-600 hover:bg-gray-100{{/if}}">ENG</a>
+      <a href="/lang/hy"
+         class="px-3 py-1.5 transition border-l border-gray-200 {{#if (eq lang 'hy')}}bg-blue-600 text-white{{else}}text-gray-600 hover:bg-gray-100{{/if}}">ARM</a>
+      <a href="/lang/ru"
+         class="px-3 py-1.5 transition border-l border-gray-200 {{#if (eq lang 'ru')}}bg-blue-600 text-white{{else}}text-gray-600 hover:bg-gray-100{{/if}}">RUS</a>
     </div>
   </div>
 </header>

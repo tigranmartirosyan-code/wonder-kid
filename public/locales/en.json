@@ -1,0 +1,178 @@
+{
+  "nav": {
+    "courses": "OUR COURSES",
+    "about": "ABOUT US",
+    "contact": "CONTACT US",
+    "blog": "BLOG",
+    "home": "HOME",
+    "coursesCta": "COURSES"
+  },
+  "hero": {
+    "title": "LEGO® EDUCATION INSPIRES LEARNING YOU CAN BUILD ON",
+    "body": "Learning solutions designed to empower students and teachers, build deeper understanding and engagement, and ignite a life-long love of learning.",
+    "elementary": "ELEMENTARY",
+    "kindergarten": "KINDERGARTEN",
+    "middle": "MIDDLE"
+  },
+  "limitless": {
+    "title": "UNLOCK LIMITLESS POTENTIAL",
+    "subtitle": "Meaningful learning, extraordinary engagement, and the resources and support to ensure success.",
+    "card1Title": "LEARN THROUGH PLAY",
+    "card1Desc": "LEGO-based activities that make complex STEAM concepts accessible and fun for children of all ages.",
+    "card2Title": "BUILD & PROGRAM ROBOTS",
+    "card2Desc": "Kids design, build, and code robots using LEGO WeDo 2.0, developing engineering and programming skills hands-on.",
+    "card3Title": "COLLABORATIVE PROJECTS",
+    "card3Desc": "Team-based challenges that develop communication, problem-solving, and critical thinking skills through building together.",
+    "card4Title": "CERTIFIED CURRICULUM",
+    "card4Desc": "Standards-aligned lesson plans designed by LEGO Education experts, ensuring quality learning outcomes for every student."
+  },
+  "stats": {
+    "s1Value": "4+",
+    "s1Label": "Year Experience",
+    "s2Value": "300+",
+    "s2Label": "Members in Our Community",
+    "s3Value": "400+",
+    "s3Label": "Standards-Aligned Lessons"
+  },
+  "schedule": {
+    "i1Label": "WHEN:",
+    "i1Value": "28.05.2026",
+    "i2Label": "Days:",
+    "i2Value": "Monday, Thursday (7pm - 9pm)",
+    "i3Label": "Duration:",
+    "i3Value": "4 months",
+    "i4Label": "Number of lessons:",
+    "i4Value": "16 lessons + 1 exam"
+  },
+  "about": {
+    "title": "Together, We Can Transform Education",
+    "body": "By inviting joy and curiosity into the classroom, we can enable all students and educators to thrive, developing the skills needed to build a better world for themselves and for others.",
+    "readMore": "READ MORE"
+  },
+  "about2": {
+    "title": "OUR SHORT STORY",
+    "body": "By inviting joy and curiosity into the classroom, we can enable all students and educators to thrive, developing the skills needed to build a better world for themselves and for others.",
+    "readMore": "READ MORE"
+  },
+  "about1": {
+    "title": "LEGO WEDO 2.0",
+    "body": "Adobe Illustrator · Adobe Photoshop · Logo and brand identity creation",
+    "price": "15.000 AMD",
+    "applyNow": "APPLY NOW"
+  },
+  "legoWedo": {
+    "title": "WHY PARTICIPATE IN THE LEGO WEDO 2.0 COURSE?",
+    "body": "If you have a passion for drawing and sketching, or are intrigued by the world of design, you can begin your journey of acquiring exciting expertise through this course. This is an online course so you can join us wherever you are.",
+    "subtitle": "The online Graphic Design Course offers a range of advantages:",
+    "li1": "Online format lets you join the course from any location. No need to spend time on transport.",
+    "li2": "You will learn to collaborate with printing houses during the course. For this purpose, we will visit a printing house to get familiar with the working processes at the place.",
+    "li3": "By the end of the main part of the course, you will have an additional month to work with your trainer remotely to create and polish your portfolio.",
+    "li4": "After completing the course, you will be ready to apply for Junior Graphic Designer positions.",
+    "creatingTitle": "During the course, we focus on developing a deep understanding of creative processes, color theory, styles, and composition. We will delve into the art of creating:",
+    "logo": "Logos",
+    "branding": "Company branding and style",
+    "packaging": "Product packaging",
+    "printed": "Printed materials such as brochures and flyers",
+    "typography": "Typography",
+    "illustrations": "Illustrations",
+    "conclusion": "By the end of the course, you will have generated your initial portfolio pieces, positioning you to seek out roles as a Junior Graphic Designer."
+  },
+  "product": {
+    "heading1": "OUR PRODUCTS INCLUDE",
+    "heading2": "STANDARDS-ALIGNED LESSONS",
+    "duration": "DURATION:"
+  },
+  "form": {
+    "title": "APPLY FOR COURSE",
+    "namePh": "Your full name *",
+    "emailPh": "Your email *",
+    "phonePh": "+374",
+    "submitBtn": "APPLY NOW"
+  },
+  "projects": {
+    "title": "OUR PROJECTS",
+    "subtitle": "EXPERIENCE THE FUN",
+    "p1": "Basics of graphic design",
+    "p2": "3D effects",
+    "p3": "Branches of graphic design",
+    "p4": "Adobe Illustrator, Adobe Photoshop",
+    "p5": "Brandbook creation",
+    "p6": "Work with printing companies"
+  },
+  "coaches": {
+    "title": "OUR COACHES",
+    "c1Name": "MARIAM MARTIROSYAN",
+    "c1Role": "CEO & Founder",
+    "c2Name": "LILIT HOVHANNISYAN",
+    "c2Role": "LEGO system coach",
+    "c3Name": "ROSA TSERUNYAN",
+    "c3Role": "LEGO system coach",
+    "c4Name": "MERY POGHOSYAN",
+    "c4Role": "ART Teacher"
+  },
+  "partners": {
+    "title": "PARTNERS"
+  },
+  "blogBg": {
+    "title": "BLOG"
+  },
+  "blog": {
+    "category": "CATEGORY",
+    "searchPlaceholder": "Search blogs by title or description...",
+    "filterAll": "All",
+    "filterSteam": "Steam",
+    "filterEducation": "Education",
+    "filterEvents": "Events",
+    "filterLegoEducation": "LEGO education",
+    "filterPopular": "Popular",
+    "filterScience": "Science",
+    "lastDay": "Last day",
+    "last7Days": "Last 7 days",
+    "last30Days": "Last 30 days",
+    "lastQuarter": "Last quarter",
+    "lastYear": "Last year",
+    "previous": "Previous",
+    "next": "Next",
+    "readMore": "Read more",
+    "noBlogs": "No blogs found matching your criteria.",
+    "loadError": "Failed to load blogs. Please check your network connection and server."
+  },
+  "trainers": {
+    "title": "TRAINERS",
+    "aboutBtn": "About Trainer"
+  },
+  "testimonials": {
+    "title": "LOVED BY PARENTS",
+    "t1Quote": "LEGO Education has changed the way I feel about teaching tremendously. (...) When I introduced the LEGO bricks, all of a sudden, a lot of lights turned on in the classroom. (...)",
+    "t1Name": "MARIE YANK",
+    "t1Role": "Teacher, formerly from Columbia County Georgia",
+    "t2Quote": "(...) Two of the skills that I think are super important to have in the real world are critical thinking and problem solving. Both of those skills are fostered quite easily through LEGO Education.",
+    "t2Name": "ALICIA MILLER",
+    "t2Role": "Technology and Engineering Teacher",
+    "t3Quote": "The courses are fantastic! My child has learned so much and has developed a real passion for building and problem-solving.",
+    "t3Name": "JANE DOE",
+    "t3Role": "Parent"
+  },
+  "contact": {
+    "title": "HELLO",
+    "subtitle": "Our team of experts is here to help find the solution that fits your students' needs.",
+    "heading": "CONTACT US",
+    "interested": "I'm interested in becoming a*",
+    "client": "Client",
+    "partner": "Partner",
+    "namePh": "Your Name *",
+    "emailPh": "Your Email *",
+    "phonePh": "Phone number *",
+    "messagePh": "Tell us about your project*",
+    "submitBtn": "CONTACT US"
+  },
+  "yellowBoard": {
+    "title": "BRING LEGO® EDUCATION TO YOUR SCHOOL OR DISTRICT",
+    "btn": "CONTACT US"
+  },
+  "common": {
+    "readMore": "READ MORE",
+    "applyNow": "APPLY NOW",
+    "copyright": "© 2024 Wonderkid. All rights reserved. Other marks are the property of their respective owners."
+  }
+}

@@ -1,6 +1,21 @@
 <section class="bg-gray-100 py-20 px-6 lg:px-12 text-center animate-fadeIn" style="animation-delay: 1.8s;">
     <div class="container mx-auto">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-12">PARTNERS</h2>
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-12">{{#if section.title}}{{section.title}}{{else}}{{#if t.partners.title}}{{t.partners.title}}{{else}}PARTNERS{{/if}}{{/if}}</h2>
+      {{#with (parseJSON section.body) as |partners|}}
+      <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16">
+        {{#each partners}}
+        <div class="ls-partner-item flex flex-col items-center gap-3 p-4 bg-white rounded-2xl shadow-md min-w-[140px]">
+          {{#if this.logoUrl}}
+          <img src="{{this.logoUrl}}" alt="{{this.name}}" class="h-14 object-contain">
+          {{else}}
+          <div class="w-28 h-14 bg-gray-100 rounded-xl flex items-center justify-center"><i class="fas fa-handshake text-gray-400 text-2xl"></i></div>
+          {{/if}}
+          {{#if this.name}}<span class="text-sm font-bold text-gray-700">{{this.name}}</span>{{/if}}
+          {{#if this.link}}<a href="{{this.link}}" class="text-xs text-blue-500 underline" target="_blank">Visit</a>{{/if}}
+        </div>
+        {{/each}}
+      </div>
+      {{else}}
       <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16">
         <svg width="277" height="67" viewBox="0 0 277 67" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -396,5 +411,6 @@
 
 
       </div>
+      {{/with}}
     </div>
   </section>

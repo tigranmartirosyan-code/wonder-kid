@@ -1,56 +1,931 @@
-<section id="pages-content" class="hidden">
-  <header class="flex items-center justify-between mb-4">
-    <h2 class="text-3xl font-bold text-gray-900">Pages Management</h2>
-    <button class="add-btn flex items-center px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
-            data-type="pages">
-      <i class="fas fa-plus mr-2"></i> Add Page
-    </button>
-  </header>
-  <hr class="border-black mb-4">
+<section id="pages-content" class="hidden -m-6 md:-m-10">
 
-  <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-    <div class="flex flex-wrap items-center gap-3">
-      <select class="table-filter border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white text-gray-700 font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none cursor-pointer" data-table="pages-table" data-filter-key="status">
-        <option value="">All Statuses</option>
-      </select>
-      <select class="table-filter border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white text-gray-700 font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none cursor-pointer" data-table="pages-table" data-filter-key="title">
-        <option value="">All Titles</option>
-      </select>
-      <select class="table-page-size border border-gray-300 rounded-lg px-4 py-2 text-sm bg-white text-gray-700 font-medium focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 appearance-none cursor-pointer" data-table="pages-table">
-        <option value="10">10 / page</option>
-        <option value="25">25 / page</option>
-        <option value="50">50 / page</option>
-        <option value="100">100 / page</option>
-      </select>
+  <!-- ═══════════════════════════ TOP BAR ═══════════════════════════ -->
+  <div class="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+        <i class="fas fa-layer-group text-white text-sm"></i>
+      </div>
+      <div>
+        <h2 class="text-base font-bold text-gray-900 leading-tight">Landing Page Editor</h2>
+        <p class="text-xs text-gray-400 leading-tight">Home — wonder-kid.com</p>
+      </div>
     </div>
-    <div class="relative min-w-[300px] max-w-md">
-      <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-      <input type="text" placeholder="Search pages..." class="table-search w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-table="pages-table">
+    <div class="flex items-center gap-2">
+      <button id="add-landing-section-btn"
+              class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition-all shadow">
+        <i class="fas fa-plus"></i> Add Section
+      </button>
+      <a href="/" target="_blank"
+         class="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 text-gray-600 text-xs font-semibold rounded-lg hover:bg-gray-50 transition-all">
+        <i class="fas fa-external-link-alt"></i> View Live
+      </a>
     </div>
   </div>
 
+  <!-- ═══════════════════════════ EDITOR BODY ═══════════════════════════ -->
+  <div class="flex" style="height: calc(100vh - 108px);">
 
-  <div class="overflow-x-auto bg-white rounded-xl shadow-lg">
-    <table id="pages-table" class="min-w-full rounded-xl overflow-hidden">
-      <thead class="text-gray-700">
-      <tr>
-        <th class="px-4 py-2 rounded-tl-xl text-left">Title</th>
-        <th class="px-4 py-2 text-left">Slug</th>
-        <th class="px-4 py-2 text-left">Content</th>
-        <th class="px-4 py-2 text-left">Status</th>
-        <th class="px-4 py-2 rounded-tr-xl text-left">Actions</th>
-      </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-      </tbody>
-    </table>
-  </div>
-  <div class="table-pagination flex items-center justify-between mt-4 text-sm text-gray-600" data-table="pages-table">
-    <span class="pagination-info"></span>
-    <div class="flex items-center gap-1">
-      <button class="pagination-prev px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">Prev</button>
-      <span class="pagination-pages flex gap-1"></span>
-      <button class="pagination-next px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+    <!-- ──────────────── LEFT PANEL: ALL SECTIONS ──────────────── -->
+    <div class="w-72 flex-shrink-0 bg-gray-50 border-r border-gray-200 flex flex-col overflow-hidden">
+
+      <!-- Panel Header -->
+      <div class="px-4 py-3 bg-white border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-gray-700 uppercase tracking-wider">Page Structure</span>
+          <span id="ls-section-count" class="text-xs text-gray-400 font-medium">— sections</span>
+        </div>
+      </div>
+
+      <!-- Scrollable list -->
+      <div class="flex-1 overflow-y-auto py-2">
+
+        <!-- ── SYSTEM SECTIONS ── -->
+        <div class="px-3 pt-2 pb-1">
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fas fa-lock text-gray-300"></i> Built-in Sections
+          </p>
+        </div>
+
+        <div id="system-sections-list">
+          <!-- rendered by JS -->
+        </div>
+
+        <!-- ── CUSTOM SECTIONS ── -->
+        <div class="px-3 pt-4 pb-1 flex items-center justify-between">
+          <p class="text-xs font-bold text-indigo-500 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fas fa-sliders-h"></i> Custom Sections
+          </p>
+          <span id="ls-custom-count" class="text-xs bg-indigo-100 text-indigo-600 font-bold px-2 py-0.5 rounded-full">0</span>
+        </div>
+
+        <div id="landing-sections-list" class="px-2">
+          <div id="landing-sections-loading" class="flex flex-col items-center justify-center py-8 text-gray-300">
+            <i class="fas fa-spinner fa-spin text-xl mb-2"></i>
+            <span class="text-xs">Loading...</span>
+          </div>
+          <div id="landing-sections-empty" class="hidden flex-col items-center justify-center py-6 text-gray-300 text-center">
+            <i class="fas fa-layer-group text-2xl mb-2"></i>
+            <p class="text-xs text-gray-400">No custom sections yet</p>
+          </div>
+        </div>
+
+        <!-- Add Section shortcut -->
+        <div class="px-3 pt-2 pb-3">
+          <button id="add-landing-section-btn-empty"
+                  class="w-full flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-indigo-200 text-indigo-500 text-xs font-semibold rounded-xl hover:border-indigo-400 hover:bg-indigo-50 transition-all">
+            <i class="fas fa-plus-circle"></i> Add Custom Section
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Section Type Palette -->
+      <div class="border-t border-gray-200 bg-white px-3 py-3">
+        <p class="text-xs text-gray-400 font-semibold mb-2 uppercase tracking-wider">Quick Add</p>
+        <div class="grid grid-cols-4 gap-1.5">
+          <button class="add-section-type-btn flex flex-col items-center p-2 rounded-lg bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 transition-all" data-type="hero" title="Hero">
+            <i class="fas fa-image text-yellow-500 text-sm mb-0.5"></i>
+            <span class="text-xs text-yellow-700 font-semibold leading-tight">Hero</span>
+          </button>
+          <button class="add-section-type-btn flex flex-col items-center p-2 rounded-lg bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all" data-type="about" title="About">
+            <i class="fas fa-info-circle text-blue-500 text-sm mb-0.5"></i>
+            <span class="text-xs text-blue-700 font-semibold leading-tight">About</span>
+          </button>
+          <button class="add-section-type-btn flex flex-col items-center p-2 rounded-lg bg-green-50 hover:bg-green-100 border border-green-200 transition-all" data-type="features" title="Features">
+            <i class="fas fa-list-ul text-green-500 text-sm mb-0.5"></i>
+            <span class="text-xs text-green-700 font-semibold leading-tight">Features</span>
+          </button>
+          <button class="add-section-type-btn flex flex-col items-center p-2 rounded-lg bg-purple-50 hover:bg-purple-100 border border-purple-200 transition-all" data-type="stats" title="Stats">
+            <i class="fas fa-chart-bar text-purple-500 text-sm mb-0.5"></i>
+            <span class="text-xs text-purple-700 font-semibold leading-tight">Stats</span>
+          </button>
+          <button class="add-section-type-btn flex flex-col items-center p-2 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 transition-all" data-type="cta" title="CTA">
+            <i class="fas fa-bullhorn text-red-500 text-sm mb-0.5"></i>
+            <span class="text-xs text-red-700 font-semibold leading-tight">CTA</span>
+          </button>
+          <button class="add-section-type-btn flex flex-col items-center p-2 rounded-lg bg-pink-50 hover:bg-pink-100 border border-pink-200 transition-all" data-type="testimonial" title="Testimonial">
+            <i class="fas fa-quote-left text-pink-500 text-sm mb-0.5"></i>
+            <span class="text-xs text-pink-700 font-semibold leading-tight">Quote</span>
+          </button>
+          <button class="add-section-type-btn flex flex-col items-center p-2 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-all col-span-2" data-type="custom" title="Custom HTML">
+            <i class="fas fa-code text-gray-500 text-sm mb-0.5"></i>
+            <span class="text-xs text-gray-700 font-semibold leading-tight">Custom HTML</span>
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- ──────────────── RIGHT: IFRAME + PROPERTIES DRAWER ──────────────── -->
+    <div class="flex-1 flex min-w-0 overflow-hidden">
+
+      <!-- IFRAME AREA -->
+      <div id="ls-iframe-area" class="flex-1 flex flex-col bg-gray-100 min-w-0 overflow-hidden transition-all duration-300">
+
+        <!-- Preview toolbar -->
+        <div class="flex items-center gap-3 px-4 py-2 bg-white border-b border-gray-200 shadow-sm flex-shrink-0">
+          <div class="flex items-center bg-gray-100 rounded-lg p-0.5">
+            <button class="ls-vp-btn active px-3 py-1.5 rounded-md text-xs font-semibold transition-all bg-white text-gray-800 shadow-sm" data-vp="desktop">
+              <i class="fas fa-desktop mr-1"></i> Desktop
+            </button>
+            <button class="ls-vp-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-all text-gray-500 hover:text-gray-700" data-vp="tablet">
+              <i class="fas fa-tablet-alt mr-1"></i> Tablet
+            </button>
+            <button class="ls-vp-btn px-3 py-1.5 rounded-md text-xs font-semibold transition-all text-gray-500 hover:text-gray-700" data-vp="mobile">
+              <i class="fas fa-mobile-alt mr-1"></i> Mobile
+            </button>
+          </div>
+          <div class="flex-1 flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5 min-w-0">
+            <i class="fas fa-lock text-green-500 text-xs flex-shrink-0"></i>
+            <span class="text-xs text-gray-500 truncate font-mono">localhost:3000 /</span>
+          </div>
+          <!-- Live edit badge -->
+          <div id="ls-live-badge" class="hidden items-center gap-1.5 px-2.5 py-1 rounded-lg bg-green-50 border border-green-200">
+            <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+            <span class="text-xs text-green-700 font-semibold">Live</span>
+          </div>
+          <button id="ls-refresh-btn" class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition-all" title="Refresh">
+            <i class="fas fa-sync-alt text-xs"></i>
+          </button>
+        </div>
+
+        <!-- iframe wrapper -->
+        <div class="flex-1 flex items-start justify-center p-3 overflow-auto">
+          <div id="ls-preview-wrapper" class="relative bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-300 transition-all duration-300" style="width:100%; height: calc(100vh - 196px);">
+            <div class="flex items-center gap-1.5 px-3 py-2 bg-gray-100 border-b border-gray-200">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-yellow-400"></span>
+              <span class="w-2.5 h-2.5 rounded-full bg-green-400"></span>
+              <span class="flex-1 ml-2 bg-white border border-gray-200 rounded-md text-xs text-gray-400 px-2 py-0.5 font-mono">localhost:3000</span>
+            </div>
+            <iframe id="ls-preview-iframe" src="/" class="w-full border-0 bg-white" style="height: calc(100% - 32px);" title="Landing Page Preview"></iframe>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PROPERTIES DRAWER (slides in from right) -->
+      <div id="ls-props-drawer"
+           class="flex-shrink-0 bg-white border-l border-gray-200 flex flex-col overflow-hidden"
+           style="width:0; transition: width 0.25s cubic-bezier(0.4,0,0.2,1);">
+
+        <!-- Drawer header -->
+        <div class="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100 flex-shrink-0">
+          <div class="flex items-center gap-2 min-w-0">
+            <div id="ls-drawer-icon" class="w-8 h-8 rounded-lg flex items-center justify-center bg-indigo-100 flex-shrink-0">
+              <i class="fas fa-layer-group text-indigo-600 text-xs"></i>
+            </div>
+            <div class="min-w-0">
+              <p id="ls-drawer-title" class="text-sm font-bold text-gray-900 truncate leading-tight">Section Editor</p>
+              <p id="ls-drawer-sub" class="text-xs text-indigo-500 font-medium leading-tight">Properties</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button id="ls-drawer-save" class="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 transition-all shadow-sm shadow-indigo-200">
+              <i class="fas fa-save"></i> Save
+            </button>
+            <button id="ls-drawer-close" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all">
+              <i class="fas fa-times text-sm"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tab bar -->
+        <div class="flex border-b border-gray-100 bg-gray-50 flex-shrink-0">
+          <button id="ls-tab-btn-content" class="ls-drawer-tab active flex-1 py-2 text-xs font-semibold text-indigo-600 border-b-2 border-indigo-600 bg-white transition-all" data-tab="content">
+            <i class="fas fa-align-left mr-1"></i>Content
+          </button>
+          <button id="ls-tab-btn-media" class="ls-drawer-tab flex-1 py-2 text-xs font-semibold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition-all" data-tab="media">
+            <i class="fas fa-image mr-1"></i>Media
+          </button>
+          <button id="ls-tab-btn-style" class="ls-drawer-tab flex-1 py-2 text-xs font-semibold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition-all" data-tab="style">
+            <i class="fas fa-palette mr-1"></i>Style
+          </button>
+          <button id="ls-tab-btn-settings" class="ls-drawer-tab flex-1 py-2 text-xs font-semibold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition-all" data-tab="settings">
+            <i class="fas fa-cog mr-1"></i>Settings
+          </button>
+          <button id="ls-tab-btn-translations" class="ls-drawer-tab flex-1 py-2 text-xs font-semibold text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition-all" data-tab="translations">
+            <i class="fas fa-language mr-1"></i>Translate
+          </button>
+        </div>
+
+        <!-- Drawer form (scrollable) -->
+        <div class="flex-1 overflow-y-auto">
+          <input type="hidden" id="ls-drawer-id">
+          <input type="hidden" id="ls-drawer-anchor">
+          <input type="hidden" id="ls-drawer-builtin">
+
+          <!-- CONTENT TAB -->
+          <div class="ls-tab-pane px-4 py-4 space-y-4" data-pane="content">
+            <!-- Section Type (hidden for builtin sections) -->
+            <div id="ls-field-type">
+              <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Section Type</label>
+              <select id="ls-drawer-type" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl bg-white text-gray-800 font-semibold text-sm focus:ring-2 focus:ring-indigo-500">
+                <option value="hero">🖼 Hero</option>
+                <option value="about">ℹ️ About</option>
+                <option value="features">✅ Features</option>
+                <option value="stats">📊 Stats</option>
+                <option value="cta">📣 CTA</option>
+                <option value="testimonial">💬 Testimonial</option>
+                <option value="custom">⚙️ Custom HTML</option>
+              </select>
+            </div>
+            <!-- Title -->
+            <div id="ls-field-title">
+              <label id="ls-field-title-label" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Title</label>
+              <input type="text" id="ls-drawer-title-field"
+                     class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 font-semibold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                     placeholder="Section title…">
+            </div>
+            <!-- Subtitle -->
+            <div id="ls-field-subtitle">
+              <label id="ls-field-subtitle-label" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Subtitle</label>
+              <input type="text" id="ls-drawer-subtitle"
+                     class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                     placeholder="Subtitle or tagline…">
+            </div>
+            <!-- Body Content -->
+            <div id="ls-field-body">
+              <label id="ls-field-body-label" class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Body Content</label>
+              <textarea id="ls-drawer-body" rows="6"
+                        class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-y transition-all leading-relaxed"
+                        placeholder="Main content…"></textarea>
+              <!-- Rich text editor (shown instead of textarea for sections like LEGO WeDo) -->
+              <div id="ls-drawer-body-quill" class="hidden">
+                <div id="ls-quill-editor" style="min-height:160px; background:#fff; border-radius:0 0 0.75rem 0.75rem;"></div>
+              </div>
+              <p id="ls-drawer-body-hint" class="text-xs text-gray-400 mt-1"><i class="fas fa-info-circle mr-1"></i>Custom type: raw HTML.</p>
+            </div>
+
+            <!-- 4-Card Editor (shown only for sections like Limitless Learning) -->
+            <div id="ls-cards-editor" class="hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Feature Cards</label>
+                <button type="button" id="ls-cards-add-btn" class="flex items-center gap-1 px-2.5 py-1 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition-all">
+                  <i class="fas fa-plus text-xs"></i> Add Card
+                </button>
+              </div>
+              <div id="ls-cards-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Stat Cards Editor (shown only for status section) -->
+            <div id="ls-stat-cards-editor" class="hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Stats</label>
+                <button type="button" id="ls-stat-cards-add-btn" class="flex items-center gap-1 px-2.5 py-1 bg-red-600 text-white text-xs font-semibold rounded-lg hover:bg-red-700 transition-all">
+                  <i class="fas fa-plus text-xs"></i> Add Stat
+                </button>
+              </div>
+              <div id="ls-stat-cards-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Schedule Cards Editor (shown only for status2 section) -->
+            <div id="ls-schedule-cards-editor" class="hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Schedule Items</label>
+                <button type="button" id="ls-sched-cards-add-btn" class="flex items-center gap-1 px-2.5 py-1 bg-yellow-500 text-white text-xs font-semibold rounded-lg hover:bg-yellow-600 transition-all">
+                  <i class="fas fa-plus text-xs"></i> Add Item
+                </button>
+              </div>
+              <div id="ls-sched-cards-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Coach Cards Editor (shown only for coach section) -->
+            <div id="ls-coach-cards-editor" class="hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Coaches</label>
+                <button type="button" id="ls-coach-cards-add-btn" class="flex items-center gap-1 px-2.5 py-1 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all">
+                  <i class="fas fa-plus text-xs"></i> Add Coach
+                </button>
+              </div>
+              <div id="ls-coach-cards-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Testimonial Cards Editor (shown only for legoeducation section) -->
+            <div id="ls-testimonial-cards-editor" class="hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Cards</label>
+                <button type="button" id="ls-test-cards-add-btn" class="flex items-center gap-1 px-2.5 py-1 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all">
+                  <i class="fas fa-plus text-xs"></i> Add Card
+                </button>
+              </div>
+              <div id="ls-test-cards-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Trainer Cards Editor (shown only for trainers section) -->
+            <div id="ls-trainer-cards-editor" class="hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Trainers</label>
+                <button type="button" id="ls-tr-cards-add-btn" class="flex items-center gap-1 px-2.5 py-1 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all">
+                  <i class="fas fa-plus text-xs"></i> Add Trainer
+                </button>
+              </div>
+              <div id="ls-tr-cards-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Partner Cards Editor (shown only for partners section) -->
+            <div id="ls-partner-cards-editor" class="hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Partners</label>
+                <button type="button" id="ls-partner-cards-add-btn" class="flex items-center gap-1 px-2.5 py-1 bg-purple-600 text-white text-xs font-semibold rounded-lg hover:bg-purple-700 transition-all">
+                  <i class="fas fa-plus text-xs"></i> Add Partner
+                </button>
+              </div>
+              <div id="ls-partner-cards-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Project Cards Editor (shown only for projects section) -->
+            <div id="ls-project-cards-editor" class="hidden space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Projects</label>
+                <button type="button" id="ls-project-cards-add-btn" class="flex items-center gap-1 px-2.5 py-1 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-all">
+                  <i class="fas fa-plus text-xs"></i> Add Project
+                </button>
+              </div>
+              <div id="ls-project-cards-list" class="space-y-3"></div>
+            </div>
+
+            <!-- Grid Section Editor (Transform Education — about builtin) -->
+            <div id="ls-grid-section-editor" class="hidden space-y-3">
+              <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Description &amp; Grid Images</label>
+              <!-- Description text -->
+              <div>
+                <label class="block text-xs font-semibold text-gray-500 mb-1">Description Text</label>
+                <textarea id="ls-grid-desc" rows="4"
+                          class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-y transition-all leading-relaxed"
+                          placeholder="Section description…"></textarea>
+              </div>
+              <!-- 6 image slots -->
+              <label class="block text-xs font-semibold text-gray-500">Grid Images (6 photos)</label>
+              <div class="grid grid-cols-2 gap-2">
+                <!-- Slot 1 -->
+                <div class="border border-gray-200 rounded-xl p-2 bg-gray-50 space-y-1.5">
+                  <p class="text-xs font-bold text-gray-400 uppercase">Image 1</p>
+                  <label class="relative block border-2 border-dashed border-gray-200 rounded-lg bg-white hover:border-indigo-400 cursor-pointer overflow-hidden" style="height:70px;">
+                    <img id="ls-gimg1-preview" src="" alt="" class="absolute inset-0 w-full h-full object-cover rounded-lg" style="display:none">
+                    <div id="ls-gimg1-placeholder" class="flex items-center justify-center h-full"><i class="fas fa-cloud-upload-alt text-gray-300 text-xl"></i></div>
+                    <input type="file" id="ls-gimg1-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                  </label>
+                  <div id="ls-gimg1-progress" class="hidden text-xs text-indigo-600 flex items-center gap-1"><i class="fas fa-spinner fa-spin text-xs"></i> Uploading…</div>
+                  <input type="text" id="ls-gimg1-url" class="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-gray-500 text-xs focus:ring-1 focus:ring-indigo-500 bg-white" placeholder="URL or upload ↑">
+                </div>
+                <!-- Slot 2 -->
+                <div class="border border-gray-200 rounded-xl p-2 bg-gray-50 space-y-1.5">
+                  <p class="text-xs font-bold text-gray-400 uppercase">Image 2</p>
+                  <label class="relative block border-2 border-dashed border-gray-200 rounded-lg bg-white hover:border-indigo-400 cursor-pointer overflow-hidden" style="height:70px;">
+                    <img id="ls-gimg2-preview" src="" alt="" class="absolute inset-0 w-full h-full object-cover rounded-lg" style="display:none">
+                    <div id="ls-gimg2-placeholder" class="flex items-center justify-center h-full"><i class="fas fa-cloud-upload-alt text-gray-300 text-xl"></i></div>
+                    <input type="file" id="ls-gimg2-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                  </label>
+                  <div id="ls-gimg2-progress" class="hidden text-xs text-indigo-600 flex items-center gap-1"><i class="fas fa-spinner fa-spin text-xs"></i> Uploading…</div>
+                  <input type="text" id="ls-gimg2-url" class="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-gray-500 text-xs focus:ring-1 focus:ring-indigo-500 bg-white" placeholder="URL or upload ↑">
+                </div>
+                <!-- Slot 3 -->
+                <div class="border border-gray-200 rounded-xl p-2 bg-gray-50 space-y-1.5">
+                  <p class="text-xs font-bold text-gray-400 uppercase">Image 3</p>
+                  <label class="relative block border-2 border-dashed border-gray-200 rounded-lg bg-white hover:border-indigo-400 cursor-pointer overflow-hidden" style="height:70px;">
+                    <img id="ls-gimg3-preview" src="" alt="" class="absolute inset-0 w-full h-full object-cover rounded-lg" style="display:none">
+                    <div id="ls-gimg3-placeholder" class="flex items-center justify-center h-full"><i class="fas fa-cloud-upload-alt text-gray-300 text-xl"></i></div>
+                    <input type="file" id="ls-gimg3-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                  </label>
+                  <div id="ls-gimg3-progress" class="hidden text-xs text-indigo-600 flex items-center gap-1"><i class="fas fa-spinner fa-spin text-xs"></i> Uploading…</div>
+                  <input type="text" id="ls-gimg3-url" class="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-gray-500 text-xs focus:ring-1 focus:ring-indigo-500 bg-white" placeholder="URL or upload ↑">
+                </div>
+                <!-- Slot 4 -->
+                <div class="border border-gray-200 rounded-xl p-2 bg-gray-50 space-y-1.5">
+                  <p class="text-xs font-bold text-gray-400 uppercase">Image 4</p>
+                  <label class="relative block border-2 border-dashed border-gray-200 rounded-lg bg-white hover:border-indigo-400 cursor-pointer overflow-hidden" style="height:70px;">
+                    <img id="ls-gimg4-preview" src="" alt="" class="absolute inset-0 w-full h-full object-cover rounded-lg" style="display:none">
+                    <div id="ls-gimg4-placeholder" class="flex items-center justify-center h-full"><i class="fas fa-cloud-upload-alt text-gray-300 text-xl"></i></div>
+                    <input type="file" id="ls-gimg4-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                  </label>
+                  <div id="ls-gimg4-progress" class="hidden text-xs text-indigo-600 flex items-center gap-1"><i class="fas fa-spinner fa-spin text-xs"></i> Uploading…</div>
+                  <input type="text" id="ls-gimg4-url" class="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-gray-500 text-xs focus:ring-1 focus:ring-indigo-500 bg-white" placeholder="URL or upload ↑">
+                </div>
+                <!-- Slot 5 -->
+                <div class="border border-gray-200 rounded-xl p-2 bg-gray-50 space-y-1.5">
+                  <p class="text-xs font-bold text-gray-400 uppercase">Image 5</p>
+                  <label class="relative block border-2 border-dashed border-gray-200 rounded-lg bg-white hover:border-indigo-400 cursor-pointer overflow-hidden" style="height:70px;">
+                    <img id="ls-gimg5-preview" src="" alt="" class="absolute inset-0 w-full h-full object-cover rounded-lg" style="display:none">
+                    <div id="ls-gimg5-placeholder" class="flex items-center justify-center h-full"><i class="fas fa-cloud-upload-alt text-gray-300 text-xl"></i></div>
+                    <input type="file" id="ls-gimg5-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                  </label>
+                  <div id="ls-gimg5-progress" class="hidden text-xs text-indigo-600 flex items-center gap-1"><i class="fas fa-spinner fa-spin text-xs"></i> Uploading…</div>
+                  <input type="text" id="ls-gimg5-url" class="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-gray-500 text-xs focus:ring-1 focus:ring-indigo-500 bg-white" placeholder="URL or upload ↑">
+                </div>
+                <!-- Slot 6 -->
+                <div class="border border-gray-200 rounded-xl p-2 bg-gray-50 space-y-1.5">
+                  <p class="text-xs font-bold text-gray-400 uppercase">Image 6</p>
+                  <label class="relative block border-2 border-dashed border-gray-200 rounded-lg bg-white hover:border-indigo-400 cursor-pointer overflow-hidden" style="height:70px;">
+                    <img id="ls-gimg6-preview" src="" alt="" class="absolute inset-0 w-full h-full object-cover rounded-lg" style="display:none">
+                    <div id="ls-gimg6-placeholder" class="flex items-center justify-center h-full"><i class="fas fa-cloud-upload-alt text-gray-300 text-xl"></i></div>
+                    <input type="file" id="ls-gimg6-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+                  </label>
+                  <div id="ls-gimg6-progress" class="hidden text-xs text-indigo-600 flex items-center gap-1"><i class="fas fa-spinner fa-spin text-xs"></i> Uploading…</div>
+                  <input type="text" id="ls-gimg6-url" class="w-full px-2 py-1.5 border border-gray-200 rounded-lg text-gray-500 text-xs focus:ring-1 focus:ring-indigo-500 bg-white" placeholder="URL or upload ↑">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MEDIA TAB -->
+          <div class="ls-tab-pane hidden px-4 py-4 space-y-5" data-pane="media">
+
+            <!-- IMAGE 1 -->
+            <div class="border border-gray-100 rounded-2xl p-3 bg-gray-50">
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Image 1</label>
+                <button type="button" id="ls-drawer-img1-remove"
+                        class="hidden text-xs text-red-400 hover:text-red-600 font-semibold flex items-center gap-1 transition-colors">
+                  <i class="fas fa-trash-alt"></i> Remove
+                </button>
+              </div>
+              <div id="ls-drawer-dropzone"
+                   class="relative border-2 border-dashed border-gray-200 rounded-2xl bg-white hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer group overflow-hidden"
+                   style="min-height:130px;">
+                <div id="ls-drawer-img-preview-wrap" class="hidden absolute inset-0">
+                  <img id="ls-drawer-img-preview" src="" alt="" class="w-full h-full object-cover">
+                  <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="text-white text-xs font-semibold bg-black bg-opacity-60 px-3 py-1.5 rounded-lg">
+                      <i class="fas fa-camera mr-1"></i> Replace
+                    </span>
+                  </div>
+                </div>
+                <div id="ls-drawer-img-placeholder" class="flex flex-col items-center justify-center py-8 px-4 text-center">
+                  <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-2 group-hover:bg-indigo-100 transition-all">
+                    <i class="fas fa-cloud-upload-alt text-indigo-400 text-lg"></i>
+                  </div>
+                  <p class="text-xs font-semibold text-gray-600 mb-0.5">Drop image here</p>
+                  <p class="text-xs text-gray-300">or click to browse · PNG, JPG, WEBP</p>
+                </div>
+                <input type="file" id="ls-drawer-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+              </div>
+              <div id="ls-drawer-upload-progress" class="hidden mt-2 flex items-center gap-2 text-xs text-indigo-600">
+                <i class="fas fa-spinner fa-spin"></i> Uploading…
+              </div>
+              <div class="mt-2">
+                <div class="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-all">
+                  <i class="fas fa-link text-gray-300 text-xs flex-shrink-0"></i>
+                  <input type="text" id="ls-drawer-imageurl"
+                         class="flex-1 text-xs text-gray-700 border-0 outline-none bg-transparent"
+                         placeholder="https://… or /uploads/photo.jpg">
+                </div>
+              </div>
+            </div>
+
+            <!-- IMAGE 2 -->
+            <div id="ls-media-img2-block" class="border border-gray-100 rounded-2xl p-3 bg-gray-50">
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Image 2</label>
+                <button type="button" id="ls-drawer-img2-remove"
+                        class="hidden text-xs text-red-400 hover:text-red-600 font-semibold flex items-center gap-1 transition-colors">
+                  <i class="fas fa-trash-alt"></i> Remove
+                </button>
+              </div>
+              <div id="ls-drawer-dropzone2"
+                   class="relative border-2 border-dashed border-gray-200 rounded-2xl bg-white hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer group overflow-hidden"
+                   style="min-height:130px;">
+                <div id="ls-drawer-img2-preview-wrap" class="hidden absolute inset-0">
+                  <img id="ls-drawer-img2-preview" src="" alt="" class="w-full h-full object-cover">
+                  <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="text-white text-xs font-semibold bg-black bg-opacity-60 px-3 py-1.5 rounded-lg">
+                      <i class="fas fa-camera mr-1"></i> Replace
+                    </span>
+                  </div>
+                </div>
+                <div id="ls-drawer-img2-placeholder" class="flex flex-col items-center justify-center py-8 px-4 text-center">
+                  <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-2 group-hover:bg-indigo-100 transition-all">
+                    <i class="fas fa-cloud-upload-alt text-indigo-400 text-lg"></i>
+                  </div>
+                  <p class="text-xs font-semibold text-gray-600 mb-0.5">Drop image here</p>
+                  <p class="text-xs text-gray-300">or click to browse · PNG, JPG, WEBP</p>
+                </div>
+                <input type="file" id="ls-drawer-file2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+              </div>
+              <div id="ls-drawer-upload-progress2" class="hidden mt-2 flex items-center gap-2 text-xs text-indigo-600">
+                <i class="fas fa-spinner fa-spin"></i> Uploading…
+              </div>
+              <div class="mt-2">
+                <div class="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-all">
+                  <i class="fas fa-link text-gray-300 text-xs flex-shrink-0"></i>
+                  <input type="text" id="ls-drawer-imageurl2"
+                         class="flex-1 text-xs text-gray-700 border-0 outline-none bg-transparent"
+                         placeholder="https://… or /uploads/photo.jpg">
+                </div>
+              </div>
+            </div>
+
+            <!-- IMAGE 3 -->
+            <div id="ls-media-img3-block" class="border border-gray-100 rounded-2xl p-3 bg-gray-50">
+              <div class="flex items-center justify-between mb-2">
+                <label class="text-xs font-bold text-gray-400 uppercase tracking-wider">Image 3</label>
+                <button type="button" id="ls-drawer-img3-remove"
+                        class="hidden text-xs text-red-400 hover:text-red-600 font-semibold flex items-center gap-1 transition-colors">
+                  <i class="fas fa-trash-alt"></i> Remove
+                </button>
+              </div>
+              <div id="ls-drawer-dropzone3"
+                   class="relative border-2 border-dashed border-gray-200 rounded-2xl bg-white hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer group overflow-hidden"
+                   style="min-height:130px;">
+                <div id="ls-drawer-img3-preview-wrap" class="hidden absolute inset-0">
+                  <img id="ls-drawer-img3-preview" src="" alt="" class="w-full h-full object-cover">
+                  <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="text-white text-xs font-semibold bg-black bg-opacity-60 px-3 py-1.5 rounded-lg">
+                      <i class="fas fa-camera mr-1"></i> Replace
+                    </span>
+                  </div>
+                </div>
+                <div id="ls-drawer-img3-placeholder" class="flex flex-col items-center justify-center py-8 px-4 text-center">
+                  <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-2 group-hover:bg-indigo-100 transition-all">
+                    <i class="fas fa-cloud-upload-alt text-indigo-400 text-lg"></i>
+                  </div>
+                  <p class="text-xs font-semibold text-gray-600 mb-0.5">Drop image here</p>
+                  <p class="text-xs text-gray-300">or click to browse · PNG, JPG, WEBP</p>
+                </div>
+                <input type="file" id="ls-drawer-file3" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+              </div>
+              <div id="ls-drawer-upload-progress3" class="hidden mt-2 flex items-center gap-2 text-xs text-indigo-600">
+                <i class="fas fa-spinner fa-spin"></i> Uploading…
+              </div>
+              <div class="mt-2">
+                <div class="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2 bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-all">
+                  <i class="fas fa-link text-gray-300 text-xs flex-shrink-0"></i>
+                  <input type="text" id="ls-drawer-imageurl3"
+                         class="flex-1 text-xs text-gray-700 border-0 outline-none bg-transparent"
+                         placeholder="https://… or /uploads/photo.jpg">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- STYLE TAB -->
+          <div class="ls-tab-pane hidden px-4 py-4 space-y-4" data-pane="style">
+            <!-- Live color preview -->
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Preview</label>
+              <div id="ls-drawer-color-preview" class="rounded-xl p-5 border border-gray-200 transition-all" style="background:#1e3a5f;">
+                <p class="text-lg font-bold mb-1" id="ls-drawer-prev-title" style="color:#fff;">Section Title</p>
+                <p class="text-sm opacity-80" id="ls-drawer-prev-sub" style="color:#fff;">Subtitle preview text</p>
+                <div class="mt-3 inline-block px-4 py-2 rounded-xl text-xs font-bold" id="ls-drawer-prev-btn" style="background:#fff;color:#1e3a5f;">Button</div>
+              </div>
+            </div>
+            <!-- Colors -->
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Background</label>
+                <div class="flex items-center gap-2 border border-gray-200 rounded-xl px-2 py-2 bg-white">
+                  <input type="color" id="ls-drawer-bgcolor" value="#1e3a5f" class="w-8 h-8 rounded-lg border-0 cursor-pointer flex-shrink-0 p-0">
+                  <input type="text" id="ls-drawer-bg-hex" maxlength="7" class="flex-1 text-xs font-mono text-gray-700 border-0 outline-none bg-transparent w-0 min-w-0" placeholder="#1e3a5f">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Text Color</label>
+                <div class="flex items-center gap-2 border border-gray-200 rounded-xl px-2 py-2 bg-white">
+                  <input type="color" id="ls-drawer-txcolor" value="#ffffff" class="w-8 h-8 rounded-lg border-0 cursor-pointer flex-shrink-0 p-0">
+                  <input type="text" id="ls-drawer-tx-hex" maxlength="7" class="flex-1 text-xs font-mono text-gray-700 border-0 outline-none bg-transparent w-0 min-w-0" placeholder="#ffffff">
+                </div>
+              </div>
+            </div>
+            <!-- Button -->
+            <div id="ls-field-button">
+              <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Button CTA</label>
+              <div class="space-y-2">
+                <input type="text" id="ls-drawer-btntext" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-800 focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Button label…">
+                <input type="text" id="ls-drawer-btnlink" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-600 focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Link URL  e.g. /contact">
+              </div>
+            </div>
+          </div>
+
+          <!-- SETTINGS TAB -->
+          <div class="ls-tab-pane hidden px-4 py-4 space-y-4" data-pane="settings">
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Visibility</label>
+              <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-all">
+                <div class="relative inline-flex flex-shrink-0">
+                  <input type="checkbox" id="ls-drawer-visible" checked class="sr-only peer">
+                  <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-gray-800" id="ls-drawer-vis-label">Visible</p>
+                  <p class="text-xs text-gray-400">Show this section on the live page</p>
+                </div>
+              </label>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Sort Order</label>
+              <input type="number" id="ls-drawer-order" value="0" min="0"
+                     class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 transition-all">
+              <p class="text-xs text-gray-400 mt-1">Lower = appears earlier on the page</p>
+            </div>
+            <div id="ls-drawer-builtin-info" class="hidden p-3 rounded-xl bg-indigo-50 border border-indigo-100">
+              <p class="text-xs font-bold text-indigo-700 flex items-center gap-1.5 mb-1">
+                <i class="fas fa-link"></i> Linked to Built-in Section
+              </p>
+              <p class="text-xs text-indigo-500">Key: <code id="ls-drawer-builtin-key-label" class="bg-indigo-100 px-1.5 py-0.5 rounded font-mono"></code></p>
+              <p class="text-xs text-indigo-500 mt-1">Turn visibility OFF to completely replace the built-in section with your custom content.</p>
+            </div>
+          </div>
+
+        </div>
+
+          <!-- TRANSLATIONS TAB -->
+          <div class="ls-tab-pane hidden px-4 py-4 space-y-5" data-pane="translations">
+            <p class="text-xs text-gray-400 flex items-start gap-1.5">
+              <i class="fas fa-info-circle mt-0.5 flex-shrink-0"></i>
+              Enter translations to update the Russian and Armenian locale files. Leave blank to keep existing values.
+            </p>
+            <!-- Russian (ru) -->
+            <div class="space-y-3">
+              <div class="flex items-center gap-2 pb-1 border-b border-gray-100">
+                <span class="text-sm font-bold text-gray-700">🇷🇺 Russian</span>
+              </div>
+              <div id="ls-tr-ru-title-wrap">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Title (RU)</label>
+                <input type="text" id="ls-tr-ru-title" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Russian title…">
+              </div>
+              <div id="ls-tr-ru-subtitle-wrap">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Subtitle (RU)</label>
+                <input type="text" id="ls-tr-ru-subtitle" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Russian subtitle…">
+              </div>
+              <div id="ls-tr-ru-body-wrap">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Body (RU)</label>
+                <textarea id="ls-tr-ru-body" rows="4" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm focus:ring-2 focus:ring-indigo-500 resize-y transition-all" placeholder="Russian body text…"></textarea>
+              </div>
+            </div>
+            <!-- Armenian (hy) -->
+            <div class="space-y-3">
+              <div class="flex items-center gap-2 pb-1 border-b border-gray-100">
+                <span class="text-sm font-bold text-gray-700">🇦🇲 Armenian</span>
+              </div>
+              <div id="ls-tr-hy-title-wrap">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Title (HY)</label>
+                <input type="text" id="ls-tr-hy-title" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-900 text-sm focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Armenian title…">
+              </div>
+              <div id="ls-tr-hy-subtitle-wrap">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Subtitle (HY)</label>
+                <input type="text" id="ls-tr-hy-subtitle" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm focus:ring-2 focus:ring-indigo-500 transition-all" placeholder="Armenian subtitle…">
+              </div>
+              <div id="ls-tr-hy-body-wrap">
+                <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5">Body (HY)</label>
+                <textarea id="ls-tr-hy-body" rows="4" class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-gray-800 text-sm focus:ring-2 focus:ring-indigo-500 resize-y transition-all" placeholder="Armenian body text…"></textarea>
+              </div>
+            </div>
+          </div>
+
+        <!-- Drawer footer: real-time indicator -->
+        <div class="px-4 py-3 bg-gray-50 border-t border-gray-100 flex items-center gap-2 flex-shrink-0">
+          <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse flex-shrink-0"></span>
+          <span class="text-xs text-gray-500 font-medium">Changes preview live in the page</span>
+        </div>
+
+      </div>
+    </div>
+
   </div>
+
 </section>
+
+
+<!-- ══════════════════ ADD / EDIT MODAL ══════════════════ -->
+<div id="landing-section-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[200] flex items-center justify-center p-4 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[95vh] flex flex-col overflow-hidden">
+
+    <!-- ── Modal Header ── -->
+    <div class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <div id="ls-modal-type-icon" class="w-11 h-11 rounded-xl flex items-center justify-center bg-indigo-100 shadow-sm">
+          <i class="fas fa-layer-group text-indigo-600 text-lg"></i>
+        </div>
+        <div>
+          <h3 id="ls-modal-title" class="text-lg font-bold text-gray-900 leading-tight">Add Section</h3>
+          <p id="ls-modal-subtitle" class="text-xs text-gray-400 leading-tight">Configure your landing page section</p>
+        </div>
+      </div>
+      <button id="ls-modal-close" class="w-9 h-9 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all">
+        <i class="fas fa-times text-lg"></i>
+      </button>
+    </div>
+
+    <!-- ── Form ── -->
+    <form id="landing-section-form" class="flex-1 overflow-y-auto">
+      <input type="hidden" id="ls-section-id" name="id" value="">
+
+      <!-- Section Type Bar -->
+      <div class="bg-gray-50 border-b border-gray-100 px-6 py-3">
+        <div class="flex items-center gap-3">
+          <label class="text-xs font-bold text-gray-500 uppercase tracking-wider whitespace-nowrap">Section Type</label>
+          <select id="ls-section-type" name="sectionType" required
+                  class="flex-1 px-3 py-2 border border-gray-200 rounded-xl bg-white text-gray-800 font-semibold text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <option value="hero">🖼  Hero — Full-width banner with headline &amp; CTA</option>
+            <option value="about">ℹ️  About — Text &amp; image side by side</option>
+            <option value="features">✅  Features — Highlight key features</option>
+            <option value="stats">📊  Stats — Numbers and achievements</option>
+            <option value="cta">📣  Call to Action — Drive conversions</option>
+            <option value="testimonial">💬  Testimonial — Quote and author</option>
+            <option value="custom">⚙️  Custom — Free HTML content</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Two-Column Body -->
+      <div class="grid grid-cols-5 divide-x divide-gray-100 min-h-0">
+
+        <!-- ── LEFT: Content Fields (3/5) ── -->
+        <div class="col-span-3 px-6 py-5 space-y-5 overflow-y-auto">
+
+          <!-- Title -->
+          <div>
+            <label class="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+              <i class="fas fa-heading text-gray-300"></i>
+              <span id="ls-title-label">Title</span>
+            </label>
+            <input type="text" id="ls-title" name="title"
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 font-semibold text-base focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-300 transition-all"
+                   placeholder="Enter section title…">
+          </div>
+
+          <!-- Subtitle -->
+          <div id="ls-field-subtitle">
+            <label class="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+              <i class="fas fa-text-height text-gray-300"></i>
+              <span id="ls-subtitle-label">Subtitle</span>
+            </label>
+            <input type="text" id="ls-subtitle" name="subtitle"
+                   class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-300 transition-all"
+                   placeholder="Supporting text or subtitle…">
+          </div>
+
+          <!-- Body -->
+          <div id="ls-field-body">
+            <label class="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+              <i class="fas fa-align-left text-gray-300"></i>
+              <span id="ls-body-label">Content</span>
+            </label>
+            <textarea id="ls-body" name="body" rows="7"
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-300 resize-y transition-all font-mono leading-relaxed"
+                      placeholder="Enter content…"></textarea>
+            <p id="ls-body-hint" class="text-xs text-gray-400 mt-1.5 flex items-center gap-1">
+              <i class="fas fa-info-circle"></i> Plain text. Line breaks supported.
+            </p>
+          </div>
+
+          <!-- Button CTA -->
+          <div id="ls-field-button">
+            <label class="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+              <i class="fas fa-hand-pointer text-gray-300"></i> Call to Action Button
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <input type="text" id="ls-buttonText" name="buttonText"
+                       class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-300 transition-all"
+                       placeholder="Button label…">
+                <p class="text-xs text-gray-400 mt-1">Button text</p>
+              </div>
+              <div>
+                <input type="text" id="ls-buttonLink" name="buttonLink"
+                       class="w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-300 transition-all"
+                       placeholder="/contact">
+                <p class="text-xs text-gray-400 mt-1">Link URL</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── RIGHT: Media & Style (2/5) ── -->
+        <div class="col-span-2 px-5 py-5 space-y-5 bg-gray-50 overflow-y-auto">
+
+          <!-- Image Upload -->
+          <div id="ls-field-image">
+            <label class="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+              <i class="fas fa-image text-gray-300"></i>
+              <span id="ls-image-label">Image</span>
+            </label>
+
+            <!-- Drop zone -->
+            <div id="ls-drop-zone"
+                 class="relative border-2 border-dashed border-gray-200 rounded-2xl bg-white hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer group overflow-hidden"
+                 style="min-height:140px;">
+              <!-- Preview (hidden by default) -->
+              <div id="ls-image-preview-wrap" class="hidden absolute inset-0">
+                <img id="ls-image-preview" src="" alt="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span class="text-white text-xs font-semibold bg-black bg-opacity-60 px-3 py-1.5 rounded-lg">
+                    <i class="fas fa-camera mr-1"></i> Change Image
+                  </span>
+                </div>
+              </div>
+              <!-- Upload placeholder -->
+              <div id="ls-drop-placeholder" class="flex flex-col items-center justify-center py-8 px-4 text-center">
+                <div class="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center mb-3 group-hover:bg-indigo-100 transition-all">
+                  <i class="fas fa-cloud-upload-alt text-indigo-400 text-xl"></i>
+                </div>
+                <p class="text-sm font-semibold text-gray-600 mb-0.5">Drop image here</p>
+                <p class="text-xs text-gray-400">or click to browse</p>
+                <p class="text-xs text-gray-300 mt-1">PNG, JPG, WEBP up to 10MB</p>
+              </div>
+              <!-- Hidden file input -->
+              <input type="file" id="ls-image-file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full">
+            </div>
+
+            <!-- Upload progress -->
+            <div id="ls-upload-progress" class="hidden mt-2 flex items-center gap-2 text-xs text-indigo-600">
+              <i class="fas fa-spinner fa-spin"></i> Uploading…
+            </div>
+
+            <!-- URL input fallback -->
+            <div class="mt-2">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-link text-gray-300 text-xs flex-shrink-0"></i>
+                <input type="text" id="ls-imageUrl" name="imageUrl"
+                       class="flex-1 px-3 py-2 border border-gray-200 rounded-xl text-xs text-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder-gray-300 bg-white transition-all"
+                       placeholder="Or paste image URL…">
+              </div>
+            </div>
+          </div>
+
+          <!-- Colors -->
+          <div>
+            <label class="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+              <i class="fas fa-palette text-gray-300"></i> Colors
+            </label>
+            <!-- Live preview card -->
+            <div id="ls-color-preview" class="rounded-xl p-4 mb-3 border border-gray-200 transition-all" style="background:#1e3a5f;">
+              <p class="text-xs font-bold mb-0.5" id="ls-color-preview-title" style="color:#ffffff;">Section Title</p>
+              <p class="text-xs opacity-75" id="ls-color-preview-sub" style="color:#ffffff;">Subtitle text preview</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-gray-500 font-semibold mb-1 block">Background</label>
+                <div class="flex items-center gap-2 border border-gray-200 rounded-xl px-2 py-1.5 bg-white">
+                  <input type="color" id="ls-backgroundColor" name="backgroundColor" value="#1e3a5f"
+                         class="w-7 h-7 rounded-lg border-0 cursor-pointer flex-shrink-0 p-0">
+                  <input type="text" id="ls-bg-hex" maxlength="7"
+                         class="flex-1 text-xs font-mono text-gray-700 border-0 outline-none bg-transparent w-0 min-w-0"
+                         placeholder="#1e3a5f">
+                </div>
+              </div>
+              <div>
+                <label class="text-xs text-gray-500 font-semibold mb-1 block">Text Color</label>
+                <div class="flex items-center gap-2 border border-gray-200 rounded-xl px-2 py-1.5 bg-white">
+                  <input type="color" id="ls-textColor" name="textColor" value="#ffffff"
+                         class="w-7 h-7 rounded-lg border-0 cursor-pointer flex-shrink-0 p-0">
+                  <input type="text" id="ls-text-hex" maxlength="7"
+                         class="flex-1 text-xs font-mono text-gray-700 border-0 outline-none bg-transparent w-0 min-w-0"
+                         placeholder="#ffffff">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings -->
+          <div>
+            <label class="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">
+              <i class="fas fa-cog text-gray-300"></i> Settings
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-xs text-gray-500 font-semibold mb-1 block">Sort Order</label>
+                <input type="number" id="ls-sortOrder" name="sortOrder" value="0" min="0"
+                       class="w-full px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 bg-white transition-all">
+              </div>
+              <div>
+                <label class="text-xs text-gray-500 font-semibold mb-1 block">Visibility</label>
+                <div class="flex items-center gap-2 border border-gray-200 rounded-xl px-3 py-2.5 bg-white">
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="ls-isVisible" name="isVisible" checked class="sr-only peer">
+                    <div class="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-5 peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                  </label>
+                  <span class="text-sm font-semibold text-gray-700" id="ls-visible-label">On</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ── Footer ── -->
+      <div class="flex items-center justify-between px-6 py-4 border-t border-gray-100 bg-white flex-shrink-0">
+        <div id="ls-builtin-badge" class="hidden items-center gap-2 text-xs text-indigo-600 font-semibold bg-indigo-50 px-3 py-1.5 rounded-lg">
+          <i class="fas fa-link text-xs"></i>
+          <span>Linked to built-in section</span>
+        </div>
+        <div class="flex-1"></div>
+        <div class="flex gap-3">
+          <button type="button" id="ls-modal-cancel"
+                  class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all">
+            Cancel
+          </button>
+          <button type="submit"
+                  class="px-7 py-2.5 text-sm font-bold text-white bg-indigo-600 rounded-xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 flex items-center gap-2">
+            <i class="fas fa-save"></i>
+            <span id="ls-submit-label">Save Section</span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

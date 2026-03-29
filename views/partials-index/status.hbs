@@ -1,24 +1,48 @@
 <section class="stats-section">
   <!-- Decorative SVG wave -->
   <div class="wave">
-    <svg width="100%" height="auto" viewBox="0 0 1440 348" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="100%" viewBox="0 0 1440 348" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path fill-rule="evenodd" clip-rule="evenodd"
             d="M1617 275H1440V329.813C1440 329.813 1431.33 366.516 1245.54 329.813C1059.75 293.109 982.833 286.781 788.375 329.813C677.677 354.309 593.309 337.654 519.682 323.12C463.973 312.123 414.413 302.34 364.25 312.516C312.305 323.053 266.394 319.49 220.654 315.94C163.848 311.532 107.305 307.144 39.7916 329.813C-82.0832 370.734 -120 329.813 -120 329.813V275V75V18.3207C-120 18.3207 -77.7811 -22.9009 57.9218 18.3207C133.096 41.1558 196.054 36.7354 259.306 32.2944C310.235 28.7186 361.355 25.1294 419.193 35.7443C475.048 45.995 530.231 36.1401 592.262 25.0622C674.242 10.4217 768.183 -6.35482 891.44 18.3207C1107.96 61.6672 1193.61 55.2928 1400.48 18.3207C1607.35 -18.6513 1617 18.3207 1617 18.3207V275Z"
             fill="#DB1016"></path>
     </svg>
   </div>
   <div class="stats-container">
+    {{#if (eq lang 'en')}}
+    {{!-- English: DB cards if saved, else locale --}}
+    {{#each (parseJSON section.body)}}
     <div class="stat-card">
-      <h3>2+</h3>
-      <p>Year Experience</p>
+      <h3>{{this.value}}</h3>
+      <p>{{this.label}}</p>
+    </div>
+    {{else}}
+    <div class="stat-card">
+      <h3>{{#if t.stats.s1Value}}{{t.stats.s1Value}}{{else}}4+{{/if}}</h3>
+      <p>{{#if t.stats.s1Label}}{{t.stats.s1Label}}{{else}}Year Experience{{/if}}</p>
     </div>
     <div class="stat-card">
-      <h3>300+</h3>
-      <p>Members in Our Community</p>
+      <h3>{{#if t.stats.s2Value}}{{t.stats.s2Value}}{{else}}300+{{/if}}</h3>
+      <p>{{#if t.stats.s2Label}}{{t.stats.s2Label}}{{else}}Members in Our Community{{/if}}</p>
     </div>
     <div class="stat-card">
-      <h3>400+</h3>
-      <p>Standards-Aligned Lessons</p>
+      <h3>{{#if t.stats.s3Value}}{{t.stats.s3Value}}{{else}}400+{{/if}}</h3>
+      <p>{{#if t.stats.s3Label}}{{t.stats.s3Label}}{{else}}Standards-Aligned Lessons{{/if}}</p>
     </div>
+    {{/each}}
+    {{else}}
+    {{!-- ARM / RUS: always locale --}}
+    <div class="stat-card">
+      <h3>{{#if t.stats.s1Value}}{{t.stats.s1Value}}{{else}}4+{{/if}}</h3>
+      <p>{{#if t.stats.s1Label}}{{t.stats.s1Label}}{{else}}Year Experience{{/if}}</p>
+    </div>
+    <div class="stat-card">
+      <h3>{{#if t.stats.s2Value}}{{t.stats.s2Value}}{{else}}300+{{/if}}</h3>
+      <p>{{#if t.stats.s2Label}}{{t.stats.s2Label}}{{else}}Members in Our Community{{/if}}</p>
+    </div>
+    <div class="stat-card">
+      <h3>{{#if t.stats.s3Value}}{{t.stats.s3Value}}{{else}}400+{{/if}}</h3>
+      <p>{{#if t.stats.s3Label}}{{t.stats.s3Label}}{{else}}Standards-Aligned Lessons{{/if}}</p>
+    </div>
+    {{/if}}
   </div>
 </section>

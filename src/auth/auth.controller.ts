@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Render, Body, Res, Req } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 import { StudentsService } from '../students/students.service';
 import { TrainersService } from '../trainers/trainers.service';
 import { UsersService } from '../users/users.service';
@@ -29,9 +30,15 @@ export class AuthController {
       const { username, password } = body;
       const secret = process.env.JWT_SECRET || 'mysecret';
 
+      const checkPassword = async (stored: string, plain: string) => {
+        if (!stored) return false;
+        const isHashed = stored.startsWith('$2b$') || stored.startsWith('$2a$');
+        return isHashed ? bcrypt.compare(plain, stored) : stored === plain;
+      };
+
       // 1. Check users table (admin role)
       const user = await this.usersService.findByEmail(username);
-      if (user && password === user.password) {
+      if (user && await checkPassword(user.password, password)) {
         const role = user.role || 'admin';
         const token = jwt.sign(
           { username, role, userId: user.id },
@@ -44,7 +51,7 @@ export class AuthController {
 
       // 2. Check trainers table
       const trainer = await this.trainersService.findByEmail(username);
-      if (trainer && password === (trainer as any).password) {
+      if (trainer && await checkPassword((trainer as any).password, password)) {
         const token = jwt.sign(
           { username, role: 'trainer', trainerId: trainer.id },
           secret,
@@ -56,7 +63,7 @@ export class AuthController {
 
       // 3. Check students table
       const student = await this.studentsService.findByEmail(username);
-      if (student && password === student.password) {
+      if (student && await checkPassword(student.password, password)) {
         const token = jwt.sign(
           { username, role: 'student', studentId: student.id },
           secret,
@@ -96,6 +103,8 @@ export class AuthController {
     }
 
     try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       if (role === 'admin') {
         const existing = await this.usersService.findByEmail(email);
         if (existing) {
@@ -105,7 +114,7 @@ export class AuthController {
           fullName,
           email,
           phone,
-          password,
+          password: hashedPassword,
           role: 'admin',
           work_type: '',
         });
@@ -117,7 +126,7 @@ export class AuthController {
         await this.studentsService.create({
           fullName,
           email,
-          password,
+          password: hashedPassword,
           age: 0,
           groupName: '',
           phones: phone,
@@ -130,7 +139,7 @@ export class AuthController {
         await this.trainersService.create({
           fullName,
           email,
-          password,
+          password: hashedPassword,
           phone,
           role: 'trainer',
           description: '',

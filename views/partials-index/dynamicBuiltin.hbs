@@ -1,0 +1,158 @@
+<div id="{{anchorId}}" class="dynamic-builtin-section">
+  <section
+    class="dynamic-section w-full"
+    data-section-id="{{section.id}}"
+    data-section-type="{{section.sectionType}}"
+    style="background-color: {{section.backgroundColor}}; color: {{section.textColor}};"
+  >
+
+    {{!-- ========== HERO ========== --}}
+    {{#if (eq section.sectionType "hero")}}
+    <div
+      class="relative min-h-[520px] flex items-center justify-center text-center bg-cover bg-center"
+      {{#if section.imageUrl}}style="background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('{{section.imageUrl}}'); background-color: {{section.backgroundColor}};"{{/if}}
+    >
+      <div class="relative z-10 max-w-4xl mx-auto px-6 py-20">
+        {{#if section.title}}
+          <h1 class="text-5xl md:text-6xl font-extrabold leading-tight mb-6 drop-shadow-lg" style="color: {{section.textColor}};">{{section.title}}</h1>
+        {{/if}}
+        {{#if section.subtitle}}
+          <p class="text-xl md:text-2xl mb-6 opacity-90 font-medium" style="color: {{section.textColor}};">{{section.subtitle}}</p>
+        {{/if}}
+        {{#if section.body}}
+          <p class="text-base md:text-lg mb-10 opacity-80 max-w-2xl mx-auto" style="color: {{section.textColor}};">{{section.body}}</p>
+        {{/if}}
+        {{#if section.buttonText}}
+          <a href="{{section.buttonLink}}" class="inline-block px-10 py-4 bg-yellow-400 text-gray-900 font-bold text-lg rounded-2xl shadow-xl hover:bg-yellow-300 transition-all duration-200 hover:-translate-y-1">{{section.buttonText}}</a>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- ========== LIMITLESS LEARNING (cards from JSON body) ========== --}}
+    {{else if (eq section.builtinKey "limitless")}}
+    <section class="container mx-auto px-6 py-20 text-center">
+      {{#if section.title}}
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2" style="color:{{section.textColor}};">{{section.title}}</h2>
+      {{/if}}
+      {{#if section.subtitle}}
+      <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12" style="color:{{section.textColor}};">{{section.subtitle}}</p>
+      {{/if}}
+      {{#with (parseJSON section.body) as |cards|}}
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {{#each cards}}
+        <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 shadow-lg">
+          {{#if (eq @index 0)}}
+          <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+          </div>
+          {{else if (eq @index 1)}}
+          <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"></path></svg>
+          </div>
+          {{else if (eq @index 2)}}
+          <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path></svg>
+          </div>
+          {{else}}
+          <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-6">
+            <svg class="w-8 h-8 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
+          {{/if}}
+          <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{this.title}}</h3>
+          <p class="text-gray-500 text-sm leading-relaxed">{{this.desc}}</p>
+        </div>
+        {{/each}}
+      </div>
+      {{/with}}
+    </section>
+
+    {{!-- ========== ABOUT ========== --}}
+    {{else if (eq section.sectionType "about")}}
+    <div class="max-w-7xl mx-auto px-6 py-20">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <h2 class="text-4xl font-extrabold mb-4 leading-tight">
+            {{#if (eq lang 'hy')}}{{#if t.about2.title}}{{t.about2.title}}{{else}}{{section.title}}{{/if}}
+            {{else if (eq lang 'ru')}}{{#if t.about2.title}}{{t.about2.title}}{{else}}{{section.title}}{{/if}}
+            {{else}}{{section.title}}{{/if}}
+          </h2>
+          {{#if section.subtitle}}<p class="text-xl font-medium mb-6 opacity-75">{{section.subtitle}}</p>{{/if}}
+          <p class="text-base leading-relaxed opacity-80">
+            {{#if (eq lang 'hy')}}{{#if t.about2.body}}{{t.about2.body}}{{else}}{{section.body}}{{/if}}
+            {{else if (eq lang 'ru')}}{{#if t.about2.body}}{{t.about2.body}}{{else}}{{section.body}}{{/if}}
+            {{else}}{{section.body}}{{/if}}
+          </p>
+          {{#if section.buttonText}}
+            <a href="{{section.buttonLink}}" class="inline-block mt-8 px-8 py-3 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-all shadow-md">
+              {{#if (eq lang 'hy')}}{{#if t.about2.readMore}}{{t.about2.readMore}}{{else}}{{section.buttonText}}{{/if}}
+              {{else if (eq lang 'ru')}}{{#if t.about2.readMore}}{{t.about2.readMore}}{{else}}{{section.buttonText}}{{/if}}
+              {{else}}{{section.buttonText}}{{/if}}
+            </a>
+          {{/if}}
+        </div>
+        {{#if section.imageUrl}}
+        <div class="relative">
+          <img src="{{section.imageUrl}}" alt="{{section.title}}" class="w-full h-auto rounded-3xl shadow-2xl object-cover">
+        </div>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- ========== FEATURES ========== --}}
+    {{else if (eq section.sectionType "features")}}
+    <div class="max-w-7xl mx-auto px-6 py-20">
+      <div class="text-center mb-14">
+        {{#if section.title}}<h2 class="text-4xl font-extrabold mb-4">{{section.title}}</h2>{{/if}}
+        {{#if section.subtitle}}<p class="text-xl opacity-70 max-w-2xl mx-auto">{{section.subtitle}}</p>{{/if}}
+      </div>
+      {{#if section.body}}
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="md:col-span-3 bg-white bg-opacity-10 rounded-2xl p-8 text-base leading-relaxed backdrop-blur-sm shadow-inner">{{{section.body}}}</div>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- ========== STATS ========== --}}
+    {{else if (eq section.sectionType "stats")}}
+    <div class="max-w-7xl mx-auto px-6 py-16 text-center">
+      {{#if section.title}}<h2 class="text-3xl font-extrabold mb-10">{{section.title}}</h2>{{/if}}
+      {{#if section.body}}
+      <div class="flex flex-wrap justify-center gap-8">
+        <div class="bg-white bg-opacity-10 rounded-2xl px-12 py-8 shadow-lg backdrop-blur-sm min-w-[200px]">
+          <div class="text-base leading-relaxed whitespace-pre-line">{{{section.body}}}</div>
+        </div>
+      </div>
+      {{/if}}
+    </div>
+
+    {{!-- ========== CTA ========== --}}
+    {{else if (eq section.sectionType "cta")}}
+    <div class="py-20 px-6 text-center">
+      <div class="max-w-3xl mx-auto">
+        {{#if section.title}}<h2 class="text-4xl md:text-5xl font-extrabold mb-6">{{section.title}}</h2>{{/if}}
+        {{#if section.subtitle}}<p class="text-xl mb-10 opacity-80">{{section.subtitle}}</p>{{/if}}
+        {{#if section.buttonText}}
+          <a href="{{section.buttonLink}}" class="inline-block px-12 py-5 bg-white text-gray-900 font-extrabold text-lg rounded-2xl shadow-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-200">{{section.buttonText}}</a>
+        {{/if}}
+      </div>
+    </div>
+
+    {{!-- ========== TESTIMONIAL ========== --}}
+    {{else if (eq section.sectionType "testimonial")}}
+    <div class="max-w-4xl mx-auto px-6 py-20 text-center">
+      {{#if section.imageUrl}}<img src="{{section.imageUrl}}" alt="{{section.subtitle}}" class="w-24 h-24 rounded-full object-cover mx-auto mb-6 shadow-xl border-4 border-white border-opacity-40">{{/if}}
+      {{#if section.body}}<blockquote class="text-2xl md:text-3xl font-medium italic mb-8 leading-relaxed opacity-90">&ldquo;{{section.body}}&rdquo;</blockquote>{{/if}}
+      {{#if section.title}}<p class="text-lg font-bold">{{section.title}}</p>{{/if}}
+      {{#if section.subtitle}}<p class="text-sm opacity-70 mt-1">{{section.subtitle}}</p>{{/if}}
+    </div>
+
+    {{!-- ========== CUSTOM ========== --}}
+    {{else if (eq section.sectionType "custom")}}
+    <div class="max-w-7xl mx-auto px-6 py-16">
+      {{#if section.title}}<h2 class="text-4xl font-extrabold mb-8 text-center">{{section.title}}</h2>{{/if}}
+      {{#if section.body}}<div class="prose prose-lg max-w-none">{{{section.body}}}</div>{{/if}}
+    </div>
+
+    {{/if}}
+  </section>
+</div>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,40 +22,105 @@
   {{#if ogImage}}<meta name="twitter:image" content="{{ ogImage }}">{{/if}}
 
   <meta name="robots" content="index, follow">
+  <!-- Apply saved theme before paint to prevent flash -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('wk-theme') || 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/index.css">
 </head>
 
 <body class="antialiased text-gray-800">
 
-{{> header }}
+{{#unless (builtinHidden builtinMap "header")}}<div id="sec-header">{{> header }}</div>{{/unless}}
+{{#if (builtinHidden builtinMap "header")}}{{> dynamicBuiltin section=(get builtinMap "header") anchorId="sec-header-override"}}{{/if}}
 
 <main class="pt-24 py-12">
-  {{> hero }}
-  {{> limitLess }}
-  {{> status }}
-  {{> about2 }}
-  {{> about }}
-  {{> about1 }}
-  {{> legoWedo }}
-  {{> status2 }}
-  {{> productImg}}
-  {{> product courses=courses }}
-  {{> candidatesForm }}
-  {{> about3}}
-  {{> coachCard }}
-  {{> legoEducation }}
-  {{> partniorCard}}
-  {{> contactUs }}
-  {{> projectBlueCard }}
-  {{> trainerCard  trainers=trainers}}
-  {{> yellowBoard }}
-  {{> legoBgImage}}
-  {{> blogBg }}
-  {{> blogsIndex  blogs=blogs}}
+  {{#unless (builtinHidden builtinMap "hero")}}<div id="sec-hero">{{> hero section=(get builtinMap "hero")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "hero")}}{{> dynamicBuiltin section=(get builtinMap "hero") anchorId="sec-hero-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "limitless")}}<div id="sec-limitless">{{> limitLess section=(get builtinMap "limitless")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "limitless")}}{{> dynamicBuiltin section=(get builtinMap "limitless") anchorId="sec-limitless-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "status")}}<div id="sec-status">{{> status section=(get builtinMap "status")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "status")}}{{> dynamicBuiltin section=(get builtinMap "status") anchorId="sec-status-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "about")}}<div id="sec-about">{{> about section=(get builtinMap "about")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "about")}}{{> dynamicBuiltin section=(get builtinMap "about") anchorId="sec-about-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "about1")}}<div id="sec-about1">{{> about1 section=(get builtinMap "about1")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "about1")}}{{> dynamicBuiltin section=(get builtinMap "about1") anchorId="sec-about1-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "legowedo")}}<div id="sec-legowedo">{{> legoWedo section=(get builtinMap "legowedo")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "legowedo")}}{{> dynamicBuiltin section=(get builtinMap "legowedo") anchorId="sec-legowedo-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "status2")}}<div id="sec-status2">{{> status2 section=(get builtinMap "status2")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "status2")}}{{> dynamicBuiltin section=(get builtinMap "status2") anchorId="sec-status2-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "productimg")}}<div id="sec-productimg">{{> productImg section=(get builtinMap "productimg")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "productimg")}}{{> dynamicBuiltin section=(get builtinMap "productimg") anchorId="sec-productimg-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "courses")}}<div id="sec-courses">{{> product courses=courses section=(get builtinMap "courses")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "courses")}}{{> dynamicBuiltin section=(get builtinMap "courses") anchorId="sec-courses-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "enrollment")}}<div id="sec-enrollment">{{> candidatesForm section=(get builtinMap "enrollment")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "enrollment")}}{{> dynamicBuiltin section=(get builtinMap "enrollment") anchorId="sec-enrollment-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "about3")}}<div id="sec-about3">{{> about3 section=(get builtinMap "about3")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "about3")}}{{> dynamicBuiltin section=(get builtinMap "about3") anchorId="sec-about3-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "coach")}}<div id="sec-coach">{{> coachCard section=(get builtinMap "coach")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "coach")}}{{> dynamicBuiltin section=(get builtinMap "coach") anchorId="sec-coach-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "legoeducation")}}<div id="sec-legoeducation">{{> legoEducation section=(get builtinMap "legoeducation")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "legoeducation")}}{{> dynamicBuiltin section=(get builtinMap "legoeducation") anchorId="sec-legoeducation-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "partners")}}<div id="sec-partners">{{> partniorCard section=(get builtinMap "partners")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "partners")}}{{> dynamicBuiltin section=(get builtinMap "partners") anchorId="sec-partners-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "contact")}}<div id="sec-contact">{{> contactUs section=(get builtinMap "contact")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "contact")}}{{> dynamicBuiltin section=(get builtinMap "contact") anchorId="sec-contact-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "projects")}}<div id="sec-projects">{{> projectBlueCard section=(get builtinMap "projects")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "projects")}}{{> dynamicBuiltin section=(get builtinMap "projects") anchorId="sec-projects-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "trainers")}}<div id="sec-trainers">{{> trainerCard trainers=trainers section=(get builtinMap "trainers")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "trainers")}}{{> dynamicBuiltin section=(get builtinMap "trainers") anchorId="sec-trainers-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "yellowboard")}}<div id="sec-yellowboard">{{> yellowBoard section=(get builtinMap "yellowboard")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "yellowboard")}}{{> dynamicBuiltin section=(get builtinMap "yellowboard") anchorId="sec-yellowboard-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "legobg")}}<div id="sec-legobg">{{> legoBgImage section=(get builtinMap "legobg")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "legobg")}}{{> dynamicBuiltin section=(get builtinMap "legobg") anchorId="sec-legobg-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "blogbg")}}<div id="sec-blogbg">{{> blogBg section=(get builtinMap "blogbg")}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "blogbg")}}{{> dynamicBuiltin section=(get builtinMap "blogbg") anchorId="sec-blogbg-override"}}{{/if}}
+
+  {{#unless (builtinHidden builtinMap "blogs")}}<div id="sec-blogs">{{> blogsIndex blogs=blogs}}</div>{{/unless}}
+  {{#if (builtinHidden builtinMap "blogs")}}{{> dynamicBuiltin section=(get builtinMap "blogs") anchorId="sec-blogs-override"}}{{/if}}
+
+  {{> dynamicSections sections=landingSections}}
 </main>
 
+{{#unless (builtinHidden builtinMap "footer")}}<div id="sec-footer">{{> footer}}</div>{{/unless}}
+{{#if (builtinHidden builtinMap "footer")}}{{> dynamicBuiltin section=(get builtinMap "footer") anchorId="sec-footer-override"}}{{/if}}
 
-{{> footer}}
+<script>
+  (function () {
+    var btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('wk-theme', theme);
+    }
+    btn.addEventListener('click', function () {
+      var current = document.documentElement.getAttribute('data-theme');
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>
 </body>
 </html>

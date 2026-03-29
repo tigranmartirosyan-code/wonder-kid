@@ -1,4 +1,4 @@
-import { Controller, Get, Render, Req, Res } from '@nestjs/common';
+import { Controller, Get, Param, Render, Req, Res } from '@nestjs/common';
 import { UsersService } from './users/users.service';
 import { StudentsService } from './students/students.service';
 import { CoursesService } from './courses/courses.service';
@@ -9,6 +9,7 @@ import { SchedulesService } from './schedules/schedules.service';
 import { SeoService } from './seo/seo.service';
 import { FaqService } from './faq/faq.service';
 import { PagesService } from './pages/pages.service';
+import { LandingSectionsService } from './landing-sections/landing-sections.service';
 import express from 'express';
 import * as jwt from 'jsonwebtoken';
 
@@ -26,16 +27,19 @@ export class AppController {
     private readonly seoService: SeoService,
     private readonly faqService: FaqService,
     private readonly pagesService: PagesService,
+    private readonly landingSectionsService: LandingSectionsService,
   ) {}
 
 
   @Get()
   @Render('index')
-  async root() {
+  async root(@Req() req: express.Request) {
     const trainers = await this.trainersService.findAll(['schedules']);
     const courses = await this.coursesService.findAll();
     const blogs = await this.blogsService.findAll();
     const seo = await this.seoService.findByPageName('home');
+    const landingSections = await this.landingSectionsService.findVisible();
+    const builtinMap = await this.landingSectionsService.findBuiltinMap();
 
     return {
       title: seo?.metaTitle || 'Wonder Kid',
@@ -46,7 +50,24 @@ export class AppController {
       courses,
       trainers,
       blogs,
+      landingSections,
+      builtinMap,
+      t: (req as any).t || {},
+      lang: (req as any).lang || 'en',
     };
+  }
+
+  @Get('/lang/:code')
+  setLang(
+    @Param('code') code: string,
+    @Req() req: express.Request,
+    @Res() res: express.Response,
+  ) {
+    const supported = ['en', 'hy', 'ru'];
+    const lang = supported.includes(code) ? code : 'en';
+    res.cookie('lang', lang, { maxAge: 365 * 24 * 60 * 60 * 1000, path: '/', httpOnly: false });
+    const referer = (req.headers.referer as string) || '/';
+    return res.redirect(referer);
   }
 
   @Get('/login')
@@ -65,7 +86,7 @@ export class AppController {
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     res.setHeader('Pragma', 'no-cache');
     res.setHeader('Expires', '0');
-    return res.render('login', { title: 'Wonder Kid' });
+    return res.render('login', { title: 'Wonder Kid', t: (req as any).t || {}, lang: (req as any).lang || 'en' });
   }
 
   @Get('/admin')

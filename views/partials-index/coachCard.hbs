@@ -1,42 +1,40 @@
 <!-- Coaches Section -->
 <section class="bg-gray-100 py-20 px-6 lg:px-12 text-center animate-fadeIn" style="animation-delay: 1.4s;">
   <div class="container mx-auto">
-    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-12">OUR COACHES</h2>
+    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-12">{{#if section.title}}{{section.title}}{{else}}{{#if t.coaches.title}}{{t.coaches.title}}{{else}}OUR COACHES{{/if}}{{/if}}</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {{#each (parseJSON section.body)}}
+      <div class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
+        <img src="{{this.imageUrl}}" alt="{{this.name}}" class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-blue-500">
+        <h4 class="font-bold text-xl mb-1">{{this.name}}</h4>
+        <p class="text-sm text-gray-600">{{this.role}}</p>
+      </div>
+      {{else}}
       <!-- Coach Card 1 -->
-      <div
-        class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
-        <img
-          src="https://scontent.fevn1-1.fna.fbcdn.net/v/t39.30808-6/484243643_2609873782552241_5221949738729883875_n.jpg?_nc_cat=104&amp;ccb=1-7&amp;_nc_sid=a5f93a&amp;_nc_ohc=0WvbQZfCOMgQ7kNvwGsqNkv&amp;_nc_oc=AdmmvUY9wXPIGAojMHPJM4MVmK5rsRz4RjkF1bMnwWDPFv1-t6lo3z_Bj9tqmgSng5o&amp;_nc_zt=23&amp;_nc_ht=scontent.fevn1-1.fna&amp;_nc_gid=BvKgVbWIeC31kIqLETwDWQ&amp;oh=00_AfYBWWkXi5UlyK7ESpKdDpYiReTcGaq4X4J7mmCbwt0r2w&amp;oe=68C45384"
-          alt="Mariam Martirosyan"
-          class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-blue-500">
-        <h4 class="font-bold text-xl mb-1">MARIAM MARTIROSYAN</h4>
-        <p class="text-sm text-gray-600">CEO &amp; Founder</p>
+      <div class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
+        <img src="https://placehold.co/150x150/dbeafe/1d4ed8" alt="Mariam Martirosyan" class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-blue-500">
+        <h4 class="font-bold text-xl mb-1">{{#if t.coaches.c1Name}}{{t.coaches.c1Name}}{{else}}MARIAM MARTIROSYAN{{/if}}</h4>
+        <p class="text-sm text-gray-600">{{#if t.coaches.c1Role}}{{t.coaches.c1Role}}{{else}}CEO &amp; Founder{{/if}}</p>
       </div>
       <!-- Coach Card 2 -->
-      <div
-        class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
-        <img src="https://placehold.co/150x150/e5e7eb/4b5563" alt="Lilit Hovhannisyan"
-             class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-yellow-400">
-        <h4 class="font-bold text-xl mb-1">LILIT HOVHANNISYAN</h4>
-        <p class="text-sm text-gray-600">LEGO system coach</p>
+      <div class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
+        <img src="https://placehold.co/150x150/e5e7eb/4b5563" alt="Lilit Hovhannisyan" class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-yellow-400">
+        <h4 class="font-bold text-xl mb-1">{{#if t.coaches.c2Name}}{{t.coaches.c2Name}}{{else}}LILIT HOVHANNISYAN{{/if}}</h4>
+        <p class="text-sm text-gray-600">{{#if t.coaches.c2Role}}{{t.coaches.c2Role}}{{else}}LEGO system coach{{/if}}</p>
       </div>
       <!-- Coach Card 3 -->
-      <div
-        class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
-        <img src="https://placehold.co/150x150/e5e7eb/4b5563" alt="Rosa Tserunyan"
-             class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-yellow-400">
-        <h4 class="font-bold text-xl mb-1">ROSA TSERUNYAN</h4>
-        <p class="text-sm text-gray-600">LEGO system coach</p>
+      <div class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
+        <img src="https://placehold.co/150x150/e5e7eb/4b5563" alt="Rosa Tserunyan" class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-yellow-400">
+        <h4 class="font-bold text-xl mb-1">{{#if t.coaches.c3Name}}{{t.coaches.c3Name}}{{else}}ROSA TSERUNYAN{{/if}}</h4>
+        <p class="text-sm text-gray-600">{{#if t.coaches.c3Role}}{{t.coaches.c3Role}}{{else}}LEGO system coach{{/if}}</p>
       </div>
       <!-- Coach Card 4 -->
-      <div
-        class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
-        <img src="https://placehold.co/150x150/e5e7eb/4b5563" alt="Mery Poghosyan"
-             class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-red-500">
-        <h4 class="font-bold text-xl mb-1">MERY POGHOSYAN</h4>
-        <p class="text-sm text-gray-600">ART Teacher</p>
+      <div class="flex flex-col items-center bg-white rounded-xl shadow-lg p-6 transform transition-transform hover:scale-105">
+        <img src="https://placehold.co/150x150/e5e7eb/4b5563" alt="Mery Poghosyan" class="w-32 h-32 rounded-full mb-4 object-cover border-4 border-red-500">
+        <h4 class="font-bold text-xl mb-1">{{#if t.coaches.c4Name}}{{t.coaches.c4Name}}{{else}}MERY POGHOSYAN{{/if}}</h4>
+        <p class="text-sm text-gray-600">{{#if t.coaches.c4Role}}{{t.coaches.c4Role}}{{else}}ART Teacher{{/if}}</p>
       </div>
+      {{/each}}
     </div>
   </div>
 </section>

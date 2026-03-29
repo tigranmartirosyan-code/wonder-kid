@@ -22,11 +22,18 @@
       <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
     </div>
     <h1 class="text-4xl md:text-5xl font-extrabold leading-tight text-gray-800 mb-4 mt-8 drop-shadow-lg">
-      LEGO® EDUCATION<br>INSPIRES LEARNING<br>YOU CAN BUILD ON
+      {{#if (eq lang 'en')}}
+        {{#if section.title}}{{section.title}}{{else}}{{#if t.hero.title}}{{t.hero.title}}{{else}}LEGO® EDUCATION<br>INSPIRES LEARNING<br>YOU CAN BUILD ON{{/if}}{{/if}}
+      {{else}}
+        {{#if t.hero.title}}{{t.hero.title}}{{else}}LEGO® EDUCATION INSPIRES LEARNING YOU CAN BUILD ON{{/if}}
+      {{/if}}
     </h1>
     <p class="text-sm md:text-base text-gray-700 max-w-lg">
-      Learning solutions designed to empower students and teachers, build deeper understanding and engagement,
-      and ignite a life-long love of learning.
+      {{#if (eq lang 'en')}}
+        {{#if section.body}}{{section.body}}{{else}}{{#if t.hero.body}}{{t.hero.body}}{{else}}Learning solutions designed to empower students and teachers, build deeper understanding and engagement, and ignite a life-long love of learning.{{/if}}{{/if}}
+      {{else}}
+        {{#if t.hero.body}}{{t.hero.body}}{{else}}Learning solutions designed to empower students and teachers.{{/if}}
+      {{/if}}
     </p>
   </div>
 
@@ -36,32 +43,32 @@
 
       <!-- Left tall image -->
       <div class="relative row-span-2 rounded-2xl overflow-hidden shadow-xl group">
-        <img src="/images/Group%2035.png" alt="Elementary students learning"
+        <img src="{{#if section.imageUrl}}{{section.imageUrl}}{{else}}/images/Group%2035.png{{/if}}" alt="Elementary students learning"
              class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-105">
         <span
           class="absolute bottom-0 left-0 w-full px-4 py-2 text-white text-lg font-semibold bg-gradient-to-t from-black/80 to-transparent">
-        ELEMENTARY
+        {{#if t.hero.elementary}}{{t.hero.elementary}}{{else}}ELEMENTARY{{/if}}
       </span>
       </div>
 
       <!-- Top right -->
       <div class="relative rounded-2xl overflow-hidden shadow-xl group">
-        <img src="/images/Group%2034.png" alt="Kindergarten students"
+        <img src="{{#if section.imageUrl2}}{{section.imageUrl2}}{{else}}/images/Group%2034.png{{/if}}" alt="Kindergarten students"
              class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-105">
         <span
           class="absolute bottom-0 left-0 w-full px-4 py-2 text-white text-lg font-semibold bg-gradient-to-t from-black/80 to-transparent">
-        KINDERGARTEN
+        {{#if t.hero.kindergarten}}{{t.hero.kindergarten}}{{else}}KINDERGARTEN{{/if}}
       </span>
       </div>
 
       <!-- Bottom right -->
       <div class="relative rounded-2xl overflow-hidden shadow-xl group">
-        <img src="/images/Mask group (3).png"
+        <img src="{{#if section.imageUrl3}}{{section.imageUrl3}}{{else}}/images/Mask group (3).png{{/if}}"
              alt="Middle school students"
              class="w-full h-full object-cover transform transition-transform duration-300 group-hover:scale-105">
         <span
           class="absolute bottom-0 left-0 w-full px-4 py-2 text-white text-lg font-semibold bg-gradient-to-t from-black/80 to-transparent">
-        MIDDLE
+        {{#if t.hero.middle}}{{t.hero.middle}}{{else}}MIDDLE{{/if}}
       </span>
       </div>
 

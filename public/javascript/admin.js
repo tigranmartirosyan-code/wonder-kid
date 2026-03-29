@@ -768,6 +768,11 @@ function showContent(page, skipUrlUpdate) {
   } else if (!skipUrlUpdate) {
     updateUrlParams();
   }
+
+  // Load landing editor sections when navigating to the pages section
+  if (page === 'pages' && typeof window.loadLandingSections === 'function') {
+    setTimeout(window.loadLandingSections, 50);
+  }
 }
 
 // Add event listeners to navigation links

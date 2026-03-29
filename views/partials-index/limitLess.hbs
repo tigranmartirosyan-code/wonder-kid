@@ -1,65 +1,96 @@
 <section class="container mx-auto px-6 py-20 text-center animate-fadeIn" style="animation-delay: 0.4s;">
-  <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">UNLOCK LIMITLESS POTENTIAL</h2>
+  <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">
+    {{#if (eq lang 'en')}}
+      {{#if section.title}}{{section.title}}{{else}}{{#if t.limitless.title}}{{t.limitless.title}}{{else}}UNLOCK LIMITLESS POTENTIAL{{/if}}{{/if}}
+    {{else}}
+      {{#if t.limitless.title}}{{t.limitless.title}}{{else}}UNLOCK LIMITLESS POTENTIAL{{/if}}
+    {{/if}}
+  </h2>
   <p class="text-lg text-gray-600 max-w-3xl mx-auto mb-12">
-    Meaningful learning, extraordinary engagement, and the resources and support to ensure success.
+    {{#if (eq lang 'en')}}
+      {{#if section.subtitle}}{{section.subtitle}}{{else}}{{#if t.limitless.subtitle}}{{t.limitless.subtitle}}{{else}}Meaningful learning, extraordinary engagement, and the resources and support to ensure success.{{/if}}{{/if}}
+    {{else}}
+      {{#if t.limitless.subtitle}}{{t.limitless.subtitle}}{{else}}Meaningful learning, extraordinary engagement, and the resources and support to ensure success.{{/if}}
+    {{/if}}
   </p>
-  <div class="flex flex-col md:flex-row justify-center space-y-8 md:space-y-0 md:space-x-12 lg:space-x-20">
-    <!-- Feature Card 1 -->
-    <div
-      class="flex flex-col items-center max-w-xs text-center p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:bg-gray-50 shadow-lg hover:shadow-2xl">
-      <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-        <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-        </svg>
-      </div>
-      <h3 class="text-xl font-bold mb-2">LEARN THROUGH PLAY</h3>
-      <p class="text-gray-600">
-        LEGO-based activities that make complex STEAM concepts accessible and fun for children of all ages.
-      </p>
-    </div>
 
-    <!-- Feature Card 2 -->
-    <div
-      class="flex flex-col items-center max-w-xs text-center p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:bg-gray-50 shadow-lg hover:shadow-2xl">
-      <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mb-4">
-        <svg class="w-8 h-8 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"></path>
-        </svg>
+  {{#if (eq lang 'en')}}
+  {{!-- English: DB cards (admin-edited) with locale fallback --}}
+  {{#with (parseJSON section.body) as |cards|}}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {{#each cards}}
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      {{#if (eq @index 0)}}
+      <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6">
+        <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
       </div>
-      <h3 class="text-xl font-bold mb-2">BUILD & PROGRAM ROBOTS</h3>
-      <p class="text-gray-600">
-        Kids design, build, and code robots using LEGO WeDo 2.0, developing engineering and programming skills hands-on.
-      </p>
+      {{else if (eq @index 1)}}
+      <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mb-6">
+        <svg class="w-8 h-8 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"></path></svg>
+      </div>
+      {{else if (eq @index 2)}}
+      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6">
+        <svg class="w-8 h-8 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path></svg>
+      </div>
+      {{else}}
+      <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-6">
+        <svg class="w-8 h-8 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      </div>
+      {{/if}}
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{this.title}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{this.desc}}</p>
     </div>
-
-    <!-- Feature Card 3 -->
-    <div
-      class="flex flex-col items-center max-w-xs text-center p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:bg-gray-50 shadow-lg hover:shadow-2xl">
-      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4">
-        <svg class="w-8 h-8 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
-          <circle cx="9" cy="7" r="4"></circle>
-          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path>
-        </svg>
-      </div>
-      <h3 class="text-xl font-bold mb-2">COLLABORATIVE PROJECTS</h3>
-      <p class="text-gray-600">
-        Team-based challenges that develop communication, problem-solving, and critical thinking skills through building together.
-      </p>
+    {{/each}}
+  </div>
+  {{else}}
+  {{!-- English fallback: locale cards --}}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6"><svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{#if t.limitless.card1Title}}{{t.limitless.card1Title}}{{else}}LEARN THROUGH PLAY{{/if}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{#if t.limitless.card1Desc}}{{t.limitless.card1Desc}}{{else}}LEGO-based activities that make complex STEAM concepts accessible and fun for children of all ages.{{/if}}</p>
     </div>
-
-    <!-- Feature Card 4 -->
-    <div
-      class="flex flex-col items-center max-w-xs text-center p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:bg-gray-50 shadow-lg hover:shadow-2xl">
-      <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-4">
-        <svg class="w-8 h-8 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-        </svg>
-      </div>
-      <h3 class="text-xl font-bold mb-2">CERTIFIED CURRICULUM</h3>
-      <p class="text-gray-600">
-        Standards-aligned lesson plans designed by LEGO Education experts, ensuring quality learning outcomes for every student.
-      </p>
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mb-6"><svg class="w-8 h-8 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"></path></svg></div>
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{#if t.limitless.card2Title}}{{t.limitless.card2Title}}{{else}}BUILD &amp; PROGRAM ROBOTS{{/if}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{#if t.limitless.card2Desc}}{{t.limitless.card2Desc}}{{else}}Kids design, build, and code robots using LEGO WeDo 2.0, developing engineering and programming skills hands-on.{{/if}}</p>
+    </div>
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6"><svg class="w-8 h-8 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path></svg></div>
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{#if t.limitless.card3Title}}{{t.limitless.card3Title}}{{else}}COLLABORATIVE PROJECTS{{/if}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{#if t.limitless.card3Desc}}{{t.limitless.card3Desc}}{{else}}Team-based challenges that develop communication, problem-solving, and critical thinking skills through building together.{{/if}}</p>
+    </div>
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-6"><svg class="w-8 h-8 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{#if t.limitless.card4Title}}{{t.limitless.card4Title}}{{else}}CERTIFIED CURRICULUM{{/if}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{#if t.limitless.card4Desc}}{{t.limitless.card4Desc}}{{else}}Standards-aligned lesson plans designed by LEGO Education experts, ensuring quality learning outcomes for every student.{{/if}}</p>
     </div>
   </div>
+  {{/with}}
+
+  {{else}}
+  {{!-- ARM / RUS: always locale cards --}}
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-6"><svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg></div>
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{#if t.limitless.card1Title}}{{t.limitless.card1Title}}{{else}}LEARN THROUGH PLAY{{/if}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{#if t.limitless.card1Desc}}{{t.limitless.card1Desc}}{{else}}LEGO-based activities that make complex STEAM concepts accessible and fun for children of all ages.{{/if}}</p>
+    </div>
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-yellow-100 flex items-center justify-center mb-6"><svg class="w-8 h-8 text-yellow-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"></path></svg></div>
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{#if t.limitless.card2Title}}{{t.limitless.card2Title}}{{else}}BUILD &amp; PROGRAM ROBOTS{{/if}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{#if t.limitless.card2Desc}}{{t.limitless.card2Desc}}{{else}}Kids design, build, and code robots using LEGO WeDo 2.0, developing engineering and programming skills hands-on.{{/if}}</p>
+    </div>
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-6"><svg class="w-8 h-8 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"></path></svg></div>
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{#if t.limitless.card3Title}}{{t.limitless.card3Title}}{{else}}COLLABORATIVE PROJECTS{{/if}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{#if t.limitless.card3Desc}}{{t.limitless.card3Desc}}{{else}}Team-based challenges that develop communication, problem-solving, and critical thinking skills through building together.{{/if}}</p>
+    </div>
+    <div class="flex flex-col items-center text-center p-8 rounded-2xl bg-white border border-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-2xl">
+      <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-6"><svg class="w-8 h-8 text-purple-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+      <h3 class="text-base font-extrabold mb-3 uppercase tracking-wide">{{#if t.limitless.card4Title}}{{t.limitless.card4Title}}{{else}}CERTIFIED CURRICULUM{{/if}}</h3>
+      <p class="text-gray-500 text-sm leading-relaxed">{{#if t.limitless.card4Desc}}{{t.limitless.card4Desc}}{{else}}Standards-aligned lesson plans designed by LEGO Education experts, ensuring quality learning outcomes for every student.{{/if}}</p>
+    </div>
+  </div>
+  {{/if}}
 </section>
